@@ -1,0 +1,17 @@
+.app {
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pageContentLayout {
+  overflow-y: scroll;
+}
+
+.flexPageContainer {
+  min-height: 100%;
+  flex-grow: 1;
+}
+
+.contentLayout {
+  flex: 1 0 auto;
+}

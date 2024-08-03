@@ -1,0 +1,90 @@
+import React, { useState } from "react";
+import { Form, Input, Typography, Button, Flex } from "antd";
+import { GlobalOutlined } from "@ant-design/icons";
+import { Link } from "react-router-dom";
+import { VALIDATE_PATTERNS } from "@/utils";
+
+const Title = Typography.Title;
+
+const LoginDomain = () => {
+  // -------------------- Form attrs --------------------
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+
+  // -------------------- Submit Form --------------------
+  const handleSubmit = async (formValues) => {
+    setLoading(true);
+    const tenant = formValues.tenant;
+
+    try {
+      // TODO: export utils
+      window.location = window.location.protocol + "//" + tenant + "." + window.location.host
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#ffffff",
+        padding: "24px 48px",
+        borderRadius: "24px",
+      }}
+    >
+      <Flex justify="center">
+        <Title>Đăng nhập</Title>
+      </Flex>
+      <br />
+      <Form
+        name="login"
+        layout="vertical"
+        form={form}
+        onFinish={handleSubmit}
+        requiredMark={false}
+        style={{
+          maxWidth: 600,
+        }}
+      >
+        <Form.Item
+          name="tenant"
+          label="Cửa hàng"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập tên cửa hàng!",
+            },
+            {
+              pattern: VALIDATE_PATTERNS.TENANT_NAME,
+              message: "Tên cửa hàng không hợp lệ!"
+            }
+          ]}
+        >
+          <Input
+            addonBefore={<GlobalOutlined />}
+            placeholder="Tên cửa hàng của bạn"
+            addonAfter=".chainretail.io.vn" // TODO: read
+            onInput={(e) => e.target.value = e.target.value.toLowerCase()}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button block type="primary" htmlType="submit" loading={loading} size="large">
+            Vào cửa hàng
+          </Button>
+        </Form.Item>
+
+        <Form.Item>
+          <Flex justify="center">
+            Chưa có tài khoản?&nbsp;
+            <Link to="/signup">Tạo tài khoản mới</Link>
+          </Flex>
+        </Form.Item>
+
+      </Form>
+    </div>
+  );
+};
+
+export default LoginDomain;
