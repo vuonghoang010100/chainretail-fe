@@ -28,7 +28,7 @@ import Contract from "@/pages/tenant/Partner/Contract";
 import Store from "@/pages/tenant/Store/Store";
 import Transfer from "@/pages/tenant/Store/Transfer";
 import Inventory from "@/pages/tenant/Store/Inventory";
-import Staff from "@/pages/tenant/Staff/Staff";
+import { Staff, NewStaff, ViewStaff, EditStaff } from "@/pages/tenant/Staff/Staff";
 import Role from "@/pages/tenant/Staff/Role";
 import Promote from "@/pages/tenant/Promote";
 import Report from "@/pages/tenant/Report";
@@ -180,6 +180,10 @@ function App() {
 
         <Route path={ROUTE.TENANT_APP.STAFF.name} >
           <Route index element={<Staff/>} />
+          <Route path="new" element={<NewStaff/>} />
+          <Route path=":id" element={<ViewStaff/>} />
+          <Route path=":id/edit" element={<EditStaff/>} />
+
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ROLE.name} >
