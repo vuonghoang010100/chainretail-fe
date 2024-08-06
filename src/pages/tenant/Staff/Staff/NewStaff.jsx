@@ -62,4 +62,4 @@ const NewStaff = () => {
   );
 };
 
-export { NewStaff };
+export default NewStaff ;

@@ -1,7 +1,8 @@
 
 const Endpoints = {
   AUTHENTICATION: "/auth",
-  PRODUCT: "/products"
+  STAFF: "/employees",
+  PRODUCT: "/products",
 }
 
 export default Endpoints;

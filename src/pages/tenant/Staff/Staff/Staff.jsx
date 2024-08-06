@@ -10,6 +10,7 @@ import { Input, Space, Button, message } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import StaffFilterModal from "./StaffFilterModal";
+import { StaffSerivce } from "@/apis/StaffService";
 
 const { Search } = Input;
 
@@ -104,10 +105,16 @@ const Staff = () => {
         // setDataSource(dataResponse.data);
         // setTotalRecord(dataResponse.meta.total);
 
+        // const dataResponse = await StaffSerivce.getAll();
+        // console.info("Get All Staff", dataResponse)
+
         // fake
         setDataSource([testStaff]);
         setTotalRecord(1);
+
       } catch (error) {
+        console.log(error);
+        
         message.error("Không thể tải dữ liệu!");
       } finally {
         setLoading(false);
@@ -222,4 +229,4 @@ const Staff = () => {
   )
 };
 
-export { Staff };
+export default Staff ;

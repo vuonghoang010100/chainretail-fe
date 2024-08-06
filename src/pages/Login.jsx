@@ -4,7 +4,6 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationSerivce } from "@/apis/AuthenticationSerivce";
 import useAuth from "@/hooks/useAuth";
-import { localStorageUtils } from "@/utils";
 
 const Title = Typography.Title;
 
@@ -32,8 +31,6 @@ const Login = () => {
       const response = await AuthenticationSerivce.login(data);
       const token = response.token;
       setAuth(token);
-      // save token
-      localStorageUtils.saveToken(token);
 
       form.resetFields();
       navigate("/");

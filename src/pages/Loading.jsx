@@ -4,7 +4,7 @@ const Loading = () => {
   console.log(import.meta.env.VITE_TEST);
 
   return (
-    <></>
+    <>Page loading...</>
   );
 };
 

@@ -28,7 +28,11 @@ import Contract from "@/pages/tenant/Partner/Contract";
 import Store from "@/pages/tenant/Store/Store";
 import Transfer from "@/pages/tenant/Store/Transfer";
 import Inventory from "@/pages/tenant/Store/Inventory";
-import { Staff, NewStaff, ViewStaff, EditStaff } from "@/pages/tenant/Staff/Staff";
+// import { Staff, NewStaff, ViewStaff, EditStaff } from "@/pages/tenant/Staff/Staff";
+const Staff = lazy(() => import("@/pages/tenant/Staff/Staff/Staff"))
+const NewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/NewStaff"))
+const ViewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/ViewStaff"))
+const EditStaff = lazy(() => import("@/pages/tenant/Staff/Staff/EditStaff"))
 import Role from "@/pages/tenant/Staff/Role";
 import Promote from "@/pages/tenant/Promote";
 import Report from "@/pages/tenant/Report";
@@ -179,10 +183,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STAFF.name} >
-          <Route index element={<Staff/>} />
-          <Route path="new" element={<NewStaff/>} />
-          <Route path=":id" element={<ViewStaff/>} />
-          <Route path=":id/edit" element={<EditStaff/>} />
+          <Route index element={<LazyLoadPage><Staff/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewStaff/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewStaff/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditStaff/></LazyLoadPage>} />
 
         </Route>
 

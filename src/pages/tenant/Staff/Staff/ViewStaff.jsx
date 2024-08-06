@@ -154,4 +154,4 @@ const ViewStaff = () => {
   );
 }
 
-export { ViewStaff };
+export default ViewStaff;

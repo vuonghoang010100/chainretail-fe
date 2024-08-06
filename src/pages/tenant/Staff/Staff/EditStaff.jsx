@@ -169,4 +169,4 @@ const EditStaff = () => {
   );
 };
 
-export { EditStaff };
+export default EditStaff ;
