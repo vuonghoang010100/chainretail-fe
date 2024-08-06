@@ -24,6 +24,9 @@ const useAuth = () => {
       localStorageUtils.saveToken(token);
       api.defaults.headers.common['Authorization'] = "Bearer " + token;
     }
+    else {
+      token = null;
+    }
 
     setAuths({token, tenant, user, authorize, isAuthenticated})
   }
@@ -46,6 +49,7 @@ const useAuth = () => {
   
   function logout() {
     localStorageUtils.deleteToken();
+    api.defaults.headers.common['Authorization'] = null;
     setAuths({
       token: null,
       tenant: null,

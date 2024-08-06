@@ -4,9 +4,9 @@ import Endpoints from "@/constants/Endpoints";
 const ENDPOINT = Endpoints.STAFF;
 
 export const StaffSerivce = {
-  getAll: async () => {
+  getAll: async (query) => {
     try {
-      const response = await api.get(ENDPOINT)
+      const response = await api.get(ENDPOINT, { params: query })
       if (response.status == 200 && response.data?.code == 0) {
         return response.data.result;
       }

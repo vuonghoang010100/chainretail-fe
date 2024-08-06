@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Space,
@@ -7,6 +7,7 @@ import {
   Dropdown,
   Checkbox,
   Popover,
+  Badge,
 } from "antd";
 import {
   EyeOutlined,
@@ -15,6 +16,10 @@ import {
   SettingOutlined,
   ReloadOutlined,
   ColumnHeightOutlined,
+  SortAscendingOutlined,
+  MinusOutlined,
+  CaretUpOutlined,
+  CaretDownFilled,
 } from "@ant-design/icons";
 import styles from "./BaseTable.module.css";
 import { Title } from "../Title";
@@ -61,6 +66,8 @@ const BaseTable = ({
   const [size, setSize] = useState("large");
   const [displayCol, setDisplayCol] = useState(columns);
   const [cols, setCols] = useState(columns.map((col) => col.title));
+  const [sort, setSort] = useState([["createTime", "-"]]); // [["id", "+"], ["fullName", "-"],...]
+
 
   // -------------------- Action column--------------------
   const actionColumn = {
@@ -114,6 +121,75 @@ const BaseTable = ({
     },
   ];
 
+  // -------------------- Sort content --------------------
+  const sortColums = [
+    {
+      title: "Thời gian tạo",
+      dataIndex: "createTime",
+      key: "createTime",
+    },
+    {
+      title: "Thời gian cập nhật",
+      dataIndex: "updateTime",
+      key: "updateTime",
+    },
+    ...columns
+  ]
+
+  const handleSort = (e, column) => {
+    const changePrev = (prev) => {
+      let sortArray = [];
+      const index = prev.findIndex(value => value[0] === column);
+      if (index < 0) {
+        sortArray = [[column, "+"], ...prev];
+      }
+      else {
+        const order = prev[index][1];
+        prev.splice(index, 1);
+        if (order === "+") {
+          sortArray = [[column, "-"], ...prev]
+        }
+        else {
+          sortArray = [...prev];
+        }
+      }
+      const sortString = sortArray.reduce((acc, ele) => acc + "," + ele[1] + ele[0], "");
+      const sortResult = sortString[0] === "," ? sortString.substring(1) : sortString;
+      console.log(sortResult);
+      
+      setQuery((prev) => ({
+        ...prev,
+        sort: sortResult,
+      }));
+      return sortArray;
+    }
+
+    setSort(prev => changePrev(prev));
+  }
+
+  const badgeStyle = {
+    backgroundColor: "#4096ff",
+    marginLeft: "8px",
+  }
+
+  const chooseIcon = (column) => {
+    if (!sort.flat().includes(column))
+      return <MinusOutlined />
+    const index = sort.findIndex(value => value[0] === column);
+    const order = sort.filter((value) => value[0] === column)[0][1];
+    return order === "+" 
+      ? <><CaretUpOutlined /><Badge count={index + 1} showZero style={badgeStyle}></Badge></>
+      : <><CaretDownFilled /><Badge count={index + 1} showZero style={badgeStyle}></Badge></>
+  }
+
+  const sortContent = (
+    <Space direction="vertical">
+      {sortColums.map((obj, index) => (
+        <Button key={index} value={obj.key} type="text" icon={chooseIcon(obj.key)} onClick={(e) => handleSort(e, obj.key)}>{obj.title}</Button>
+      ))}
+    </Space>
+  );
+
   // -------------------- Setting content --------------------
   const handleChangeCol = (checkedValue) => {
     console.log(checkedValue);
@@ -146,7 +222,7 @@ const BaseTable = ({
     setQuery((prev) => ({
       ...prev,
       page: page,
-      pageSize: pageSize,
+      size: pageSize,
     }));
   };
 
@@ -161,6 +237,14 @@ const BaseTable = ({
           <Dropdown placement="bottom" menu={{ items, onClick: handleMenuClick }}>
             <Button type="text" icon={<ColumnHeightOutlined />} />
           </Dropdown>
+
+          <Popover
+            placement="left"
+            title="Sắp xếp"
+            content={sortContent}
+          >
+            <Button type="text" icon={<SortAscendingOutlined />} />
+          </Popover>
 
           <Popover
             placement="bottomRight"
@@ -188,7 +272,7 @@ const BaseTable = ({
           showSizeChanger: true,
           showQuickJumper: true,
           current: query.page,
-          pageSize: query.pageSize,
+          pageSize: query.size,
           total: total,
           onChange: handlePagination,
         }}

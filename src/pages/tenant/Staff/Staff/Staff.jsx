@@ -45,24 +45,34 @@ const Staff = () => {
   const [totalRecord, setTotalRecord] = useState(0); // control number of page in table
   const [query, setQuery] = useState({
     page: 1,
-    pageSize: 10,
+    size: 10,
   });
 
   // fake
   const testStaff = {
-    id: "EMP000000001",
-    full_name: "string",
-    email: "user@example.com",
-    phone_number: "123123",
-    role: "Nhân viên",
-    branch_name: "string",
-    date_of_birth: "2024-03-27",
-    gender: "Nam",
-    province: "string",
-    district: "string",
-    address: "string",
-    status: "Đang làm việc",
-    note: "string",
+    id: 1,
+    fullName: "Nguyen Van A",
+    dob: null,
+    gender: null,
+    email: "test@test.com",
+    phone: null,
+    address: null,
+    province: null,
+    district: null,
+    active: true,
+    note: null,
+    roles: [
+        {
+            id: 1,
+            name: "TENANT_ADMIN",
+            description: null,
+            permissions: [],
+            createTime: "2024-08-04 18:10:52",
+            updateTime: "2024-08-04 18:10:52"
+        }
+    ],
+    createTime: "2024-08-04 18:10:52",
+    updateTime: "2024-08-04 18:10:52"
   };
 
   // -------------------- Table columns --------------------
@@ -76,23 +86,48 @@ const Staff = () => {
     },
     {
       title: "Họ và tên",
-      dataIndex: "full_name",
-      key: "full_name",
+      dataIndex: "fullName",
+      key: "fullName",
     },
     {
-      title: "Chức vụ",
-      dataIndex: "role",
-      key: "role",
+      title: "Ngày sinh",
+      dataIndex: "dob",
+      key: "dob",
     },
     {
-      title: "Cửa hàng",
-      dataIndex: "branch_name",
-      key: "branch_name",
+      title: "Giới tính",
+      dataIndex: "gender",
+      key: "gender",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Sdt",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Tỉnh/TP",
+      dataIndex: "province",
+      key: "province",
+    },
+    {
+      title: "Quận/Huyện",
+      dataIndex: "district",
+      key: "district",
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Ghi chú",
+      dataIndex: "note",
+      key: "note",
     },
   ];
 
@@ -101,16 +136,12 @@ const Staff = () => {
     setLoading(true);
     const fetchData = async () => {
       try {
-        // const dataResponse = await StaffAPI.getStaffs(query);
-        // setDataSource(dataResponse.data);
-        // setTotalRecord(dataResponse.meta.total);
+        console.info("Query:", query);
 
-        // const dataResponse = await StaffSerivce.getAll();
-        // console.info("Get All Staff", dataResponse)
-
-        // fake
-        setDataSource([testStaff]);
-        setTotalRecord(1);
+        const dataResponse = await StaffSerivce.getAll(query);
+        console.info("Get All Staff", dataResponse)
+        setDataSource(dataResponse.data);
+        setTotalRecord(dataResponse.total);
 
       } catch (error) {
         console.log(error);
@@ -223,7 +254,7 @@ const Staff = () => {
         setOpen={setOpenFilter}
         query={query}
         setQuery={setQuery}
-      /> 
+      />
     </PageContent>
 
   )
