@@ -49,11 +49,11 @@ const SignUp = () => {
 
         <Form.Item
           name="tenant"
-          label="Gian hàng"
+          label="Cửa hàng"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập tên gian hàng!",
+              message: "Vui lòng nhập tên cửa hàng!",
             },
             {
               pattern: VALIDATE_PATTERNS.TENANT_NAME_REGIS,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, Typography, Button, Flex } from "antd";
 import { GlobalOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { VALIDATE_PATTERNS } from "@/utils";
+import { onMainHost, VALIDATE_PATTERNS } from "@/utils";
 
 const Title = Typography.Title;
 
@@ -18,7 +18,13 @@ const LoginDomain = () => {
 
     try {
       // TODO: export utils
-      window.location = window.location.protocol + "//" + tenant + "." + window.location.host
+      // case on main host
+      if (onMainHost()){
+        window.location = window.location.protocol + "//" + tenant + "." + window.location.host
+      }
+      // case www.[main host]
+      window.location = window.location.protocol + "//" + tenant + "." + window.location.host.replace("www.", "")
+
     } catch (error) {
       console.log(error);
     }
