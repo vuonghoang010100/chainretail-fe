@@ -11,10 +11,11 @@ import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import StaffFilterModal from "./StaffFilterModal";
 import { StaffSerivce } from "@/apis/StaffService";
+import { ROUTE } from "@/constants/AppConstant";
 
 const { Search } = Input;
 
-const path = "/staff";
+const path = ROUTE.TENANT_APP.STAFF.path;
 
 /**
  * Breadcrumd item for page
@@ -46,34 +47,8 @@ const Staff = () => {
   const [query, setQuery] = useState({
     page: 1,
     size: 10,
+    sort: "-createTime",
   });
-
-  // fake
-  const testStaff = {
-    id: 1,
-    fullName: "Nguyen Van A",
-    dob: null,
-    gender: null,
-    email: "test@test.com",
-    phone: null,
-    address: null,
-    province: null,
-    district: null,
-    active: true,
-    note: null,
-    roles: [
-        {
-            id: 1,
-            name: "TENANT_ADMIN",
-            description: null,
-            permissions: [],
-            createTime: "2024-08-04 18:10:52",
-            updateTime: "2024-08-04 18:10:52"
-        }
-    ],
-    createTime: "2024-08-04 18:10:52",
-    updateTime: "2024-08-04 18:10:52"
-  };
 
   // -------------------- Table columns --------------------
   const columns = [
@@ -139,13 +114,12 @@ const Staff = () => {
         console.info("Query:", query);
 
         const dataResponse = await StaffSerivce.getAll(query);
-        console.info("Get All Staff", dataResponse)
+        console.info("Get All Staff", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
-
       } catch (error) {
         console.log(error);
-        
+
         message.error("Không thể tải dữ liệu!");
       } finally {
         setLoading(false);
@@ -189,11 +163,7 @@ const Staff = () => {
     setQuery((prev) => ({
       ...prev,
       page: 1,
-      condition: value,
-      //TODO: add filter param
-      province: null,
-      district: null,
-      status: null,
+      search: value,
     }));
 
     console.info("query search:", { value });
@@ -206,7 +176,7 @@ const Staff = () => {
       <ContentBox>
         <Space>
           <Search
-            placeholder="Tìm kiếm nhân viên"
+            placeholder="Tìm kiếm theo mã, tên, sdt"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
@@ -246,9 +216,9 @@ const Staff = () => {
           >
             Thêm mới
           </Button>
-        </BaseTable>  
+        </BaseTable>
       </ContentBox>
-        
+
       <StaffFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
@@ -256,8 +226,7 @@ const Staff = () => {
         setQuery={setQuery}
       />
     </PageContent>
-
-  )
+  );
 };
 
-export default Staff ;
+export default Staff;

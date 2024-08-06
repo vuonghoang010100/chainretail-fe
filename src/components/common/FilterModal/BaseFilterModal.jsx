@@ -17,7 +17,14 @@ import { FilterOutlined, ReloadOutlined } from "@ant-design/icons";
  * @param {filterModalParam} props {@link filterModalParam}
  * @returns React.JSX.Element
  */
-const BaseFilterModal = ({ open, setOpen, onOk, onClear, afterClose, children }) => {
+const BaseFilterModal = ({
+  open,
+  setOpen,
+  onOk,
+  onClear,
+  afterClose,
+  children,
+}) => {
   return (
     <Modal
       open={open}
@@ -51,3 +58,5 @@ const BaseFilterModal = ({ open, setOpen, onOk, onClear, afterClose, children })
 };
 
 export { BaseFilterModal };
+
+export const VALUE_ALL = "Tất cả";

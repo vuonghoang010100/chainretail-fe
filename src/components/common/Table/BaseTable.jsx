@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Table,
   Space,
@@ -68,20 +68,19 @@ const BaseTable = ({
   const [cols, setCols] = useState(columns.map((col) => col.title));
   const [sort, setSort] = useState([["createTime", "-"]]); // [["id", "+"], ["fullName", "-"],...]
 
-
   // -------------------- Action column--------------------
   const actionColumn = {
     title: "Hành động",
     key: "action_",
     width: 144,
-    fixed: 'right',
+    fixed: "right",
     render: (_, record) => (
       <Space size="small">
         <Button
           type="primary"
           ghost
           icon={<EyeOutlined />}
-          onClick={(e) => {
+          onClick={() => {
             onView(record);
           }}
         />
@@ -89,7 +88,7 @@ const BaseTable = ({
           type="primary"
           ghost
           icon={<EditOutlined />}
-          onClick={(e) => {
+          onClick={() => {
             onEdit(record);
           }}
         />
@@ -133,59 +132,76 @@ const BaseTable = ({
       dataIndex: "updateTime",
       key: "updateTime",
     },
-    ...columns
-  ]
+    ...columns,
+  ];
 
   const handleSort = (e, column) => {
     const changePrev = (prev) => {
       let sortArray = [];
-      const index = prev.findIndex(value => value[0] === column);
+      const index = prev.findIndex((value) => value[0] === column);
       if (index < 0) {
         sortArray = [[column, "+"], ...prev];
-      }
-      else {
+      } else {
         const order = prev[index][1];
         prev.splice(index, 1);
         if (order === "+") {
-          sortArray = [[column, "-"], ...prev]
-        }
-        else {
+          sortArray = [[column, "-"], ...prev];
+        } else {
           sortArray = [...prev];
         }
       }
-      const sortString = sortArray.reduce((acc, ele) => acc + "," + ele[1] + ele[0], "");
-      const sortResult = sortString[0] === "," ? sortString.substring(1) : sortString;
+      const sortString = sortArray.reduce(
+        (acc, ele) => acc + "," + ele[1] + ele[0],
+        ""
+      );
+      const sortResult =
+        sortString[0] === "," ? sortString.substring(1) : sortString;
       console.log(sortResult);
-      
+
       setQuery((prev) => ({
         ...prev,
         sort: sortResult,
       }));
       return sortArray;
-    }
+    };
 
-    setSort(prev => changePrev(prev));
-  }
+    setSort((prev) => changePrev(prev));
+  };
 
   const badgeStyle = {
     backgroundColor: "#4096ff",
     marginLeft: "8px",
-  }
+  };
 
   const chooseIcon = (column) => {
-    if (!sort.flat().includes(column))
-      return <MinusOutlined />
-    const index = sort.findIndex(value => value[0] === column);
+    if (!sort.flat().includes(column)) return <MinusOutlined />;
+    const index = sort.findIndex((value) => value[0] === column);
     const order = sort.filter((value) => value[0] === column)[0][1];
-    return order === "+" 
-      ? <><CaretUpOutlined /><Badge count={index + 1} showZero style={badgeStyle}></Badge></>
-      : <><CaretDownFilled /><Badge count={index + 1} showZero style={badgeStyle}></Badge></>
-  }
+    return order === "+" ? (
+      <>
+        <CaretUpOutlined />
+        <Badge count={index + 1} showZero style={badgeStyle}></Badge>
+      </>
+    ) : (
+      <>
+        <CaretDownFilled />
+        <Badge count={index + 1} showZero style={badgeStyle}></Badge>
+      </>
+    );
+  };
 
   const sortContent = (
     <Space direction="vertical">
       {sortColums.map((obj, index) => (
-        <Button key={index} value={obj.key} type="text" icon={chooseIcon(obj.key)} onClick={(e) => handleSort(e, obj.key)}>{obj.title}</Button>
+        <Button
+          key={index}
+          value={obj.key}
+          type="text"
+          icon={chooseIcon(obj.key)}
+          onClick={(e) => handleSort(e, obj.key)}
+        >
+          {obj.title}
+        </Button>
       ))}
     </Space>
   );
@@ -214,7 +230,7 @@ const BaseTable = ({
     setSize(e.key);
   };
 
-  const reloadTable = (e) => {
+  const reloadTable = () => {
     setReload();
   };
 
@@ -234,15 +250,14 @@ const BaseTable = ({
           {children}
           <Button type="text" icon={<ReloadOutlined />} onClick={reloadTable} />
 
-          <Dropdown placement="bottom" menu={{ items, onClick: handleMenuClick }}>
+          <Dropdown
+            placement="bottom"
+            menu={{ items, onClick: handleMenuClick }}
+          >
             <Button type="text" icon={<ColumnHeightOutlined />} />
           </Dropdown>
 
-          <Popover
-            placement="left"
-            title="Sắp xếp"
-            content={sortContent}
-          >
+          <Popover placement="left" title="Sắp xếp" content={sortContent}>
             <Button type="text" icon={<SortAscendingOutlined />} />
           </Popover>
 
@@ -257,13 +272,11 @@ const BaseTable = ({
       </div>
       <Table
         size={size}
-
         scroll={{
           x: true,
         }}
         sticky={false}
         tableLayout="fixed"
-
         columns={[...displayCol, actionColumn]}
         rowKey={rowKey}
         dataSource={dataSource}
