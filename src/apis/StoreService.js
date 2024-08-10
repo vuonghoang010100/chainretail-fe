@@ -30,4 +30,26 @@ export const StoreService = {
       throw error;
     }
   },
+  postStore: async (data) => {
+    try {
+      const response = await api.post(ENDPOINT, data);
+      if (response.status === 201 && response.data?.code === 0)
+        return response.data.result;
+      throw new Error("Uncatch status postStore");
+    } catch (error) {
+      console.error("postStore error:", error);
+      throw error;
+    }
+  },
+  putStore: async (id, data) => {
+    try {
+      const response = await api.put(ENDPOINT.concat("/" + id), data);
+      if (response.status === 200 && response.data?.code === 0)
+        return response.data.result;
+      throw new Error("Uncatch status putStore");
+    } catch (error) {
+      console.error("putStore error:", error);
+      throw error;
+    }
+  },
 };

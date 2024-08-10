@@ -10,11 +10,9 @@ import {
   SelectProvince,
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
-import { RangePickerx } from "@/components/common/Input/DatePicker";
 import { VALUE_ALL } from "@/components/common/FilterModal/BaseFilterModal";
 
-// eslint-disable-next-line no-unused-vars
-const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
+const StoreFilterModal = ({ open, setOpen, setQuery }) => {
   // -------------------- Filter attr --------------------
   const [form] = Form.useForm();
   const [districtOptions, setDistrictOptions] = useState([]);
@@ -23,15 +21,6 @@ const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
   const handleFilter = () => {
     setOpen(false);
     let data = form.getFieldsValue();
-
-    // convert data
-    // eslint-disable-next-line no-extra-boolean-cast
-    if (!!data.dob) {
-      const [start_date, end_date] = data.dob;
-      data.fromDob = start_date ? start_date : null;
-      data.toDob = end_date ? end_date : null;
-    }
-    delete data.dob;
 
     // Trim
     const queryData = Object.fromEntries(
@@ -67,60 +56,30 @@ const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
       onOk={handleFilter}
       onClear={handleClearFilter}
     >
-      <Form
-        name="filterStaff"
-        layout="vertical"
-        form={form}
-        // style={{ maxWidth: 600}}
-      >
-        {/*  form item here */}
+      <Form name="filterStore" layout="vertical" form={form}>
+        {/* form item here */}
         <Row {...rowProps}>
           <Col {...colProps}>
-            <Form.Item name="id" label="Mã nhân viên">
-              <Input placeholder="Tìm theo mã nhân viên" allowClear />
+            <Form.Item name="id" label="Mã cửa hàng">
+              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="fullName" label="Họ và tên">
-              <Input placeholder="Tìm theo họ và tên" allowClear />
+            <Form.Item name="name" label="Tên hiển thị">
+              <Input placeholder="Tìm theo tên hiển thị" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="dob" label="Ngày sinh">
-              <RangePickerx />
+            <Form.Item name="fullName" label="Tên cửa hàng">
+              <Input placeholder="Tìm theo tên cửa hàng" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="gender" label="Giới tính">
-              <RadioGroup values={[VALUE_ALL, "Nam", "Nữ"]} />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="email" label="Email">
-              <Input placeholder="Tìm theo email" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="Tìm theo số điện thoại" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="role" label="Chức vụ">
-              {/* <RadioGroup values={staffRoles} /> */}
-              <p>-----</p>
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="status" label="Trạng thái">
-              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
+            <Form.Item name="address" label="Địa chỉ">
+              <Input placeholder="Tìm theo địa chỉ" allowClear />
             </Form.Item>
           </Col>
 
@@ -140,8 +99,20 @@ const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="address" label="Địa chỉ">
-              <Input placeholder="Tìm theo địa chỉ" allowClear />
+            <Form.Item name="email" label="Email">
+              <Input placeholder="Tìm theo email" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="phone" label="Số điện thoại">
+              <Input placeholder="Tìm theo số điện thoại" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="status" label="Trạng thái">
+              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
             </Form.Item>
           </Col>
 
@@ -156,4 +127,4 @@ const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
   );
 };
 
-export default StaffFilterModal;
+export default StoreFilterModal;

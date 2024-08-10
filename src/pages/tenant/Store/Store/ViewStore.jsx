@@ -8,11 +8,11 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
-import { StaffSerivce } from "@/apis/StaffService";
 import { ROUTE } from "@/constants/AppConstant";
+import { StoreService } from "@/apis/StoreService";
 
 // current page path
-const path = ROUTE.TENANT_APP.STAFF.path;
+const path = ROUTE.TENANT_APP.STORE.path;
 
 const breadcrumbItems = [
   {
@@ -32,7 +32,7 @@ const breadcrumbItems = [
 
 const { Text } = Typography;
 
-const ViewStaff = () => {
+const ViewStore = () => {
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
   const [currentRecord, setCurrentRecord] = useState({}); // data
@@ -43,7 +43,7 @@ const ViewStaff = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StaffSerivce.getStaffById(id);
+        const record = await StoreService.getStoreById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -63,23 +63,18 @@ const ViewStaff = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên nhân viên",
-      children: <Text strong>{currentRecord?.fullName}</Text>,
+      label: "Tên hiển thị",
+      children: <Text strong>{currentRecord?.name}</Text>,
     },
     {
       key: useId(),
-      label: "Mã nhân viên",
+      label: "Mã cửa hàng",
       children: currentRecord?.id,
     },
     {
       key: useId(),
-      label: "Giới tính",
-      children: currentRecord?.gender,
-    },
-    {
-      key: useId(),
-      label: "Ngày sinh",
-      children: currentRecord?.dob,
+      label: "Tên cửa hàng",
+      children: currentRecord?.fullName,
     },
     {
       key: useId(),
@@ -116,34 +111,13 @@ const ViewStaff = () => {
       label: "Ghi chú",
       children: currentRecord?.note,
     },
-    {
-      key: useId(),
-      label: "Phân quyền",
-      children: currentRecord?.roles?.map((ele, index) => (
-        <Text key={index} code>
-          {ele.name}
-        </Text>
-      )),
-    },
-    {
-      key: useId(),
-      label: "Cửa hàng làm việc",
-      children: currentRecord?.stores?.map((ele, index) => (
-        <div key={index}>
-          <Link to={ROUTE.TENANT_APP.STORE.path + "/" + ele.id} target="_blank">
-            {ele.name}
-          </Link>
-          <br />
-        </div>
-      )),
-    },
   ];
 
   return (
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
       <ContentBox>
-        <Title marginBot>Thông tin nhân viên</Title>
+        <Title marginBot>Thông tin cửa hàng</Title>
         <Descriptions
           bordered
           items={infoItems}
@@ -159,4 +133,4 @@ const ViewStaff = () => {
   );
 };
 
-export default ViewStaff;
+export default ViewStore;

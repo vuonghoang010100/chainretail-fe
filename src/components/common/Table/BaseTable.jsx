@@ -63,7 +63,7 @@ const BaseTable = ({
   children,
 }) => {
   // -------------------- attrs --------------------
-  const [size, setSize] = useState("large");
+  const [size, setSize] = useState("small");
   const [displayCol, setDisplayCol] = useState(columns);
   const [cols, setCols] = useState(columns.map((col) => col.title));
   const [sort, setSort] = useState([["createTime", "-"]]); // [["id", "+"], ["fullName", "-"],...]
@@ -274,7 +274,7 @@ const BaseTable = ({
         size={size}
         scroll={{
           // x: true,
-          x: 170 * displayCol.length,
+          x: 160 * displayCol.length,
         }}
         sticky={false}
         // tableLayout="fixed"

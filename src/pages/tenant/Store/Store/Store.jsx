@@ -9,13 +9,13 @@ import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
 import { Input, Space, Button, message } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
-import StaffFilterModal from "./StaffFilterModal";
-import { StaffSerivce } from "@/apis/StaffService";
 import { ROUTE } from "@/constants/AppConstant";
+import { StoreService } from "@/apis/StoreService";
+import StoreFilterModal from "./StoreFilterModal";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.STAFF.path;
+const path = ROUTE.TENANT_APP.STORE.path;
 
 /**
  * Breadcrumd item for page
@@ -29,11 +29,11 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Nhân viên",
+    title: "Cửa hàng",
   },
 ];
 
-const Staff = () => {
+const Store = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -53,26 +53,21 @@ const Staff = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã nhân viên",
+      title: "Mã cửa hàng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Họ và tên",
+      title: "Tên hiển thị",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Tên cửa hàng",
       dataIndex: "fullName",
       key: "fullName",
-    },
-    {
-      title: "Ngày sinh",
-      dataIndex: "dob",
-      key: "dob",
-    },
-    {
-      title: "Giới tính",
-      dataIndex: "gender",
-      key: "gender",
     },
     {
       title: "Email",
@@ -117,8 +112,8 @@ const Staff = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StaffSerivce.getAll(query);
-        console.info("Get All Staff", dataResponse);
+        const dataResponse = await StoreService.getAll(query);
+        console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -151,14 +146,14 @@ const Staff = () => {
   const handleDelete = async (record) => {
     try {
       // await CustomerAPI.deleteCustomer(record.id);
-      message.success("Xóa nhân viên thành công!");
+      message.success("Xóa cửa hàng thành công!");
       setReload();
     } catch (error) {
       if (error.response?.status === 404) {
-        message.error("Nhân viên không còn tồn tại!");
+        message.error("Cửa hàng không còn tồn tại!");
       } else {
         // TODO: handle DATA_USED
-        message.error("Không thể xóa nhân viên!");
+        message.error("Không thể xóa cửa hàng!");
       }
     }
   };
@@ -183,7 +178,7 @@ const Staff = () => {
       <ContentBox>
         <Space>
           <Search
-            placeholder="Tìm kiếm theo mã, tên, sdt"
+            placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
@@ -201,7 +196,7 @@ const Staff = () => {
 
       <ContentBox>
         <BaseTable
-          label="Nhân viên"
+          label="Cửa hàng"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -226,7 +221,7 @@ const Staff = () => {
         </BaseTable>
       </ContentBox>
 
-      <StaffFilterModal
+      <StoreFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
         query={query}
@@ -236,4 +231,4 @@ const Staff = () => {
   );
 };
 
-export default Staff;
+export default Store;
