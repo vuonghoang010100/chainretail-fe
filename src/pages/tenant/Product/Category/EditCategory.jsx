@@ -9,11 +9,11 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
-import StoreForm from "./StoreForm";
-import { StoreService } from "@/apis/StoreService";
+import { CategoryService } from "@/apis/CategoryService";
+import CategoryForm from "./CategoryForm";
 
 // current page path
-const path = ROUTE.TENANT_APP.STORE.path;
+const path = ROUTE.TENANT_APP.CATEGORY.path;
 
 const breadcrumbItems = [
   {
@@ -24,14 +24,14 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Cửa hàng</Link>,
+    title: <Link to={`${path}`}>Nhóm sản phẩm</Link>,
   },
   {
     title: "Cập nhật",
   },
 ];
 
-const EditStore = () => {
+const EditCategory = () => {
   const navigate = useNavigate();
 
   // -------------------- Page attr --------------------
@@ -46,7 +46,7 @@ const EditStore = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await CategoryService.getCategoryById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -63,7 +63,7 @@ const EditStore = () => {
         }
       } catch (error) {
         console.error("Error:", error);
-        message.error("Không thể tải dữ liệu cửa hàng!");
+        message.error("Không thể tải dữ liệu nhóm sản phẩm!");
       }
     };
 
@@ -90,7 +90,7 @@ const EditStore = () => {
     }
 
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await CategoryService.putCategory(id, updateData);
     navigate(path);
     return true;
   };
@@ -99,8 +99,8 @@ const EditStore = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
       <ContentBox>
-        <Title marginBot>Thông tin cửa hàng</Title>
-        <StoreForm
+        <Title marginBot>Thông tin nhóm sản phẩm</Title>
+        <CategoryForm
           useForCreate={false}
           onFinish={handleUpdate}
           initRecord={formatRecord}
@@ -110,4 +110,4 @@ const EditStore = () => {
   );
 };
 
-export default EditStore;
+export default EditCategory;

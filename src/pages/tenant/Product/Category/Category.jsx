@@ -5,17 +5,16 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
-import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
+import { HomeOutlined, PlusOutlined } from "@ant-design/icons";
 import { Input, Button, message, Flex } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
-import StaffFilterModal from "./StaffFilterModal";
-import { StaffSerivce } from "@/apis/StaffService";
 import { ROUTE } from "@/constants/AppConstant";
+import { CategoryService } from "@/apis/CategoryService";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.STAFF.path;
+const path = ROUTE.TENANT_APP.CATEGORY.path;
 
 /**
  * Breadcrumd item for page
@@ -29,15 +28,12 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Nhân viên",
+    title: "Nhóm sản phẩm",
   },
 ];
 
-const Staff = () => {
+const Category = () => {
   const navigate = useNavigate();
-
-  // -------------------- Filter attr --------------------
-  const [openFilter, setOpenFilter] = useState(false); // control filter model open state
 
   // -------------------- Table attr --------------------
   const [reload, setReload] = useToggle(); // reload table
@@ -53,61 +49,21 @@ const Staff = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã nhân viên",
+      title: "Mã NSP",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Họ và tên",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Tên nhóm sản phẩm",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Ngày sinh",
-      dataIndex: "dob",
-      key: "dob",
-    },
-    {
-      title: "Giới tính",
-      dataIndex: "gender",
-      key: "gender",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
   ];
 
@@ -117,8 +73,8 @@ const Staff = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StaffSerivce.getAll(query);
-        console.info("Get All Staff", dataResponse);
+        const dataResponse = await CategoryService.getAll(query);
+        console.info("Get All Category", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -151,14 +107,14 @@ const Staff = () => {
   const handleDelete = async (record) => {
     try {
       // await CustomerAPI.deleteCustomer(record.id);
-      message.success("Xóa nhân viên thành công!");
+      message.success("Xóa cửa hàng thành công!");
       setReload();
     } catch (error) {
       if (error.response?.status === 404) {
-        message.error("Nhân viên không còn tồn tại!");
+        message.error("Cửa hàng không còn tồn tại!");
       } else {
         // TODO: handle DATA_USED
-        message.error("Không thể xóa nhân viên!");
+        message.error("Không thể xóa cửa hàng!");
       }
     }
   };
@@ -183,7 +139,7 @@ const Staff = () => {
       <ContentBox>
         <Flex justify="center" gap="middle">
           <Search
-            placeholder="Tìm kiếm theo mã, tên, sdt"
+            placeholder="Tìm kiếm theo tên"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
@@ -191,20 +147,12 @@ const Staff = () => {
               width: "400px",
             }}
           />
-
-          <Button
-            type="primary"
-            icon={<FilterOutlined />}
-            onClick={() => setOpenFilter(true)}
-          >
-            Bộ lọc
-          </Button>
         </Flex>
       </ContentBox>
 
       <ContentBox>
         <BaseTable
-          label="Nhân viên"
+          label="Cửa hàng"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -228,15 +176,8 @@ const Staff = () => {
           </Button>
         </BaseTable>
       </ContentBox>
-
-      <StaffFilterModal
-        open={openFilter}
-        setOpen={setOpenFilter}
-        query={query}
-        setQuery={setQuery}
-      />
     </PageContent>
   );
 };
 
-export default Staff;
+export default Category;

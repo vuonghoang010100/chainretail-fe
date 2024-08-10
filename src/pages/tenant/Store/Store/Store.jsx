@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Space, Button, message } from "antd";
+import { Input, Button, message, Flex } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
@@ -176,12 +176,15 @@ const Store = () => {
       <PageHeader breadcrumbItems={breadcrumbItems} />
 
       <ContentBox>
-        <Space>
+        <Flex justify="center" gap="middle" >
           <Search
             placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
+            style={{
+              width: "400px",
+            }}
           />
 
           <Button
@@ -191,7 +194,7 @@ const Store = () => {
           >
             Bộ lọc
           </Button>
-        </Space>
+        </Flex>
       </ContentBox>
 
       <ContentBox>

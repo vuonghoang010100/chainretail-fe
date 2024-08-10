@@ -9,10 +9,10 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
+import { CategoryService } from "@/apis/CategoryService";
 
 // current page path
-const path = ROUTE.TENANT_APP.STORE.path;
+const path = ROUTE.TENANT_APP.CATEGORY.path;
 
 const breadcrumbItems = [
   {
@@ -23,7 +23,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Cửa hàng</Link>,
+    title: <Link to={`${path}`}>Nhóm sản phẩm</Link>,
   },
   {
     title: "Xem",
@@ -32,7 +32,7 @@ const breadcrumbItems = [
 
 const { Text } = Typography;
 
-const ViewStore = () => {
+const ViewCategory = () => {
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
   const [currentRecord, setCurrentRecord] = useState({}); // data
@@ -43,7 +43,7 @@ const ViewStore = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await CategoryService.getCategoryById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -63,53 +63,18 @@ const ViewStore = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
+      label: "Tên nhóm sản phẩm",
       children: <Text strong>{currentRecord?.name}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
+      label: "Mã nhóm sản phẩm",
       children: currentRecord?.id,
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
-    },
-    {
-      key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
-    },
-    {
-      key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
-    {
-      key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
-    },
-    {
-      key: useId(),
-      label: "Ghi chú",
-      children: currentRecord?.note,
+      label: "Mô tả",
+      children: currentRecord?.description,
     },
   ];
 
@@ -117,7 +82,7 @@ const ViewStore = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
       <ContentBox>
-        <Title marginBot>Thông tin cửa hàng</Title>
+        <Title marginBot>Thông tin nhóm sản phẩm</Title>
         <Descriptions
           bordered
           items={infoItems}
@@ -133,4 +98,4 @@ const ViewStore = () => {
   );
 };
 
-export default ViewStore;
+export default ViewCategory;

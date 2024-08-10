@@ -4,6 +4,7 @@ const Endpoints = {
   ROLE: "/roles",
   STORE: "/stores",
   PRODUCT: "/products",
+  CATEGORY: "/categories"
 };
 
 export default Endpoints;

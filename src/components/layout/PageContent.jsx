@@ -41,7 +41,7 @@ const ContentBox = ({ children }) => {
   return (
     <div
       style={{
-        marginTop: "16px",
+        marginTop: "24px",
         padding: paddingLG,
         background: colorBgContainer,
         borderRadius: borderRadiusLG,
