@@ -273,10 +273,12 @@ const BaseTable = ({
       <Table
         size={size}
         scroll={{
-          x: true,
+          // x: true,
+          x: 170 * displayCol.length,
         }}
         sticky={false}
-        tableLayout="fixed"
+        // tableLayout="fixed"
+        tableLayout="auto"
         columns={[...displayCol, actionColumn]}
         rowKey={rowKey}
         dataSource={dataSource}

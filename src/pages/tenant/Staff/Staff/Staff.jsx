@@ -112,7 +112,6 @@ const Staff = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-
         const dataResponse = await StaffSerivce.getAll(query);
         console.info("Get All Staff", dataResponse);
         setDataSource(dataResponse.data);
@@ -129,6 +128,7 @@ const Staff = () => {
   }, [query, reload]);
 
   // -------------------- Page function --------------------
+  // eslint-disable-next-line no-unused-vars
   const handleCreateNew = (e) => {
     navigate(`${path}/new`);
   };
@@ -142,6 +142,7 @@ const Staff = () => {
   };
 
   // delete customer
+  // eslint-disable-next-line no-unused-vars
   const handleDelete = async (record) => {
     try {
       // await CustomerAPI.deleteCustomer(record.id);
@@ -158,6 +159,7 @@ const Staff = () => {
   };
 
   // search
+  // eslint-disable-next-line no-unused-vars
   const handleSubmitSearch = (value, _e, info) => {
     // Change search query
     setQuery((prev) => ({

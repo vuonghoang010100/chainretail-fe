@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { message, Tabs } from "antd";
+import { message } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import {
   PageContent,
@@ -9,9 +9,11 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import StaffForm from "./StaffForm";
+import { StaffSerivce } from "@/apis/StaffService";
+import { ROUTE } from "@/constants/AppConstant";
 
 // current page path
-const path = "/staff";
+const path = ROUTE.TENANT_APP.STAFF.path;
 
 const breadcrumbItems = [
   {
@@ -25,7 +27,7 @@ const breadcrumbItems = [
     title: <Link to={`${path}`}>Nhân viên</Link>,
   },
   {
-    title: "Chỉnh sửa",
+    title: "Cập nhật",
   },
 ];
 
@@ -34,49 +36,54 @@ const EditStaff = () => {
 
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
-  const [currentStaff, setCurrentStaff] = useState({}); // data
-  const [formatStaff, setFormatStaff] = useState({}); // formatted data
+  const [currentRecord, setCurrentRecord] = useState({}); // data
+  const [formatRecord, setFormatRecord] = useState({}); // formatted data
 
   // -------------------- Fetch data --------------------
+  // Helper functions
+  const listToSelectItems = (arrays) => {
+    return arrays.map((ele) => ({
+      label: `${ele.name}`,
+      key: ele.id,
+      value: ele.id,
+    }));
+  };
+
+  const listToIdList = (arrays) => {
+    return arrays.map((ele) => ele.id);
+  };
+
   useEffect(() => {
     let isMounted = false; // control mount data only one times
 
     const fetchData = async () => {
       try {
-        //  const customer = await CustomerAPI.getCustomerById(id);
-
-        // fake
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const staff = {
-          id: "EMP000000001",
-          full_name: "string",
-          email: "user@example.com",
-          phone_number: "123123",
-          role: "Quản lý",
-          branch_name: "string",
-          date_of_birth: "2024-03-27",
-          gender: "Nam",
-          province: "string",
-          district: "string",
-          address: "string",
-          status: "Đang làm việc",
-          note: "string",
-        };
+        // fetch data
+        const record = await StaffSerivce.getStaffById(id);
+        console.info("Get record data:", record);
 
         // on get cuccessfully
         if (!isMounted) {
-          // trim null data
-          let staffFormatted = Object.fromEntries(
-            Object.entries(staff).filter(([_, value]) => !!value)
-          );
+          // trim createTime, updateTime
+          record?.createTime && delete record.createTime;
+          record?.updateTime && delete record.updateTime;
 
-          console.log(staff);
+          // convert data
+          let recordFormatted = { ...record };
 
-          setCurrentStaff(staff);
-          setFormatStaff(staffFormatted);
+          // convert list select
+          recordFormatted.roles = listToSelectItems(recordFormatted.roles);
+          recordFormatted.stores = listToSelectItems(recordFormatted.stores);
+          // convert list id for compare
+          record.roles = listToIdList(record.roles);
+          record.stores = listToIdList(record.stores);
+
+          console.log(recordFormatted);
+          setCurrentRecord(record);
+          setFormatRecord(recordFormatted);
         }
       } catch (error) {
-        console.error("aa", error);
+        console.error("Error:", error);
         message.error("Không thể tải dữ liệu nhân viên!");
       }
     };
@@ -88,85 +95,45 @@ const EditStaff = () => {
   }, [id]);
 
   // -------------------- Update Customer --------------------
-  const updateStaff = async (staffData) => {
+  const handleUpdate = async (updateData) => {
     // get change value
     let changedData = Object.fromEntries(
-      Object.entries(staffData).filter(
-        ([key, value]) => value !== currentStaff[key]
+      Object.entries(updateData).filter(
+        ([key, value]) => value !== currentRecord[key]
       )
     );
-
-    const unWatchs = [];
-    let removeData = Object.fromEntries(
-      Object.entries(currentStaff).filter(([key, value]) => {
-        if (unWatchs.includes(key)) {
-          return false;
-        }
-        return !!value && !staffData[key];
-      })
-    );
-
-    removeData = Object.fromEntries(
-      Object.entries(removeData).map(([key, _]) => [key, null])
-    );
-
-    changedData = {
-      ...changedData,
-      ...removeData,
-    };
-
-    // TODO: unset
+    // for case list => compare toString()
+    changedData?.roles.toString() === currentRecord?.roles.toString() &&
+      delete changedData?.roles;
+    changedData?.stores.toString() === currentRecord?.stores.toString() &&
+      delete changedData?.stores;
 
     console.info("changed data", changedData);
 
-    if (Object.keys(changedData).length === 0) {
+    // case no info change, update is no needed
+    if (!changedData || Object.keys(changedData)?.length === 0) {
       return false;
     }
 
-    try {
-      // await CustomerAPI.putCustomer(id, changedData);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      navigate(path);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    // Call update API
+    await StaffSerivce.putStaff(id, updateData);
+    navigate(path);
+    return true;
   };
 
-  const tabItems = [
-    {
-        key: "1",
-        label: "Thông tin nhân viên",
-        children: (
-            <ContentBox>
-                <StaffForm
-                    useForCreate={false}
-                    onFinish={updateStaff}
-                    initStaff={formatStaff}
-                />
-            </ContentBox>
-        ),
-    },
-    {
-        key: "2",
-        label: "Phân quyền nhân viên",
-        children: (
-            <ContentBox>
-                <p> Bảng phân quyền nhân viên </p>
-            </ContentBox>
-          
-        )
-      },
-  
-  ]
   return (
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
-      <br />
-      <Tabs defaultActiveKey="1" items={tabItems}/>
+      <ContentBox>
+        <Title marginBot>Thông tin nhân viên</Title>
+        <StaffForm
+          useForCreate={false}
+          onFinish={handleUpdate}
+          initRecord={formatRecord}
+        />
+      </ContentBox>
     </PageContent>
   );
 };
 
-export default EditStaff ;
+export default EditStaff;

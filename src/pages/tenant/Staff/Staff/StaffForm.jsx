@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Select, Button, Space, message } from "antd";
+import { Form, Input, Button, Space, message, Radio } from "antd";
+import { LockOutlined } from "@ant-design/icons";
 import { districts, uniqueValidator } from "@/utils";
 import { DatePicker } from "@/components/common/Input/DatePicker";
-import { SelectDistrict, SelectProvince } from "@/components/common/Input/Select";
+import {
+  SelectDistrict,
+  SelectProvince,
+} from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
-import { staffGenders, staffRoles, staffStatuses } from "@/apis/StaffAPI";
+import { ROUTE } from "@/constants/AppConstant";
+import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
+import { RoleSerivce } from "@/apis/RoleService";
+import { StoreService } from "@/apis/StoreService";
 
+const path = ROUTE.TENANT_APP.STAFF.path;
 
-const path = "/staff";
-
-const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
+const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   const navigate = useNavigate();
 
   // -------------------- Form attrs --------------------
@@ -18,15 +24,24 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
   const [loading, setLoading] = useState(false);
   const [districtOptions, setDistrictOptions] = useState([]);
 
+  const [isAllStore, setIsAllStore] = useState(true); // allstore Radio
+  const [roles, setRoles] = useState([]);
+  const [stores, setStores] = useState([]);
+
   // -------------------- Update fields --------------------
   useEffect(() => {
     // set form values
-    form.setFieldsValue(initStaff);
+    form.setFieldsValue(initRecord);
+
+    // case special select
+    initRecord.allStore !== undefined && setIsAllStore(initRecord.allStore);
+    initRecord.roles && setRoles(initRecord.roles);
+    initRecord.stores && setRoles(initRecord.stores);
 
     // fix districtOptions
-    if (initStaff.hasOwnProperty("province")) {
-      const province = initStaff.province;
-      if (districts.hasOwnProperty(province)) {
+    if (Object.prototype.hasOwnProperty.call(initRecord, "province")) {
+      const province = initRecord.province;
+      if (Object.prototype.hasOwnProperty.call(districts, province)) {
         setDistrictOptions(
           districts[province].map((district) => ({
             label: district,
@@ -35,27 +50,26 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
         );
       }
     }
-  }, [form, initStaff]);
+  }, [form, initRecord]);
 
   // -------------------- Handle Unique fields --------------------
   const [usedEmail, setUsedEmail] = useState([]);
   const [usedPhone, setUsedPhone] = useState([]);
 
-  const handleError = (staffData, error) => {
-    // Status 409: conflict
-    if (
-      error?.response?.status === 409 &&
-      !!error.response.data?.detail?.message
-    ) {
-      const error_msg = error.response.data.detail.message;
+  const handleError = (postPutData, error) => {
+    // Error
+    console.log(error);
+
+    if (error?.response?.status === 400) {
+      const errorCode = error.response.data.code;
 
       // handle unique
-      if (error_msg === "BRANCH_EMAIL_EXIST") {
+      if (errorCode === -300) {
         message.error("Email đã được sử dụng!");
-        setUsedEmail((prev) => [...prev, staffData.email]);
-      } else if (error_msg === "PHONE_ALREADY_EXIST") {
+        setUsedEmail((prev) => [...prev, postPutData.email]);
+      } else if (errorCode === -301) {
         message.error("Số điện thoại đã được sử dụng!");
-        setUsedPhone((prev) => [...prev, staffData.phone_number]);
+        setUsedPhone((prev) => [...prev, postPutData.phone]);
       } else {
         console.error("Uncatch conflict error message", error);
       }
@@ -70,8 +84,16 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
   // -------------------- Utils fucntion --------------------
   const formatFormValues = (data) => {
     data = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => !!value)
+      Object.entries(data).map(([key, value]) =>
+        (value === undefined || value === "") ? [key, null] : [key, value]
+      )
     );
+
+    // Format data
+    data.roles = data.roles ? data.roles.map(ele => ele.value) : [];
+    data.stores = data.stores ? data.stores = data.stores.map(ele => ele.value) : [];
+    data?.passwordagain && delete data.passwordagain;
+
     return data;
   };
 
@@ -80,11 +102,12 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
     setLoading(true);
     console.info("Form infos:", formValues);
 
-    const storeData = formatFormValues(formValues);
-    console.info(useForCreate ? "POST data" : "PUT data", storeData);
+    const data = formatFormValues(formValues);
+
+    console.info(useForCreate ? "POST data" : "PUT data", data);
 
     try {
-      const isFinish = await onFinish(storeData);
+      const isFinish = await onFinish(data);
       if (useForCreate) {
         message.success("Thêm mới nhân viên thành công!");
       } else {
@@ -93,7 +116,7 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
           : message.info("Không có dữ liệu thay đổi!");
       }
     } catch (error) {
-      handleError(storeData, error);
+      handleError(data, error);
     }
 
     setLoading(false);
@@ -121,7 +144,7 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
       )}
 
       <Form.Item
-        name="full_name"
+        name="fullName"
         label="Họ và tên"
         rules={[
           {
@@ -153,18 +176,106 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
         <Input placeholder="Email của nhân viên" />
       </Form.Item>
 
+      {useForCreate && (
+        <>
+          <Form.Item
+            name="password"
+            label="Mật khẩu"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập mật khẩu!",
+              },
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+          </Form.Item>
+
+          <Form.Item
+            name="passwordagain"
+            label="Nhập lại mật khẩu"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập lại mật khẩu!",
+              },
+              {
+                validator: (_, value) =>
+                  value === form.getFieldValue("password") || !value
+                    ? Promise.resolve()
+                    : Promise.reject(
+                        "Mật khẩu phải trùng khớp với mật khẩu bên trên!"
+                      ),
+              },
+            ]}
+          >
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="Nhập lại mật khẩu"
+            />
+          </Form.Item>
+        </>
+      )}
+
       <Form.Item
-        name="phone_number"
-        label="Số điện thoại"
+        name="allStore"
+        label="Cửa hàng"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập số điện thoại!",
+            message: "Vui lòng chọn cửa hàng cho nhân viên!",
           },
-          {
-            pattern: "^\\d*$", // FIXME: validate phone number in regex
-            message: "Số điện thoại không hợp lệ!",
-          },
+        ]}
+      >
+        <Radio.Group
+          value={isAllStore}
+          onChange={(e) => setIsAllStore(e.target.value)}
+        >
+          <Radio value={true}>Tất cả cửa hàng</Radio>
+          <Radio value={false}>Chọn cửa hàng</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      {!isAllStore && (
+        <Form.Item name="stores" label="Chọn cửa hàng">
+          <DebounceSelect
+            mode="multiple"
+            fetchOptions={StoreService.search}
+            formatResponeData={(data) =>
+              data.map((option) => ({
+                label: `${option.name}`,
+                key: option.id,
+                value: option.id,
+              }))
+            }
+            values={stores}
+            onChange={setStores}
+            placeholder="Tìm và chọn cửa hàng"
+          />
+        </Form.Item>
+      )}
+
+      <Form.Item name="roles" label="Phân quyền">
+        <DebounceSelect
+          mode="multiple"
+          fetchOptions={RoleSerivce.search}
+          formatResponeData={(data) =>
+            data.map((option) => ({
+              label: `${option.name}`,
+              key: option.id,
+              value: option.id,
+            }))
+          }
+          values={roles}
+          onChange={setRoles}
+          placeholder="Tìm và chọn quyền"
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="phone"
+        label="Số điện thoại"
+        rules={[
           {
             validator: (_, value) =>
               uniqueValidator(value, usedPhone, "Số điện thoại"),
@@ -174,33 +285,12 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
         <Input placeholder="Số điện thoại của nhân viên" />
       </Form.Item>
 
-      <Form.Item
-        name="role"
-        label="Chức vụ"
-        rules={[
-          {
-            required: true,
-            message: "Vui chọn chức vụ!",
-          },
-        ]}
-      >
-        <RadioGroup values={staffRoles} />
-      </Form.Item>
-
-      <Form.Item
-        name="branch_name"
-        label="Cửa hàng"
-        // TODO: add rules
-      >
-        <Select showSearch allowClear placeholder="Tìm và chọn cửa hàng" />
-      </Form.Item>
-
-      <Form.Item name="date_of_birth" label="Ngày sinh">
+      <Form.Item name="dob" label="Ngày sinh">
         <DatePicker />
       </Form.Item>
 
       <Form.Item name="gender" label="Giới tính">
-        <RadioGroup values={staffGenders} />
+        <RadioGroup values={["Nam", "Nữ"]} />
       </Form.Item>
 
       <Form.Item name="province" label="Tỉnh/Thành phố">
@@ -220,7 +310,7 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
 
       {!useForCreate && (
         <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={staffStatuses} />
+          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
         </Form.Item>
       )}
 
@@ -238,7 +328,7 @@ const StaffForm = ({ useForCreate, onFinish, initStaff = {} }) => {
           <Button type="primary" htmlType="submit" loading={loading}>
             {useForCreate ? "Thêm mới" : "Cập nhật"}
           </Button>
-          <Button onClick={(e) => navigate(path)}>Đóng</Button>
+          <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </Form.Item>
     </Form>

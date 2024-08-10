@@ -8,10 +8,11 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import StaffForm from "./StaffForm";
-import ShortContent from "@/components/layout/ShortContent";
+import { ROUTE } from "@/constants/AppConstant";
+import { StaffSerivce } from "@/apis/StaffService";
 
 // current page path
-const path = "/staff";
+const path = ROUTE.TENANT_APP.STAFF.path;
 
 const breadcrumbItems = [
   {
@@ -33,33 +34,21 @@ const NewStaff = () => {
   const navigate = useNavigate();
 
   // -------------------- Create New Store --------------------
-  const createStore = async (storeData) => {
-    try {
-      // await CustomerAPI.postCustomer(customerData);
-
-      //fake
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      navigate(path);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+  const handleCreate = async (data) => {
+    await StaffSerivce.postStaff(data);
+    navigate(path);
+    return true;
   };
 
   return (
     <PageContent>
-    <PageHeader breadcrumbItems={breadcrumbItems} />
-    
+      <PageHeader breadcrumbItems={breadcrumbItems} />
       <ContentBox>
         <Title marginBot>Thông tin nhân viên</Title>
-        <StaffForm useForCreate onFinish={createStore} />
+        <StaffForm useForCreate onFinish={handleCreate} />
       </ContentBox>
-
-    
-      
     </PageContent>
   );
 };
 
-export default NewStaff ;
+export default NewStaff;

@@ -13,6 +13,7 @@ import { RadioGroup } from "@/components/common/Input/Radio";
 import { RangePickerx } from "@/components/common/Input/DatePicker";
 import { VALUE_ALL } from "@/components/common/FilterModal/BaseFilterModal";
 
+// eslint-disable-next-line no-unused-vars
 const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
   // -------------------- Filter attr --------------------
   const [form] = Form.useForm();
@@ -118,8 +119,8 @@ const StaffFilterModal = ({ open, setOpen, query, setQuery }) => {
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="active" label="Trạng thái">
-              <RadioGroup values={[]} />
+            <Form.Item name="status" label="Trạng thái">
+              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
             </Form.Item>
           </Col>
 

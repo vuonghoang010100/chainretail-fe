@@ -30,6 +30,8 @@ const BaseFilterModal = ({
       open={open}
       title="Bộ lọc"
       width={872} // max width, modal width auto resize 24 + 400 + 24 + 400 + 24
+      // style={{top: 60 }}
+      centered
       okText={
         <>
           <FilterOutlined />

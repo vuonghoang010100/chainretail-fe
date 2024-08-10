@@ -1,12 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useId } from "react";
 import { Link, useParams } from "react-router-dom";
-import { message, Descriptions } from "antd";
+import { message, Descriptions, Typography } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
-import { PageContent, PageHeader, ContentBox } from "@/components/layout/PageContent";
+import {
+  PageContent,
+  PageHeader,
+  ContentBox,
+} from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
+import { StaffSerivce } from "@/apis/StaffService";
+import { ROUTE } from "@/constants/AppConstant";
 
 // current page path
-const path = "/staff";
+const path = ROUTE.TENANT_APP.STAFF.path;
 
 const breadcrumbItems = [
   {
@@ -24,6 +30,8 @@ const breadcrumbItems = [
   },
 ];
 
+const { Text } = Typography;
+
 const ViewStaff = () => {
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
@@ -35,27 +43,11 @@ const ViewStaff = () => {
 
     const fetchData = async () => {
       try {
-        // const customer = await CustomerAPI.getCustomerById(id);
-        // // on get cuccessfully
-        // !isMounted && setCurrentCustomer(customer);
+        const staff = await StaffSerivce.getStaffById(id);
+        console.log(staff);
 
-        // fake
-        !isMounted && setCurrentStaff({
-          "id": "EMP000000001",
-          "full_name": "string",
-          "email": "user@example.com",
-          "phone_number": "123123",
-          "role": "Nhân viên",
-          "branch_name": "string",
-          "date_of_birth": "2024-03-27",
-          "gender": "Nam",
-          "province": "string",
-          "district": "string",
-          "address": "string",
-          "status": "Đang làm việc",
-          "note": "string",
-        });
-
+        // on get cuccessfully
+        !isMounted && setCurrentStaff(staff);
       } catch (error) {
         message.error("Không thể tải dữ liệu nhân viên!");
       }
@@ -68,76 +60,82 @@ const ViewStaff = () => {
   }, [id]);
 
   // -------------------- Description items --------------------
-  // FIXME: responsive
   const infoItems = [
     {
-      key: "1",
+      key: useId(),
       label: "Tên nhân viên",
-      children: currentStaff?.full_name,
+      children: <Text strong>{currentStaff?.fullName}</Text>,
     },
     {
-      key: "2",
+      key: useId(),
       label: "Mã nhân viên",
       children: currentStaff?.id,
-      span: 2,
     },
     {
-        key: "3",
-        label: "Giới tính",
-        children: currentStaff?.gender,
-      },
+      key: useId(),
+      label: "Giới tính",
+      children: currentStaff?.gender,
+    },
     {
-      key: "4",
+      key: useId(),
       label: "Ngày sinh",
-      children: currentStaff?.date_of_birth,
-      span: 2,
+      children: currentStaff?.dob,
     },
     {
-        key: "5",
-        label: "Số điện thoại",
-        children: currentStaff?.phone_number
-      },
+      key: useId(),
+      label: "Số điện thoại",
+      children: currentStaff?.phone,
+    },
     {
-      key: "6",
+      key: useId(),
       label: "Email",
       children: currentStaff?.email,
-      span:2,
     },
     {
-      key: "7",
+      key: useId(),
       label: "Tỉnh/Thành phố",
       children: currentStaff?.province,
     },
     {
-      key: "8",
+      key: useId(),
       label: "Quận/Huyện",
       children: currentStaff?.district,
     },
     {
-      key: "9",
+      key: useId(),
       label: "Địa chỉ",
       children: currentStaff?.address,
     },
     {
-        key: "10",
-        label: "Cửa hàng",
-        children: currentStaff?.branch_name,
-      },
-    {
-      key: "11",
-      label: "Chức vụ",
-      children: currentStaff?.role,
-    },
-    {
-      key: "12",
+      key: useId(),
       label: "Trạng thái",
       children: currentStaff?.status,
     },
     {
-      key: "11",
+      key: useId(),
       label: "Ghi chú",
       children: currentStaff?.note,
-      span: 3,
+    },
+    {
+      key: useId(),
+      label: "Phân quyền",
+      children: currentStaff?.roles?.map((ele, index) => (
+        <Text key={index} code>
+          {ele.name}
+        </Text>
+      )),
+    },
+    {
+      key: useId(),
+      label: "Cửa hàng làm việc",
+      children: currentStaff?.stores?.map((ele, index) => (
+        <div key={index}>
+          <Link to={ROUTE.TENANT_APP.STORE.path + "/" + ele.id} target="_blank">
+            {ele.name}
+          </Link>
+          <br />
+        </div>
+      )),
     },
   ];
 
@@ -145,13 +143,20 @@ const ViewStaff = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
       <ContentBox>
-        <Title marginBot>
-          Thông tin nhân viên
-        </Title>
-        <Descriptions bordered items={infoItems} />
+        <Title marginBot>Thông tin nhân viên</Title>
+        <Descriptions
+          bordered
+          items={infoItems}
+          size="small"
+          column={1}
+          labelStyle={{
+            width: "25%",
+            minWidth: "max-content",
+          }}
+        />
       </ContentBox>
     </PageContent>
   );
-}
+};
 
 export default ViewStaff;

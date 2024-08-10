@@ -1,8 +1,6 @@
 import axios from "axios";
 // import { notification } from "antd";
 
-// TODO: config with env
-// const baseURL = "http://localhost:8000/api";
 const baseURL = import.meta.env.VITE_API_URL;
 
 // Axios instance default
