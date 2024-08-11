@@ -6,16 +6,18 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Flex } from "antd";
+import { Input, Button, message, Flex, Avatar } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
-import StaffFilterModal from "./StaffFilterModal";
-import { StaffSerivce } from "@/apis/StaffService";
 import { ROUTE } from "@/constants/AppConstant";
+import { ProductService } from "@/apis/ProductService";
+import ProductFilterModal from "./ProductFilterModal";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.STAFF.path;
+const path = ROUTE.TENANT_APP.PRODUCT.path;
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 /**
  * Breadcrumd item for page
@@ -29,11 +31,11 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Nhân viên",
+    title: "Sản phẩm",
   },
 ];
 
-const Staff = () => {
+const Product = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -53,51 +55,64 @@ const Staff = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã nhân viên",
+      title: "Mã sản phẩm",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Họ và tên",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Mã vạch",
+      dataIndex: "sku",
+      key: "sku",
     },
     {
-      title: "Ngày sinh",
-      dataIndex: "dob",
-      key: "dob",
+      title: "Sản phẩm",
+      key: "name",
+      render: (_, record) => {
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.imageUrl ? record.imageUrl : noImageurl} />{" "}
+            {record.name}
+          </>
+        );
+      },
     },
     {
-      title: "Giới tính",
-      dataIndex: "gender",
-      key: "gender",
+      title: "Thương hiệu",
+      dataIndex: "brand",
+      key: "brand",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Nhóm sản phẩm",
+      key: "category",
+      render: (_, record) => {
+        return (
+          <Link 
+          to={`${ROUTE.TENANT_APP.CATEGORY.path}/${record.category?.id}`}
+          target="_blank"
+          >
+            {record.category?.name}
+          </Link>
+        );
+      },
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Đơn vị",
+      dataIndex: "unit",
+      key: "unit",
     },
     {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
+      title: "Giá bán",
+      key: "price",
+      render: (_, record) => {
+        return <>{`${record.price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
+      }
     },
     {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: "Tồn kho",
+      dataIndex: "stock",
+      key: "stock",
     },
     {
       title: "Trạng thái",
@@ -117,8 +132,8 @@ const Staff = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StaffSerivce.getAll(query);
-        console.info("Get All Staff", dataResponse);
+        const dataResponse = await ProductService.getAll(query);
+        console.info("Get All Product", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -146,7 +161,7 @@ const Staff = () => {
     navigate(`${path}/${record.id}/edit`);
   };
 
-  // delete 
+  // delete
   // eslint-disable-next-line no-unused-vars
   const handleDelete = async (record) => {
     try {
@@ -179,11 +194,10 @@ const Staff = () => {
   return (
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems} />
-
       <ContentBox>
         <Flex justify="center" gap="middle">
           <Search
-            placeholder="Tìm kiếm theo mã, tên, sdt"
+            placeholder="Tìm kiếm theo tên, mã vạch, thương hiệu"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
@@ -229,14 +243,14 @@ const Staff = () => {
         </BaseTable>
       </ContentBox>
 
-      <StaffFilterModal
+      <ProductFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
-        query={query}
         setQuery={setQuery}
       />
+
     </PageContent>
   );
 };
 
-export default Staff;
+export default Product;

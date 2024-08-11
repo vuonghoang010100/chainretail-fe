@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "antd": "^5.19.4",
+    "antd-img-crop": "^4.22.0",
     "axios": "^1.7.2",
     "jwt-decode": "^4.0.0",
     "lodash.debounce": "^4.0.8",

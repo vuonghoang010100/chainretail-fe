@@ -15,7 +15,11 @@ import Home from "@/pages/tenant/Home";
 // Dashboard
 import Dashboard from "@/pages/tenant/Dashboard";
 // Product
-import Product from "@/pages/tenant/Product/Product";
+const Product = lazy(() => import("@/pages/tenant/Product/Product/Product"));
+const NewProduct = lazy(() => import("@/pages/tenant/Product/Product/NewProduct"));
+const ViewProduct = lazy(() => import("@/pages/tenant/Product/Product/ViewProduct"));
+const EditProduct = lazy(() => import("@/pages/tenant/Product/Product/EditProduct"));
+
 // Category
 const Category = lazy(() => import("@/pages/tenant/Product/Category/Category"));
 const NewCategory = lazy(() => import("@/pages/tenant/Product/Category/NewCategory"));
@@ -153,7 +157,10 @@ function App() {
         </Route>
         
         <Route path={ROUTE.TENANT_APP.PRODUCT.name} >
-          <Route index element={<Product/>} />
+          <Route index element={<LazyLoadPage><Product/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewProduct/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewProduct/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditProduct/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CATEGORY.name} >
