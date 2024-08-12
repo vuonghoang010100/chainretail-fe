@@ -62,10 +62,50 @@ const BaseTable = ({
   setReload,
   children,
 }) => {
+  // -------------------- New Sort  --------------------
+  const additionColums = [
+    ...columns,
+    {
+      title: "Thời gian tạo",
+      dataIndex: "createTime",
+      key: "createTime",
+    },
+    {
+      title: "Thời gian cập nhật",
+      dataIndex: "updateTime",
+      key: "updateTime",
+    },
+  ];
+
+  const sortableColumns = additionColums.map((ele, index) => ({...ele, sorter: { multiple: index }}));
+
+  const handleTableChange = (pagination, filters, sorter) => {
+    let sortString = "";
+    if (Array.isArray(sorter)) {
+      let sortArrays = []
+      sorter.filter(ele => ele.order).forEach(ele => {
+        sortArrays.push(ele.order === "ascend" ? "+" + ele.columnKey : "-" + ele.columnKey)
+      })
+      sortString = sortArrays.join(",")
+    }
+    if (sorter?.order) {
+      sortString = sorter.order === "ascend" ? "+" + sorter.columnKey : "-" + sorter.columnKey
+    }
+    
+    setQuery((prev) => ({
+      ...prev,
+      sort: sortString,
+    }));
+
+    console.log(sortString);
+  }
+
   // -------------------- attrs --------------------
   const [size, setSize] = useState("small");
-  const [displayCol, setDisplayCol] = useState(columns);
-  const [cols, setCols] = useState(columns.map((col) => col.title));
+  // const [displayCol, setDisplayCol] = useState(columns);
+  const [displayCol, setDisplayCol] = useState(sortableColumns);
+  // const [cols, setCols] = useState(columns.map((col) => col.title));
+  const [cols, setCols] = useState(sortableColumns.map((col) => col.title));
   const [sort, setSort] = useState([["createTime", "-"]]); // [["id", "+"], ["fullName", "-"],...]
 
   // -------------------- Action column--------------------
@@ -206,6 +246,9 @@ const BaseTable = ({
     </Space>
   );
 
+  // TODO: remove
+  columns = sortableColumns
+
   // -------------------- Setting content --------------------
   const handleChangeCol = (checkedValue) => {
     console.log(checkedValue);
@@ -257,9 +300,9 @@ const BaseTable = ({
             <Button type="text" icon={<ColumnHeightOutlined />} />
           </Dropdown>
 
-          <Popover placement="left" title="Sắp xếp" content={sortContent}>
+          {/* <Popover placement="left" title="Sắp xếp" content={sortContent}>
             <Button type="text" icon={<SortAscendingOutlined />} />
-          </Popover>
+          </Popover> */}
 
           <Popover
             placement="bottomRight"
@@ -283,6 +326,7 @@ const BaseTable = ({
         rowKey={rowKey}
         dataSource={dataSource}
         loading={loading}
+        onChange={handleTableChange}
         pagination={{
           showSizeChanger: true,
           showQuickJumper: true,

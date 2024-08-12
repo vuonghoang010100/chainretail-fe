@@ -47,7 +47,7 @@ const Staff = () => {
   const [query, setQuery] = useState({
     page: 1,
     size: 10,
-    sort: "-createTime",
+    // sort: "-createTime",
   });
 
   // -------------------- Table columns --------------------

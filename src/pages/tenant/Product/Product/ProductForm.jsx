@@ -72,7 +72,14 @@ const ProductForm = ({
   };
 
   const handleChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+    if (newFileList.length > 0) {
+      const isJPG =
+        newFileList[0].type === "image/jpeg" ||
+        newFileList[0].type === "image/png";
+      isJPG && setFileList(newFileList);
+    } else {
+      setFileList([]);
+    }
   };
 
   // eslint-disable-next-line no-unused-vars
@@ -89,14 +96,14 @@ const ProductForm = ({
 
     if (!useForCreate) {
       initRecord.imageUrl &&
-      setFileList([
-        {
-          uuid: "default",
-          name: "image",
-          status: "done",
-          url: initRecord.imageUrl,
-        }
-      ])
+        setFileList([
+          {
+            uuid: "default",
+            name: "image",
+            status: "done",
+            url: initRecord.imageUrl,
+          },
+        ]);
     }
 
     // case special select
@@ -158,7 +165,11 @@ const ProductForm = ({
     let imageBase64 = "";
     if (fileList.length > 0) {
       const file = fileList[0];
-      if (file.uuid != "default" || (file.type === "image/jpeg" || file.type === "image/png")) {
+      if (
+        file.uuid != "default" ||
+        file.type === "image/jpeg" ||
+        file.type === "image/png"
+      ) {
         try {
           imageBase64 = await getBase64(file.originFileObj);
         } catch (error) {
@@ -328,7 +339,7 @@ const ProductForm = ({
         >
           <Upload
             customRequest={dummyRequest}
-            accept="image/*"
+            accept="image/jpeg,image/png"
             listType="picture-card"
             fileList={fileList}
             onPreview={handlePreview}
@@ -337,7 +348,7 @@ const ProductForm = ({
               const isJPG =
                 file.type === "image/jpeg" || file.type === "image/png";
               if (!isJPG) {
-                message.error("You can only upload JPG or PNG file!");
+                message.error("Chỉ có thể tải lên file JPG hoặc PNG!");
                 return false;
               } else {
                 return true;
