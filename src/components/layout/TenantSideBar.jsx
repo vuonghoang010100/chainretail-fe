@@ -12,8 +12,10 @@ import {
   TeamOutlined,
   LineChartOutlined,
   SettingOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined, 
 } from "@ant-design/icons";
-import { Menu, Layout } from "antd";
+import { Menu, Layout, Button, Flex } from "antd";
 import styles from "./SideBar.module.css";
 import { ROUTE, TENANT_GROUP } from "@/constants/AppConstant";
 
@@ -73,6 +75,7 @@ const rootSubmenuKeys = Object.values(TENANT_GROUP);
 const TenantSideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const [collapsed, setCollapsed] = useState(false);
   const [openKeys, setOpenKeys] = useState([]);
   const [selectedKey, setSelectedKey] = useState(["/"]);
 
@@ -99,18 +102,32 @@ const TenantSideBar = () => {
   }, [location.pathname, selectedKey]);
 
   return (
-    <Layout.Sider theme="light" className={styles.sider}>
-      <Menu
-        style={{ height: "100%" }}
-        onClick={(item) => {
-          navigate(item.key); // Route
-        }}
-        selectedKeys={selectedKey}
-        mode="inline"
-        openKeys={openKeys}
-        onOpenChange={onOpenChange}
-        items={menuItems}
-      />
+    <Layout.Sider theme="light" className={styles.sider} trigger={null} collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
+      <Flex 
+        vertical
+        justify="space-between"
+        className={styles.flexAntd}
+      >
+        <div>
+          <Menu
+            onClick={(item) => {
+              navigate(item.key); // Route
+            }}
+            selectedKeys={selectedKey}
+            mode="inline"
+            openKeys={openKeys}
+            onOpenChange={onOpenChange}
+            items={menuItems}
+          />
+        </div>
+        
+        <Button 
+          type="text"
+          style={{width:"100%"}}
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => setCollapsed(prev => !prev)}
+        />
+      </Flex>
     </Layout.Sider>
   );
 };

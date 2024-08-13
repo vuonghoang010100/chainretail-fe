@@ -3,6 +3,7 @@ import { jwtDecode } from "jwt-decode";
 import { AuthContext } from "@/context/AuthProvider";
 import { ROLE_PREFIX, ROLES } from "@/constants/Authorization";
 import { localStorageUtils } from "@/utils";
+import { api } from "@/apis/configs/axiosConfig";
 
 
 const useAuth = () => {
@@ -14,11 +15,17 @@ const useAuth = () => {
     let authorize = [];
     let isAuthenticated = false;
     if (token) {
+      // TODO: check AuthProvider
       const payload = jwtDecode(token);
       tenant = payload.tenant;
       user = payload.sub;
       authorize = payload.scope;
       isAuthenticated = true;
+      localStorageUtils.saveToken(token);
+      api.defaults.headers.common['Authorization'] = "Bearer " + token;
+    }
+    else {
+      token = null;
     }
 
     setAuths({token, tenant, user, authorize, isAuthenticated})
@@ -42,6 +49,7 @@ const useAuth = () => {
   
   function logout() {
     localStorageUtils.deleteToken();
+    api.defaults.headers.common['Authorization'] = null;
     setAuths({
       token: null,
       tenant: null,

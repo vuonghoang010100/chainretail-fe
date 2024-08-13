@@ -10,6 +10,7 @@ const SignUp = () => {
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
 
   return (
@@ -49,11 +50,11 @@ const SignUp = () => {
 
         <Form.Item
           name="tenant"
-          label="Gian hàng"
+          label="Cửa hàng"
           rules={[
             {
               required: true,
-              message: "Vui lòng nhập tên gian hàng!",
+              message: "Vui lòng nhập tên cửa hàng!",
             },
             {
               pattern: VALIDATE_PATTERNS.TENANT_NAME_REGIS,

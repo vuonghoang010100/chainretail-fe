@@ -1,7 +1,6 @@
 import React from "react";
 import { Layout, theme } from "antd";
 
-// eslint-disable-next-line react/prop-types
 const ShortContent = ({ children }) => {
   const {
     token: { colorBgContainer, borderRadiusLG },

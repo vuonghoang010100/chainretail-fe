@@ -1,8 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { Col, Row, Carousel, Flex } from "antd";
-import background1 from "@/assets/login-background-1.svg"
-import background2 from "@/assets/login-background-2.svg"
+import { Col, Row, Flex } from "antd";
+// import background1 from "@/assets/login-background-1.svg"
+// import background2 from "@/assets/login-background-2.svg"
 
 const LoginLayout = () => {
   // TODO: reposive + Logo + position

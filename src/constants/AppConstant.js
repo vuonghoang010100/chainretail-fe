@@ -1,5 +1,4 @@
-const AppConstant = {
-}
+const AppConstant = {};
 
 export const TENANT_GROUP = {
   PRODUCT_GROUP: "product-group",
@@ -8,7 +7,7 @@ export const TENANT_GROUP = {
   PARTNER_GROUP: "partner-group",
   STORE_GROUP: "store-group",
   STAFF_GROUP: "staff-group",
-}
+};
 
 export const ROUTE = {
   TENANT_APP: {
@@ -110,7 +109,7 @@ export const ROUTE = {
       path: "/setting",
       name: "setting",
       group: null,
-    }
+    },
   },
   ADMIN_APP: {
     HOME: {
@@ -135,8 +134,6 @@ export const ROUTE = {
     name: "logout",
     path: "/logout",
   },
-}
-
-
+};
 
 export default AppConstant;

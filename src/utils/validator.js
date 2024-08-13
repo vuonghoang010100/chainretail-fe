@@ -14,7 +14,7 @@ const uniqueValidator = async (value, usedList, label) => {
 
 const VALIDATE_PATTERNS = {
   TENANT_NAME: "^[-a-z0-9]{1,63}$",
-  TENANT_NAME_REGIS: "^(?![Aa][Dd][Mm][Ii][Nn]|[Tt][Ee][Ss][tt]|[Aa][Pp][Ii])(?:[-a-z0-9]{1,63})$",
+  TENANT_NAME_REGIS: "^(?![Aa][Dd][Mm][Ii][Nn]|[Tt][Ee][Ss][tt]|[Aa][Pp][Ii]|[Ww][Ww][Ww])(?:[-a-z0-9]{1,63})$",
   
 }
 

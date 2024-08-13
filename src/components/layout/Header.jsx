@@ -37,7 +37,7 @@ const Header = () => {
             <img src={logo} alt=""/>
           </div>
           <span style={{
-            color: "#29CDFF",
+            color: "#dcf2ff", // TODO
             // backgroundImage: "linear-gradient(45deg, #29CDFF, #FFFFFF)",
             margin: "0",
             fontSize: "18px",

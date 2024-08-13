@@ -1,12 +1,16 @@
 import axios from "axios";
 // import { notification } from "antd";
 
-// TODO: config with env
-// const baseURL = "http://localhost:8000/api";
 const baseURL = import.meta.env.VITE_API_URL;
 
-// Axios instance
+// Axios instance default
 export const api = axios.create({
+  // withCredentials: true,  // TODO: check this later
+  baseURL: baseURL,
+});
+
+// Axios instance default
+export const api_public = axios.create({
   // withCredentials: true,
   baseURL: baseURL,
 });

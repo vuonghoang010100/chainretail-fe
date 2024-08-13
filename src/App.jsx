@@ -5,39 +5,72 @@ import LoginLayout from "@/components/layout/LoginLayout";
 import LazyLoadPage from "@/pages/LazyLoadPage";
 import { ROUTE } from "@/constants/AppConstant";
 import useAuth from "@/hooks/useAuth";
+import { getSubDomain, onMainHost } from "./utils";
 
-// lazy import pages
-// Tenants
-// const Home = lazy(() => import("@/pages/tenant/Home"));
-// const Dashboard = lazy(() => import("@/pages/tenant/Dashboard"));
-// const Product = lazy(() => import("@/pages/tenant/Product/Product"));
-// const Category = lazy(() => import("@/pages/tenant/Product/Category"));
-// TODO: test and impl lazy import later
+// -------------------------------------------------------------------
+// ------------------------ lazy import pages ------------------------
+// ------------ Tenants ------------
+// Home
 import Home from "@/pages/tenant/Home";
+// Dashboard
 import Dashboard from "@/pages/tenant/Dashboard";
-import Product from "@/pages/tenant/Product/Product";
-import Category from "@/pages/tenant/Product/Category";
+// Product
+const Product = lazy(() => import("@/pages/tenant/Product/Product/Product"));
+const NewProduct = lazy(() => import("@/pages/tenant/Product/Product/NewProduct"));
+const ViewProduct = lazy(() => import("@/pages/tenant/Product/Product/ViewProduct"));
+const EditProduct = lazy(() => import("@/pages/tenant/Product/Product/EditProduct"));
+
+// Category
+const Category = lazy(() => import("@/pages/tenant/Product/Category/Category"));
+const NewCategory = lazy(() => import("@/pages/tenant/Product/Category/NewCategory"));
+const ViewCategory = lazy(() => import("@/pages/tenant/Product/Category/ViewCategory"));
+const EditCategory = lazy(() => import("@/pages/tenant/Product/Category/EditCategory"));
+// Order
 import Order from "@/pages/tenant/Sale/Order";
+// Invoice
 import Invoice from "@/pages/tenant/Sale/Invoice";
+// Pos
 import Pos from "@/pages/tenant/Sale/Pos";
+// Purchase
 import Purchase from "@/pages/tenant/Purchase/Purchase";
+// Bill
 import Bill from "@/pages/tenant/Purchase/Bill";
+// Customer
 import Customer from "@/pages/tenant/Partner/Customer";
+// Vendor
 import Vendor from "@/pages/tenant/Partner/Vendor";
+// Contract
 import Contract from "@/pages/tenant/Partner/Contract";
-import Store from "@/pages/tenant/Store/Store";
+// Store
+const Store = lazy(() => import("@/pages/tenant/Store/Store/Store"));
+const NewStore = lazy(() => import("@/pages/tenant/Store/Store/NewStore"));
+const ViewStore = lazy(() => import("@/pages/tenant/Store/Store/ViewStore"));
+const EditStore = lazy(() => import("@/pages/tenant/Store/Store/EditStore"));
+// Transfer
 import Transfer from "@/pages/tenant/Store/Transfer";
+// Inventory
 import Inventory from "@/pages/tenant/Store/Inventory";
-import Staff from "@/pages/tenant/Staff/Staff";
+// 
+// Staff
+const Staff = lazy(() => import("@/pages/tenant/Staff/Staff/Staff"))
+const NewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/NewStaff"))
+const ViewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/ViewStaff"))
+const EditStaff = lazy(() => import("@/pages/tenant/Staff/Staff/EditStaff"))
+// Role
 import Role from "@/pages/tenant/Staff/Role";
+// Promote
 import Promote from "@/pages/tenant/Promote";
+// Report
 import Report from "@/pages/tenant/Report";
+// Setting
 import Setting from "@/pages/tenant/Setting";
 
 
-// Admins
+// ------------ Admins ------------
 const AdminHome = lazy(() => import("@/pages/admin/AdminHome"))
 const Tenant = lazy(() => import("@/pages/admin/Tenant"))
+
+// -------------------------------------------------------------------
 
 // Always import pages
 import Login from "@/pages/Login";
@@ -46,17 +79,14 @@ import SignUp from "@/pages/SignUp";
 import Logout from "@/pages/Logout";
 
 
+
 function App() {
   const {auth, isAdminApp} = useAuth();
-  const HOSTNAME = import.meta.env.VITE_HOSTNAME;
-
-  // TEST
-  console.log(HOSTNAME);
-  console.log(window.location);
+  console.info("Sub domain:", getSubDomain());
   
-
+  // Routes
   // Case on exact domain => route to tenant app + register
-  if (HOSTNAME == window.location.hostname) {
+  if ( onMainHost() || getSubDomain() === "www") {
     return (
       <Routes>
         <Route path="/" element={<LoginLayout/>} >
@@ -127,11 +157,17 @@ function App() {
         </Route>
         
         <Route path={ROUTE.TENANT_APP.PRODUCT.name} >
-          <Route index element={<Product/>} />
+          <Route index element={<LazyLoadPage><Product/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewProduct/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewProduct/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditProduct/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CATEGORY.name} >
-          <Route index element={<Category/>} />
+          <Route index element={<LazyLoadPage><Category/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewCategory/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewCategory/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditCategory/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ORDER.name} >
@@ -167,7 +203,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STORE.name} >
-          <Route index element={<Store/>} />
+          <Route index element={<LazyLoadPage><Store/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewStore/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewStore/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditStore/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.TRANSFER.name} >
@@ -179,7 +218,11 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STAFF.name} >
-          <Route index element={<Staff/>} />
+          <Route index element={<LazyLoadPage><Staff/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewStaff/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewStaff/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditStaff/></LazyLoadPage>} />
+
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ROLE.name} >

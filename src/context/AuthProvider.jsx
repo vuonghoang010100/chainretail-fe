@@ -1,6 +1,7 @@
 import { jwtDecode } from "jwt-decode";
 import { localStorageUtils } from "@/utils";
 import { createContext, useState } from "react";
+import { api } from "@/apis/configs/axiosConfig";
 
 export const AuthContext = createContext();
 
@@ -13,15 +14,16 @@ export const AuthProvider = ({children}) => {
 
   if (token) {
     try {
+      // TODO: export
       const payload = jwtDecode(token);
       user = payload.sub;
       tenant = payload.tenant;
       authorize = payload.scope;
       isAuthenticated = true;
+      api.defaults.headers.common['Authorization'] = "Bearer " + token;
     } catch (error) {
       console.log("Load failed!");
     }
-    
   }
   
   const [auth, setAuths] = useState({

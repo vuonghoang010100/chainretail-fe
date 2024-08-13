@@ -1,4 +1,9 @@
 .sider {
-  overflow: hidden;
+  /* overflow: hidden; */
+  height: 100%;
   align-self: stretch;
+}
+
+.flexAntd {
+  height: 100%;
 }
