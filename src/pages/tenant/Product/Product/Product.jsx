@@ -60,6 +60,7 @@ const Product = () => {
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
+      width: 120,
     },
     {
       title: "Mã vạch",

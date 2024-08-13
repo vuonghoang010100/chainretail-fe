@@ -7,7 +7,6 @@ import {
   Dropdown,
   Checkbox,
   Popover,
-  Badge,
 } from "antd";
 import {
   EyeOutlined,
@@ -16,10 +15,6 @@ import {
   SettingOutlined,
   ReloadOutlined,
   ColumnHeightOutlined,
-  SortAscendingOutlined,
-  MinusOutlined,
-  CaretUpOutlined,
-  CaretDownFilled,
 } from "@ant-design/icons";
 import styles from "./BaseTable.module.css";
 import { Title } from "../Title";
@@ -29,6 +24,7 @@ import { Title } from "../Title";
  * @typedef tableParam
  * @property {string} label table label name
  * @property {ColumnsType[]} columns `Antd`'s Table Comlumns
+ * @property {ColumnsType[]} excludeSorts List name columns no sort
  * @property {string} rowKey Key for earch row base on `columns`, usually `id`
  * @property {object[]} dataSource `Antd`'s Table dataSource
  * @property {boolean} loading Table loading state
@@ -50,6 +46,7 @@ import { Title } from "../Title";
 const BaseTable = ({
   label,
   columns,
+  excludeSorts = [],
   rowKey,
   dataSource,
   loading,
@@ -62,57 +59,69 @@ const BaseTable = ({
   setReload,
   children,
 }) => {
-  // -------------------- New Sort  --------------------
+  // -------------------- Add more columns --------------------
   const additionColums = [
     ...columns,
     {
       title: "Thời gian tạo",
       dataIndex: "createTime",
       key: "createTime",
+      width: 150,
     },
     {
       title: "Thời gian cập nhật",
       dataIndex: "updateTime",
       key: "updateTime",
+      width: 155,
     },
   ];
 
-  const sortableColumns = additionColums.map((ele, index) => ({...ele, sorter: { multiple: index }}));
+  columns = additionColums.map((ele, index) => {
+    if (excludeSorts.includes(ele?.key)) {
+      return ele;
+    }
+    return { ...ele, sorter: { multiple: index } };
+  });
 
+  // -------------------- attrs --------------------
+  const [size, setSize] = useState("small");
+  const [displayCol, setDisplayCol] = useState(columns);
+  const [cols, setCols] = useState(columns.map((col) => col.title));
+
+  // -------------------- Sort  --------------------
   const handleTableChange = (pagination, filters, sorter) => {
     let sortString = "";
     if (Array.isArray(sorter)) {
-      let sortArrays = []
-      sorter.filter(ele => ele.order).forEach(ele => {
-        sortArrays.push(ele.order === "ascend" ? "+" + ele.columnKey : "-" + ele.columnKey)
-      })
-      sortString = sortArrays.join(",")
+      let sortArrays = [];
+      sorter
+        .filter((ele) => ele.order)
+        .forEach((ele) => {
+          sortArrays.push(
+            ele.order === "ascend" ? "+" + ele.columnKey : "-" + ele.columnKey
+          );
+        });
+      sortString = sortArrays.join(",");
     }
     if (sorter?.order) {
-      sortString = sorter.order === "ascend" ? "+" + sorter.columnKey : "-" + sorter.columnKey
+      sortString =
+        sorter.order === "ascend"
+          ? "+" + sorter.columnKey
+          : "-" + sorter.columnKey;
     }
-    
+
     setQuery((prev) => ({
       ...prev,
       sort: sortString,
     }));
 
     console.log(sortString);
-  }
-
-  // -------------------- attrs --------------------
-  const [size, setSize] = useState("small");
-  // const [displayCol, setDisplayCol] = useState(columns);
-  const [displayCol, setDisplayCol] = useState(sortableColumns);
-  // const [cols, setCols] = useState(columns.map((col) => col.title));
-  const [cols, setCols] = useState(sortableColumns.map((col) => col.title));
-  const [sort, setSort] = useState([["createTime", "-"]]); // [["id", "+"], ["fullName", "-"],...]
+  };
 
   // -------------------- Action column--------------------
   const actionColumn = {
     title: "Hành động",
     key: "action_",
-    width: 144,
+    width: 128,
     fixed: "right",
     render: (_, record) => (
       <Space size="small">
@@ -159,95 +168,6 @@ const BaseTable = ({
       key: "small",
     },
   ];
-
-  // -------------------- Sort content --------------------
-  const sortColums = [
-    {
-      title: "Thời gian tạo",
-      dataIndex: "createTime",
-      key: "createTime",
-    },
-    {
-      title: "Thời gian cập nhật",
-      dataIndex: "updateTime",
-      key: "updateTime",
-    },
-    ...columns,
-  ];
-
-  const handleSort = (e, column) => {
-    const changePrev = (prev) => {
-      let sortArray = [];
-      const index = prev.findIndex((value) => value[0] === column);
-      if (index < 0) {
-        sortArray = [[column, "+"], ...prev];
-      } else {
-        const order = prev[index][1];
-        prev.splice(index, 1);
-        if (order === "+") {
-          sortArray = [[column, "-"], ...prev];
-        } else {
-          sortArray = [...prev];
-        }
-      }
-      const sortString = sortArray.reduce(
-        (acc, ele) => acc + "," + ele[1] + ele[0],
-        ""
-      );
-      const sortResult =
-        sortString[0] === "," ? sortString.substring(1) : sortString;
-      console.log(sortResult);
-
-      setQuery((prev) => ({
-        ...prev,
-        sort: sortResult,
-      }));
-      return sortArray;
-    };
-
-    setSort((prev) => changePrev(prev));
-  };
-
-  const badgeStyle = {
-    backgroundColor: "#4096ff",
-    marginLeft: "8px",
-  };
-
-  const chooseIcon = (column) => {
-    if (!sort.flat().includes(column)) return <MinusOutlined />;
-    const index = sort.findIndex((value) => value[0] === column);
-    const order = sort.filter((value) => value[0] === column)[0][1];
-    return order === "+" ? (
-      <>
-        <CaretUpOutlined />
-        <Badge count={index + 1} showZero style={badgeStyle}></Badge>
-      </>
-    ) : (
-      <>
-        <CaretDownFilled />
-        <Badge count={index + 1} showZero style={badgeStyle}></Badge>
-      </>
-    );
-  };
-
-  const sortContent = (
-    <Space direction="vertical">
-      {sortColums.map((obj, index) => (
-        <Button
-          key={index}
-          value={obj.key}
-          type="text"
-          icon={chooseIcon(obj.key)}
-          onClick={(e) => handleSort(e, obj.key)}
-        >
-          {obj.title}
-        </Button>
-      ))}
-    </Space>
-  );
-
-  // TODO: remove
-  columns = sortableColumns
 
   // -------------------- Setting content --------------------
   const handleChangeCol = (checkedValue) => {
@@ -299,10 +219,6 @@ const BaseTable = ({
           >
             <Button type="text" icon={<ColumnHeightOutlined />} />
           </Dropdown>
-
-          {/* <Popover placement="left" title="Sắp xếp" content={sortContent}>
-            <Button type="text" icon={<SortAscendingOutlined />} />
-          </Popover> */}
 
           <Popover
             placement="bottomRight"
