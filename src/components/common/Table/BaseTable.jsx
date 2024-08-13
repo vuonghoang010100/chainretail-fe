@@ -229,6 +229,7 @@ const BaseTable = ({
           </Popover>
         </Space>
       </div>
+
       <Table
         size={size}
         scroll={{

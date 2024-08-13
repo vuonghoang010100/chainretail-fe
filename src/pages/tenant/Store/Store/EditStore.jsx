@@ -97,7 +97,10 @@ const EditStore = () => {
 
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
+      <PageHeader 
+        title="Cập nhật cửa hàng"
+        breadcrumbItems={breadcrumbItems} 
+      />
       <ContentBox>
         <Title marginBot>Thông tin cửa hàng</Title>
         <StoreForm

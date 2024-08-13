@@ -33,6 +33,7 @@ export const SelectProvince = ({ resetDistrict, setDistrictOptions, onChange, ..
       }))}
       onChange={(province, option) => {
         onChange(province, option); // Ensure form comunicate with Select throw SelectProvince
+        // eslint-disable-next-line no-prototype-builtins
         if (districts.hasOwnProperty(province)) {
           const districtOptions = districts[province].map((district) => ({
             label: district,

@@ -10,6 +10,7 @@ const SignUp = () => {
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
 
   return (

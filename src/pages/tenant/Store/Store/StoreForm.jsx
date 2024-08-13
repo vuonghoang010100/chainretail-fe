@@ -7,9 +7,6 @@ import {
   SelectProvince,
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
-import { ROUTE } from "@/constants/AppConstant";
-
-const path = ROUTE.TENANT_APP.STORE.path;
 
 const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   const navigate = useNavigate();
@@ -212,7 +209,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           },
         ]}
       >
-        <Input placeholder="Địa chỉ của nhân viên" />
+        <Input placeholder="Địa chỉ của cửa hàng" />
       </Form.Item>
 
       <Form.Item
@@ -228,7 +225,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           },
         ]}
       >
-        <Input placeholder="Email của nhân viên" />
+        <Input placeholder="Email liên hệ của cửa hàng" />
       </Form.Item>
 
       <Form.Item
@@ -241,7 +238,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           },
         ]}
       >
-        <Input placeholder="Số điện thoại của nhân viên" />
+        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
       </Form.Item>
 
       {!useForCreate && (
@@ -263,7 +260,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           <Button type="primary" htmlType="submit" loading={loading}>
             {useForCreate ? "Thêm mới" : "Cập nhật"}
           </Button>
-          <Button onClick={() => navigate(path)}>Đóng</Button>
+          <Button onClick={() => navigate(-1)}>Đóng</Button>
         </Space>
       </Form.Item>
     </Form>

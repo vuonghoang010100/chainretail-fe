@@ -42,7 +42,10 @@ const NewStore = () => {
 
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
+      <PageHeader 
+        title="Thêm mới cửa hàng"
+        breadcrumbItems={breadcrumbItems} 
+      />
       <ContentBox>
         <Title marginBot>Thông tin cửa hàng</Title>
         <StoreForm useForCreate onFinish={handleCreate} />

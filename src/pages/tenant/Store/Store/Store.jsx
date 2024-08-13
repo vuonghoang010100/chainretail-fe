@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Flex } from "antd";
+import { Input, Button, message } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
@@ -32,6 +32,21 @@ const breadcrumbItems = [
     title: "Cửa hàng",
   },
 ];
+
+// eslint-disable-next-line no-unused-vars
+export const deleteRecord = async (id) => {
+  try {
+    // await CustomerAPI.deleteCustomer(id);
+    message.success("Xóa cửa hàng thành công!");
+  } catch (error) {
+    if (error.response?.status === 404) {
+      message.error("Cửa hàng không còn tồn tại!");
+    } else {
+      // TODO: handle DATA_USED
+      message.error("Không thể xóa cửa hàng!");
+    }
+  }
+}
 
 const Store = () => {
   const navigate = useNavigate();
@@ -141,21 +156,10 @@ const Store = () => {
     navigate(`${path}/${record.id}/edit`);
   };
 
-  // delete customer
-  // eslint-disable-next-line no-unused-vars
+  // delete
   const handleDelete = async (record) => {
-    try {
-      // await CustomerAPI.deleteCustomer(record.id);
-      message.success("Xóa cửa hàng thành công!");
-      setReload();
-    } catch (error) {
-      if (error.response?.status === 404) {
-        message.error("Cửa hàng không còn tồn tại!");
-      } else {
-        // TODO: handle DATA_USED
-        message.error("Không thể xóa cửa hàng!");
-      }
-    }
+    await deleteRecord(record.id);
+    setReload();
   };
 
   // search
@@ -173,29 +177,18 @@ const Store = () => {
 
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
+      <PageHeader breadcrumbItems={breadcrumbItems}>
+        <Search
+          placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
+          allowClear
+          enterButton
+          onSearch={handleSubmitSearch}
+          style={{ width: "400px" }}
+        />
 
-      <ContentBox>
-        <Flex justify="center" gap="middle" >
-          <Search
-            placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
-            allowClear
-            enterButton
-            onSearch={handleSubmitSearch}
-            style={{
-              width: "400px",
-            }}
-          />
+        <div/>
 
-          <Button
-            type="primary"
-            icon={<FilterOutlined />}
-            onClick={() => setOpenFilter(true)}
-          >
-            Bộ lọc
-          </Button>
-        </Flex>
-      </ContentBox>
+      </PageHeader>
 
       <ContentBox>
         <BaseTable
@@ -214,6 +207,14 @@ const Store = () => {
             setReload();
           }}
         >
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setOpenFilter(true)}
+          >
+            Bộ lọc
+          </Button>
+
           <Button
             type="primary"
             icon={<PlusOutlined />}

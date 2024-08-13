@@ -1,16 +1,19 @@
 import React from "react";
-import { Breadcrumb, Typography, Layout, theme } from "antd";
-
+import { Breadcrumb, Typography, Layout, theme, Flex } from "antd";
 const { Title } = Typography;
 
-const PageHeader = ({ breadcrumbItems }) => {
+const PageHeader = ({ breadcrumbItems, title, children }) => {
   // const lastItem = breadcrumbItems.slice(-1);
   const {
     token: { fontSizeHeading4 },
   } = theme.useToken();
-
-  return (
-    <div>
+  
+  const header = (
+    <div
+      style={{
+        marginBottom: "24px"
+      }}
+    >
       <Breadcrumb items={breadcrumbItems} />
       <Title
         level={1}
@@ -20,9 +23,16 @@ const PageHeader = ({ breadcrumbItems }) => {
           lineHeight: 1.5,
         }}
       >
-        {/* {lastItem[0].title} */}
+        {title ?? breadcrumbItems[breadcrumbItems.length - 1].title}
       </Title>
     </div>
+  )
+
+  return (
+    <Flex justify="space-between" align="center" >
+      {header}
+      {children}
+    </Flex>
   );
 };
 
@@ -41,7 +51,7 @@ const ContentBox = ({ children }) => {
   return (
     <div
       style={{
-        marginTop: "24px",
+        // marginTop: "24px",
         padding: paddingLG,
         background: colorBgContainer,
         borderRadius: borderRadiusLG,

@@ -107,7 +107,7 @@ const ProductForm = ({
     }
 
     // case special select
-  }, [form, initRecord]);
+  }, [form, initRecord, useForCreate]);
 
   // -------------------- Handle Unique fields --------------------
   const [usedName, setUsedName] = useState([]);
@@ -349,9 +349,9 @@ const ProductForm = ({
                 file.type === "image/jpeg" || file.type === "image/png";
               if (!isJPG) {
                 message.error("Chỉ có thể tải lên file JPG hoặc PNG!");
-                return false;
+                return Promise.reject(false);
               } else {
-                return true;
+                return Promise.resolve(true);
               }
             }}
           >
