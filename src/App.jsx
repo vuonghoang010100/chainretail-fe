@@ -41,7 +41,10 @@ const NewCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/NewCustom
 const EditCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/EditCustomer"));
 const ViewCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/ViewCustomer"));
 // Vendor
-import Vendor from "@/pages/tenant/Partner/Vendor";
+const Vendor = lazy(() => import("@/pages/tenant/Partner/Vendor/Vendor"));
+const NewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/NewVendor"));
+const EditVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/EditVendor"));
+const ViewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/ViewVendor"));
 // Contract
 import Contract from "@/pages/tenant/Partner/Contract";
 // Store
@@ -194,14 +197,17 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CUSTOMER.name} >
-        <Route index element={<LazyLoadPage><Customer/></LazyLoadPage>} />
-        <Route path="new" element={<LazyLoadPage><NewCustomer/></LazyLoadPage>} />
-        <Route path=":id" element={<LazyLoadPage><ViewCustomer/></LazyLoadPage>} />
-        <Route path=":id/edit" element={<LazyLoadPage><EditCustomer/></LazyLoadPage>} />
+          <Route index element={<LazyLoadPage><Customer/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewCustomer/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewCustomer/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditCustomer/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.VENDOR.name} >
-          <Route index element={<Vendor/>} />
+          <Route index element={<LazyLoadPage><Vendor/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewVendor/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewVendor/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditVendor/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CONTRACT.name} >
