@@ -37,7 +37,10 @@ import Pos from "@/pages/tenant/Sale/Pos";
 // Purchase
 import Purchase from "@/pages/tenant/Purchase/Purchase";
 // Bill
-import Bill from "@/pages/tenant/Purchase/Bill";
+const Bill = lazy(() => import("@/pages/tenant/Purchase/Bill/Bill"));
+const NewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/NewBill"));
+const EditBill = lazy(() => import("@/pages/tenant/Purchase/Bill/EditBill"));
+const ViewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/ViewBill"));
 // Customer
 const Customer = lazy(() => import("@/pages/tenant/Partner/Customer/Customer"));
 const NewCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/NewCustomer"));
@@ -202,7 +205,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.BILL.name} >
-          <Route index element={<Bill/>} />
+          <Route index element={<LazyLoadPage><Bill/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewBill/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewBill/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditBill/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CUSTOMER.name} >
