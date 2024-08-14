@@ -11,11 +11,11 @@ import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
 import { StoreService } from "@/apis/StoreService";
-import StoreFilterModal from "./StoreFilterModal";
+import InventoryFilterModal from "./InventoryFilterModal";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.STORE.path;
+const path = ROUTE.TENANT_APP.INVENTORY.path;
 
 /**
  * Breadcrumd item for page
@@ -29,7 +29,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Cửa hàng",
+    title: "Kiểm kho",
   },
 ];
 
@@ -37,18 +37,18 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa cửa hàng thành công!");
+    message.success("Xóa đơn kiểm kho thành công!");
   } catch (error) {
     if (error.response?.status === 404) {
-      message.error("Cửa hàng không còn tồn tại!");
+      message.error("Đơn kiểm kho không còn tồn tại!");
     } else {
       // TODO: handle DATA_USED
-      message.error("Không thể xóa cửa hàng!");
+      message.error("Không thể xóa đơn kiểm kho!");
     }
   }
 }
 
-const Store = () => {
+const Inventory = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -179,7 +179,7 @@ const Store = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
+          placeholder="Tìm kiếm theo mã đơn kiểm kho"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}
@@ -209,7 +209,7 @@ const Store = () => {
 
       <ContentBox>
         <BaseTable
-          label="Cửa hàng"
+          label="Đơn kiểm kho"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -226,7 +226,7 @@ const Store = () => {
         />
       </ContentBox>
 
-      <StoreFilterModal
+      <InventoryFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
         query={query}
@@ -236,4 +236,4 @@ const Store = () => {
   );
 };
 
-export default Store;
+export default Inventory;

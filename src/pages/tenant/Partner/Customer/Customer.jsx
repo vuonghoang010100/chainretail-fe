@@ -11,15 +11,12 @@ import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
 import { StoreService } from "@/apis/StoreService";
-import StoreFilterModal from "./StoreFilterModal";
+import CustomerFilterModal from "./CustomerFilterModal";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.STORE.path;
+const path = ROUTE.TENANT_APP.CUSTOMER.path;
 
-/**
- * Breadcrumd item for page
- */
 const breadcrumbItems = [
   {
     title: (
@@ -29,7 +26,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Cửa hàng",
+    title: "Khách hàng",
   },
 ];
 
@@ -37,18 +34,18 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa cửa hàng thành công!");
+    message.success("Xóa khách hàng thành công!");
   } catch (error) {
     if (error.response?.status === 404) {
-      message.error("Cửa hàng không còn tồn tại!");
+      message.error("Khách hàng không còn tồn tại!");
     } else {
       // TODO: handle DATA_USED
-      message.error("Không thể xóa cửa hàng!");
+      message.error("Không thể xóa khách hàng!");
     }
   }
 }
 
-const Store = () => {
+const Customer = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -174,42 +171,40 @@ const Store = () => {
 
     console.info("query search:", { value });
   };
-
   return (
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên hiển thị, tên cửa hàng"
-          allowClear
-          enterButton
-          onSearch={handleSubmitSearch}
-          style={{ width: "400px" }}
-          size="large"
-        />
+            placeholder="Tìm kiếm theo tên khách hàng"
+            allowClear
+            enterButton
+            onSearch={handleSubmitSearch}
+            style={{ width: "400px" }}
+            size="large"
+          />
 
-        <Space>
-          <Button
-            type="primary"
-            icon={<FilterOutlined />}
-            onClick={() => setOpenFilter(true)}
-          >
-            Bộ lọc
-          </Button>
+          <Space>
+            <Button
+              type="primary"
+              icon={<FilterOutlined />}
+              onClick={() => setOpenFilter(true)}
+            >
+              Bộ lọc
+            </Button>
 
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateNew}
-          >
-            Thêm mới
-          </Button>
-        </Space>
-
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleCreateNew}
+            >
+              Thêm mới
+            </Button>
+          </Space>
       </PageHeader>
 
       <ContentBox>
         <BaseTable
-          label="Cửa hàng"
+          label="Khách hàng"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -226,7 +221,7 @@ const Store = () => {
         />
       </ContentBox>
 
-      <StoreFilterModal
+      <CustomerFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
         query={query}
@@ -236,4 +231,4 @@ const Store = () => {
   );
 };
 
-export default Store;
+export default Customer;

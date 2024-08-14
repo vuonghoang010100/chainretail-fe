@@ -26,7 +26,10 @@ const NewCategory = lazy(() => import("@/pages/tenant/Product/Category/NewCatego
 const ViewCategory = lazy(() => import("@/pages/tenant/Product/Category/ViewCategory"));
 const EditCategory = lazy(() => import("@/pages/tenant/Product/Category/EditCategory"));
 // Order
-import Order from "@/pages/tenant/Sale/Order";
+const Order = lazy(() => import("@/pages/tenant/Sale/Order/Order"));
+const NewOrder = lazy(() => import("@/pages/tenant/Sale/Order/NewOrder"));
+const EditOrder = lazy(() => import("@/pages/tenant/Sale/Order/EditOrder"));
+const ViewOrder = lazy(() => import("@/pages/tenant/Sale/Order/ViewOrder"));
 // Invoice
 import Invoice from "@/pages/tenant/Sale/Invoice";
 // Pos
@@ -34,22 +37,40 @@ import Pos from "@/pages/tenant/Sale/Pos";
 // Purchase
 import Purchase from "@/pages/tenant/Purchase/Purchase";
 // Bill
-import Bill from "@/pages/tenant/Purchase/Bill";
+const Bill = lazy(() => import("@/pages/tenant/Purchase/Bill/Bill"));
+const NewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/NewBill"));
+const EditBill = lazy(() => import("@/pages/tenant/Purchase/Bill/EditBill"));
+const ViewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/ViewBill"));
 // Customer
-import Customer from "@/pages/tenant/Partner/Customer";
+const Customer = lazy(() => import("@/pages/tenant/Partner/Customer/Customer"));
+const NewCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/NewCustomer"));
+const EditCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/EditCustomer"));
+const ViewCustomer = lazy(() => import("@/pages/tenant/Partner/Customer/ViewCustomer"));
 // Vendor
-import Vendor from "@/pages/tenant/Partner/Vendor";
+const Vendor = lazy(() => import("@/pages/tenant/Partner/Vendor/Vendor"));
+const NewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/NewVendor"));
+const EditVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/EditVendor"));
+const ViewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/ViewVendor"));
 // Contract
-import Contract from "@/pages/tenant/Partner/Contract";
+const Contract = lazy(() => import("@/pages/tenant/Partner/Contract/Contract"));
+const NewContract = lazy(() => import("@/pages/tenant/Partner/Contract/NewContract"));
+const EditContract = lazy(() => import("@/pages/tenant/Partner/Contract/EditContract"));
+const ViewContract = lazy(() => import("@/pages/tenant/Partner/Contract/ViewContract"));
 // Store
 const Store = lazy(() => import("@/pages/tenant/Store/Store/Store"));
 const NewStore = lazy(() => import("@/pages/tenant/Store/Store/NewStore"));
 const ViewStore = lazy(() => import("@/pages/tenant/Store/Store/ViewStore"));
 const EditStore = lazy(() => import("@/pages/tenant/Store/Store/EditStore"));
 // Transfer
-import Transfer from "@/pages/tenant/Store/Transfer";
+const Transfer = lazy(() => import("@/pages/tenant/Store/Transfer/Transfer"));
+const NewTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/NewTransfer"));
+const ViewTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/ViewTransfer"));
+const EditTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/EditTransfer"));
 // Inventory
-import Inventory from "@/pages/tenant/Store/Inventory";
+const Inventory = lazy(() => import("@/pages/tenant/Store/Inventory/Inventory"));
+const NewInventory = lazy(() => import("@/pages/tenant/Store/Inventory/NewInventory"));
+const ViewInventory = lazy(() => import("@/pages/tenant/Store/Inventory/ViewInventory"));
+const EditInventory = lazy(() => import("@/pages/tenant/Store/Inventory/EditInventory"));
 // 
 // Staff
 const Staff = lazy(() => import("@/pages/tenant/Staff/Staff/Staff"))
@@ -59,7 +80,10 @@ const EditStaff = lazy(() => import("@/pages/tenant/Staff/Staff/EditStaff"))
 // Role
 import Role from "@/pages/tenant/Staff/Role";
 // Promote
-import Promote from "@/pages/tenant/Promote";
+const Promote = lazy(() => import("@/pages/tenant/Promote/Promote"));
+const NewPromote = lazy(() => import("@/pages/tenant/Promote/NewPromote"));
+const ViewPromote = lazy(() => import("@/pages/tenant/Promote/ViewPromote"));
+const EditPromote = lazy(() => import("@/pages/tenant/Promote/EditPromote"));
 // Report
 import Report from "@/pages/tenant/Report";
 // Setting
@@ -171,7 +195,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ORDER.name} >
-          <Route index element={<Order/>} />
+          <Route index element={<LazyLoadPage><Order/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewOrder/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewOrder/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditOrder/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.INVOIVE.name} >
@@ -187,19 +214,31 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.BILL.name} >
-          <Route index element={<Bill/>} />
+          <Route index element={<LazyLoadPage><Bill/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewBill/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewBill/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditBill/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CUSTOMER.name} >
-          <Route index element={<Customer/>} />
+          <Route index element={<LazyLoadPage><Customer/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewCustomer/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewCustomer/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditCustomer/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.VENDOR.name} >
-          <Route index element={<Vendor/>} />
+          <Route index element={<LazyLoadPage><Vendor/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewVendor/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewVendor/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditVendor/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CONTRACT.name} >
-          <Route index element={<Contract/>} />
+          <Route index element={<LazyLoadPage><Contract/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewContract/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewContract/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditContract/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STORE.name} >
@@ -210,11 +249,17 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.TRANSFER.name} >
-          <Route index element={<Transfer/>} />
+          <Route index element={<LazyLoadPage><Transfer/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewTransfer/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewTransfer/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditTransfer/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.INVENTORY.name} >
-          <Route index element={<Inventory/>} />
+          <Route index element={<LazyLoadPage><Inventory/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewInventory/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewInventory/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditInventory/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STAFF.name} >
@@ -230,7 +275,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.PROMOTE.name} >
-          <Route index element={<Promote/>} />
+          <Route index element={<LazyLoadPage><Promote/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewPromote/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewPromote/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditPromote/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.REPORT.name} >
