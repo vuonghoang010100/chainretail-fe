@@ -26,7 +26,10 @@ const NewCategory = lazy(() => import("@/pages/tenant/Product/Category/NewCatego
 const ViewCategory = lazy(() => import("@/pages/tenant/Product/Category/ViewCategory"));
 const EditCategory = lazy(() => import("@/pages/tenant/Product/Category/EditCategory"));
 // Order
-import Order from "@/pages/tenant/Sale/Order";
+const Order = lazy(() => import("@/pages/tenant/Sale/Order/Order"));
+const NewOrder = lazy(() => import("@/pages/tenant/Sale/Order/NewOrder"));
+const EditOrder = lazy(() => import("@/pages/tenant/Sale/Order/EditOrder"));
+const ViewOrder = lazy(() => import("@/pages/tenant/Sale/Order/ViewOrder"));
 // Invoice
 import Invoice from "@/pages/tenant/Sale/Invoice";
 // Pos
@@ -180,7 +183,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ORDER.name} >
-          <Route index element={<Order/>} />
+          <Route index element={<LazyLoadPage><Order/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewOrder/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewOrder/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditOrder/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.INVOIVE.name} >
