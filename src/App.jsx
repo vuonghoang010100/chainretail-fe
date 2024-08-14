@@ -46,7 +46,10 @@ const NewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/NewVendor"));
 const EditVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/EditVendor"));
 const ViewVendor = lazy(() => import("@/pages/tenant/Partner/Vendor/ViewVendor"));
 // Contract
-import Contract from "@/pages/tenant/Partner/Contract";
+const Contract = lazy(() => import("@/pages/tenant/Partner/Contract/Contract"));
+const NewContract = lazy(() => import("@/pages/tenant/Partner/Contract/NewContract"));
+const EditContract = lazy(() => import("@/pages/tenant/Partner/Contract/EditContract"));
+const ViewContract = lazy(() => import("@/pages/tenant/Partner/Contract/ViewContract"));
 // Store
 const Store = lazy(() => import("@/pages/tenant/Store/Store/Store"));
 const NewStore = lazy(() => import("@/pages/tenant/Store/Store/NewStore"));
@@ -211,7 +214,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.CONTRACT.name} >
-          <Route index element={<Contract/>} />
+          <Route index element={<LazyLoadPage><Contract/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewContract/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewContract/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditContract/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.STORE.name} >
