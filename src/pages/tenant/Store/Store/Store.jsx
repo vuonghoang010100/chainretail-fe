@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message } from "antd";
+import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
@@ -184,9 +184,26 @@ const Store = () => {
           enterButton
           onSearch={handleSubmitSearch}
           style={{ width: "400px" }}
+          size="large"
         />
 
-        <div/>
+        <Space>
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setOpenFilter(true)}
+          >
+            Bộ lọc
+          </Button>
+
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateNew}
+          >
+            Thêm mới
+          </Button>
+        </Space>
 
       </PageHeader>
 
@@ -206,23 +223,7 @@ const Store = () => {
           setReload={() => {
             setReload();
           }}
-        >
-          <Button
-            type="primary"
-            icon={<FilterOutlined />}
-            onClick={() => setOpenFilter(true)}
-          >
-            Bộ lọc
-          </Button>
-
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateNew}
-          >
-            Thêm mới
-          </Button>
-        </BaseTable>
+        />
       </ContentBox>
 
       <StoreFilterModal
