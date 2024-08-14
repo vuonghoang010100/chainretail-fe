@@ -74,7 +74,10 @@ const EditStaff = lazy(() => import("@/pages/tenant/Staff/Staff/EditStaff"))
 // Role
 import Role from "@/pages/tenant/Staff/Role";
 // Promote
-import Promote from "@/pages/tenant/Promote";
+const Promote = lazy(() => import("@/pages/tenant/Promote/Promote"));
+const NewPromote = lazy(() => import("@/pages/tenant/Promote/NewPromote"));
+const ViewPromote = lazy(() => import("@/pages/tenant/Promote/ViewPromote"));
+const EditPromote = lazy(() => import("@/pages/tenant/Promote/EditPromote"));
 // Report
 import Report from "@/pages/tenant/Report";
 // Setting
@@ -260,7 +263,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.PROMOTE.name} >
-          <Route index element={<Promote/>} />
+          <Route index element={<LazyLoadPage><Promote/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewPromote/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewPromote/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditPromote/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.REPORT.name} >
