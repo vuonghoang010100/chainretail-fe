@@ -62,7 +62,10 @@ const NewStore = lazy(() => import("@/pages/tenant/Store/Store/NewStore"));
 const ViewStore = lazy(() => import("@/pages/tenant/Store/Store/ViewStore"));
 const EditStore = lazy(() => import("@/pages/tenant/Store/Store/EditStore"));
 // Transfer
-import Transfer from "@/pages/tenant/Store/Transfer";
+const Transfer = lazy(() => import("@/pages/tenant/Store/Transfer/Transfer"));
+const NewTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/NewTransfer"));
+const ViewTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/ViewTransfer"));
+const EditTransfer = lazy(() => import("@/pages/tenant/Store/Transfer/EditTransfer"));
 // Inventory
 import Inventory from "@/pages/tenant/Store/Inventory";
 // 
@@ -243,7 +246,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.TRANSFER.name} >
-          <Route index element={<Transfer/>} />
+          <Route index element={<LazyLoadPage><Transfer/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewTransfer/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewTransfer/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditTransfer/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.INVENTORY.name} >
