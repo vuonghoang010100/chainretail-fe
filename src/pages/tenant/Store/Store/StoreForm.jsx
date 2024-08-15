@@ -132,6 +132,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="name"
         label="Tên hiển thị"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -156,6 +157,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="fullName"
         label="Tên cửa hàng"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -173,6 +175,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="province"
         label="Tỉnh/Thành phố"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -189,6 +192,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="district"
         label="Quận/Huyện"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -202,6 +206,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="address"
         label="Địa chỉ"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -215,6 +220,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="email"
         label="Email"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             type: "email",
@@ -231,6 +237,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="phone"
         label="Số điện thoại"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             validator: (_, value) =>

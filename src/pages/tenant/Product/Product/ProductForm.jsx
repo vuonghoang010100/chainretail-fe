@@ -13,12 +13,9 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import { uniqueValidator } from "@/utils";
 import { RadioGroup } from "@/components/common/Input/Radio";
-import { ROUTE } from "@/constants/AppConstant";
 import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
 import { CategoryService } from "@/apis/CategoryService";
 import ImgCrop from "antd-img-crop";
-
-const path = ROUTE.TENANT_APP.PRODUCT.path;
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -224,6 +221,7 @@ const ProductForm = ({
       <Form.Item
         name="sku"
         label="Mã vạch"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -240,6 +238,7 @@ const ProductForm = ({
       <Form.Item
         name="name"
         label="Tên sản phẩm"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -257,6 +256,7 @@ const ProductForm = ({
       <Form.Item
         name="brand"
         label="Thương hiệu"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             required: true,
@@ -270,6 +270,7 @@ const ProductForm = ({
       <Form.Item
         name="unit"
         label="Đơn vị"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             required: true,
@@ -283,6 +284,7 @@ const ProductForm = ({
       <Form.Item
         name="price"
         label="Giá bán"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             required: true,
@@ -387,7 +389,7 @@ const ProductForm = ({
           <Button type="primary" htmlType="submit" loading={loading}>
             {useForCreate ? "Thêm mới" : "Cập nhật"}
           </Button>
-          <Button onClick={() => navigate(path)}>Đóng</Button>
+          <Button onClick={() => navigate(-1)}>Đóng</Button>
         </Space>
       </Form.Item>
     </Form>

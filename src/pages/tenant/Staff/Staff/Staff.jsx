@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Flex } from "antd";
+import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import StaffFilterModal from "./StaffFilterModal";
@@ -32,6 +32,21 @@ const breadcrumbItems = [
     title: "Nhân viên",
   },
 ];
+
+// eslint-disable-next-line no-unused-vars
+export const deleteRecord = async (id) => {
+  try {
+    // await CustomerAPI.deleteCustomer(id);
+    message.success("Xóa nhân viên thành công!");
+  } catch (error) {
+    if (error.response?.status === 404) {
+      message.error("Nhân viên không còn tồn tại!");
+    } else {
+      // TODO: handle DATA_USED
+      message.error("Không thể xóa nhân viên!");
+    }
+  }
+}
 
 const Staff = () => {
   const navigate = useNavigate();
@@ -149,18 +164,8 @@ const Staff = () => {
   // delete 
   // eslint-disable-next-line no-unused-vars
   const handleDelete = async (record) => {
-    try {
-      // await CustomerAPI.deleteCustomer(record.id);
-      message.success("Xóa nhân viên thành công!");
-      setReload();
-    } catch (error) {
-      if (error.response?.status === 404) {
-        message.error("Nhân viên không còn tồn tại!");
-      } else {
-        // TODO: handle DATA_USED
-        message.error("Không thể xóa nhân viên!");
-      }
-    }
+    await deleteRecord(record.id);
+    setReload();
   };
 
   // search
@@ -178,20 +183,17 @@ const Staff = () => {
 
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
+      <PageHeader breadcrumbItems={breadcrumbItems}>
+        <Search
+          placeholder="Tìm kiếm theo mã, tên, sđt,.."
+          allowClear
+          enterButton
+          onSearch={handleSubmitSearch}
+          style={{ width: "400px" }}
+          size="large"
+        />
 
-      <ContentBox>
-        <Flex justify="center" gap="middle">
-          <Search
-            placeholder="Tìm kiếm theo mã, tên, sdt"
-            allowClear
-            enterButton
-            onSearch={handleSubmitSearch}
-            style={{
-              width: "400px",
-            }}
-          />
-
+        <Space>
           <Button
             type="primary"
             icon={<FilterOutlined />}
@@ -199,8 +201,17 @@ const Staff = () => {
           >
             Bộ lọc
           </Button>
-        </Flex>
-      </ContentBox>
+
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateNew}
+          >
+            Thêm mới
+          </Button>
+        </Space>
+
+      </PageHeader>
 
       <ContentBox>
         <BaseTable
@@ -218,15 +229,7 @@ const Staff = () => {
           setReload={() => {
             setReload();
           }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateNew}
-          >
-            Thêm mới
-          </Button>
-        </BaseTable>
+        />
       </ContentBox>
 
       <StaffFilterModal

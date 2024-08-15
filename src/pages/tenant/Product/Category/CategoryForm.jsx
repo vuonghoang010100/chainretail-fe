@@ -2,15 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Input, Button, Space, message } from "antd";
 import { uniqueValidator } from "@/utils";
-import { ROUTE } from "@/constants/AppConstant";
 
-const path = ROUTE.TENANT_APP.CATEGORY.path;
-
-const CategoryForm = ({
-  useForCreate,
-  onFinish,
-  initRecord: initRecord = {},
-}) => {
+const CategoryForm = ({ useForCreate, onFinish, initRecord: initRecord = {}, }) => {
   const navigate = useNavigate();
 
   // -------------------- Form attrs --------------------
@@ -108,6 +101,7 @@ const CategoryForm = ({
       <Form.Item
         name="name"
         label="Tên nhóm sản phẩm"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -136,7 +130,7 @@ const CategoryForm = ({
           <Button type="primary" htmlType="submit" loading={loading}>
             {useForCreate ? "Thêm mới" : "Cập nhật"}
           </Button>
-          <Button onClick={() => navigate(path)}>Đóng</Button>
+          <Button onClick={() => navigate(-1)}>Đóng</Button>
         </Space>
       </Form.Item>
     </Form>

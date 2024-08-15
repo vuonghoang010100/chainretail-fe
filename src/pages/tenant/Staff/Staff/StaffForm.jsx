@@ -9,12 +9,9 @@ import {
   SelectProvince,
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
-import { ROUTE } from "@/constants/AppConstant";
 import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
 import { RoleSerivce } from "@/apis/RoleService";
 import { StoreService } from "@/apis/StoreService";
-
-const path = ROUTE.TENANT_APP.STAFF.path;
 
 const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   const navigate = useNavigate();
@@ -146,6 +143,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="fullName"
         label="Họ và tên"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -159,6 +157,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="email"
         label="Email"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -181,6 +180,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           <Form.Item
             name="password"
             label="Mật khẩu"
+            tooltip="Trường bắt buộc!"
             rules={[
               {
                 required: true,
@@ -275,6 +275,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       <Form.Item
         name="phone"
         label="Số điện thoại"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             validator: (_, value) =>
@@ -309,7 +310,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       </Form.Item>
 
       {!useForCreate && (
-        <Form.Item name="status" label="Trạng thái">
+        <Form.Item name="status" label="Trạng thái" required tooltip="Trường bắt buộc!">
           <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
         </Form.Item>
       )}
@@ -328,7 +329,7 @@ const StaffForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
           <Button type="primary" htmlType="submit" loading={loading}>
             {useForCreate ? "Thêm mới" : "Cập nhật"}
           </Button>
-          <Button onClick={() => navigate(path)}>Đóng</Button>
+          <Button onClick={() => navigate(-1)}>Đóng</Button>
         </Space>
       </Form.Item>
     </Form>

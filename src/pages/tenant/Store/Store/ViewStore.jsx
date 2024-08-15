@@ -58,7 +58,7 @@ const ViewStore = () => {
           setLoading(false);
         }
       } catch (error) {
-        message.error("Không thể tải dữ liệu nhóm sản phẩm!");
+        message.error("Không thể tải dữ liệu cửa hàng!");
       }
     };
 
