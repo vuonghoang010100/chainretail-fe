@@ -12,8 +12,8 @@ import {
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Vendor";
+import { VendorService } from "@/apis/VendorService";
 
 // current page path
 const path = ROUTE.TENANT_APP.VENDOR.path;
@@ -49,7 +49,7 @@ const ViewVendor = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await VendorService.getVendorById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,28 +72,23 @@ const ViewVendor = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Tên nhà cung cấp",
+      children: <Text strong>{currentRecord?.fullName}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
+      label: "Mã nhà cung cấp",
       children: currentRecord?.id,
-    },
-    {
-      key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
-    },
-    {
-      key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
     },
     {
       key: useId(),
       label: "Email",
       children: currentRecord?.email,
+    },
+    {
+      key: useId(),
+      label: "Số điện thoại",
+      children: currentRecord?.phone,
     },
     {
       key: useId(),
@@ -167,6 +162,7 @@ const ViewVendor = () => {
           }}
         />
       </Card>
+      {/* TODO: contract list */}
     </PageContent>
   );
 };

@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import VendorForm from "./VendorForm";
-import { StoreService } from "@/apis/StoreService";
+import { VendorService } from "@/apis/VendorService";
 
 // current page path
 const path = ROUTE.TENANT_APP.VENDOR.path;
@@ -46,7 +46,7 @@ const EditVendor = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await VendorService.getVendorById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -90,7 +90,7 @@ const EditVendor = () => {
     }
 
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await VendorService.putVendor(id, updateData);
     navigate(path);
     return true;
   };

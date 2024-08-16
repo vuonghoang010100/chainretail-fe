@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import VendorFilterModal from "./VendorFilterModal";
+import { VendorService } from "@/apis/VendorService";
 
 const { Search } = Input;
 
@@ -65,19 +65,14 @@ const Vendor = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã NCC",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Tên cửa hàng",
+      title: "Tên NCC",
       dataIndex: "fullName",
       key: "fullName",
     },
@@ -124,8 +119,8 @@ const Vendor = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
-        console.info("Get All Store", dataResponse);
+        const dataResponse = await VendorService.getAll(query);
+        console.info("Get All Vendor", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -175,7 +170,7 @@ const Vendor = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-            placeholder="Tìm kiếm theo tên nhà cung cấp"
+            placeholder="Tìm kiếm theo tên, email, sdt"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}

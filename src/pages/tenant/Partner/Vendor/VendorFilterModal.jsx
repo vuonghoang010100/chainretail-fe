@@ -60,20 +60,32 @@ const VendorFilterModal = ({ open, setOpen, setQuery }) => {
         {/* form item here */}
         <Row {...rowProps}>
           <Col {...colProps}>
-            <Form.Item name="id" label="Mã cửa hàng">
-              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
+            <Form.Item name="id" label="Mã nhà cung cấp">
+              <Input placeholder="Tìm theo mã nhà cung cấp" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="name" label="Tên hiển thị">
-              <Input placeholder="Tìm theo tên hiển thị" allowClear />
+            <Form.Item name="fullName" label="Tên nhà cung cấp">
+              <Input placeholder="Tìm theo tên nhà cung cấp" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="fullName" label="Tên cửa hàng">
-              <Input placeholder="Tìm theo tên cửa hàng" allowClear />
+            <Form.Item name="email" label="Email">
+              <Input placeholder="Tìm theo email" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="phone" label="Số điện thoại">
+              <Input placeholder="Tìm theo số điện thoại" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="status" label="Trạng thái">
+              <RadioGroup values={[VALUE_ALL, "Đang hợp tác", "Dừng hợp tác"]} />
             </Form.Item>
           </Col>
 
@@ -95,24 +107,6 @@ const VendorFilterModal = ({ open, setOpen, setQuery }) => {
           <Col {...colProps}>
             <Form.Item name="district" label="Quận/Huyện">
               <SelectDistrict options={districtOptions} />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="email" label="Email">
-              <Input placeholder="Tìm theo email" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="Tìm theo số điện thoại" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="status" label="Trạng thái">
-              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
             </Form.Item>
           </Col>
 
