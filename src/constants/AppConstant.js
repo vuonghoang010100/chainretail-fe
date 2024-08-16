@@ -35,7 +35,7 @@ export const ROUTE = {
       name: "order",
       group: TENANT_GROUP.SALE_GROUP,
     },
-    INVOIVE: {
+    INVOICE: {
       path: "/invoice",
       name: "invoice",
       group: TENANT_GROUP.SALE_GROUP,
@@ -45,7 +45,7 @@ export const ROUTE = {
       name: "pos",
       group: TENANT_GROUP.SALE_GROUP,
     },
-    PRUCHASE: {
+    PURCHASE: {
       path: "/purchase",
       name: "purchase",
       group: TENANT_GROUP.PURCHASE_GROUP,

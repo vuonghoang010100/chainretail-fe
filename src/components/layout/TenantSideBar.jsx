@@ -43,11 +43,11 @@ const menuItems = [
   ]),
   getMenuItem("Bán hàng", TENANT_GROUP.SALE_GROUP, <ShoppingOutlined />, [
     getMenuItem("Đơn đặt hàng", TENANT_ROUTE.ORDER.path),
-    getMenuItem("Hóa đơn", TENANT_ROUTE.INVOIVE.path),
+    getMenuItem("Hóa đơn", TENANT_ROUTE.INVOICE.path),
     getMenuItem("Bán hàng", TENANT_ROUTE.POS.path),
   ]),
   getMenuItem("Nhập hàng", TENANT_GROUP.PURCHASE_GROUP, <ShoppingCartOutlined />, [
-    getMenuItem("Đơn nhập hàng", TENANT_ROUTE.PRUCHASE.path),
+    getMenuItem("Đơn nhập hàng", TENANT_ROUTE.PURCHASE.path),
     getMenuItem("Hóa đơn nhập hàng", TENANT_ROUTE.BILL.path),
   ]),
   getMenuItem("Đối tác", TENANT_GROUP.PARTNER_GROUP, <UserOutlined />, [
