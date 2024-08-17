@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Row, Col } from "antd";
+import { Form, Input, Row, Col,InputNumber } from "antd";
 import {
   BaseFilterModal,
   rowProps,
@@ -10,6 +10,7 @@ import {
   SelectProvince,
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
+import { RangePickerx } from "@/components/common/Input/DatePicker";
 import { VALUE_ALL } from "@/components/common/FilterModal/BaseFilterModal";
 
 const CustomerFilterModal = ({ open, setOpen, setQuery }) => {
@@ -21,6 +22,15 @@ const CustomerFilterModal = ({ open, setOpen, setQuery }) => {
   const handleFilter = () => {
     setOpen(false);
     let data = form.getFieldsValue();
+
+    // convert data
+    // eslint-disable-next-line no-extra-boolean-cast
+    if (!!data.dob) {
+      const [start_date, end_date] = data.dob;
+      data.fromDob = start_date ? start_date : null;
+      data.toDob = end_date ? end_date : null;
+    }
+    delete data.dob;
 
     // Trim
     const queryData = Object.fromEntries(
@@ -60,20 +70,66 @@ const CustomerFilterModal = ({ open, setOpen, setQuery }) => {
         {/* form item here */}
         <Row {...rowProps}>
           <Col {...colProps}>
-            <Form.Item name="id" label="Mã cửa hàng">
-              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
+            <Form.Item name="id" label="Mã khách hàng">
+              <Input placeholder="Tìm theo mã khách hàng" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="name" label="Tên hiển thị">
-              <Input placeholder="Tìm theo tên hiển thị" allowClear />
+            <Form.Item name="fullName" label="Tên khách hàng">
+              <Input placeholder="Tìm theo tên khách hàng" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="fullName" label="Tên cửa hàng">
-              <Input placeholder="Tìm theo tên cửa hàng" allowClear />
+            <Form.Item name="email" label="Email">
+              <Input placeholder="Tìm theo email" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="phone" label="Số điện thoại">
+              <Input placeholder="Tìm theo số điện thoại" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="dob" label="Ngày sinh">
+              <RangePickerx />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="gender" label="Giới tính">
+              <RadioGroup values={[VALUE_ALL, "Nam", "Nữ"]} />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="gteRewardPoint" label="Điểm thưởng từ">
+              <InputNumber
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                step="1000"
+                min="0"
+                addonAfter="Điểm"
+              />
+            </Form.Item>
+          </Col>
+
+          <Col {...colProps}>
+            <Form.Item name="lteRewardPoint" label="Điểm thưởng đến">
+              <InputNumber
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                step="1000"
+                min="0"
+                addonAfter="Điểm"
+              />
             </Form.Item>
           </Col>
 
@@ -95,24 +151,6 @@ const CustomerFilterModal = ({ open, setOpen, setQuery }) => {
           <Col {...colProps}>
             <Form.Item name="district" label="Quận/Huyện">
               <SelectDistrict options={districtOptions} />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="email" label="Email">
-              <Input placeholder="Tìm theo email" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="Tìm theo số điện thoại" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="status" label="Trạng thái">
-              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
             </Form.Item>
           </Col>
 

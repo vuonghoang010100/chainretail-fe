@@ -38,7 +38,6 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
   // -------------------- Handle Unique fields --------------------
   const [usedEmail, setUsedEmail] = useState([]);
   const [usedPhone, setUsedPhone] = useState([]);
-  const [usedName, setUsedName] = useState([]);
   const [usedFullName, setUsedFullName] = useState([]);
 
   const handleError = (postPutData, error) => {
@@ -55,11 +54,8 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
       } else if (errorCode === -301) {
         message.error("Số điện thoại đã được sử dụng!");
         setUsedPhone((prev) => [...prev, postPutData.phone]);
-      } else if (errorCode === -302) {
-        message.error("Tên hiển thị đã được sử dụng!");
-        setUsedName((prev) => [...prev, postPutData.name]);
       } else if (errorCode === -303) {
-        message.error("Tên cửa hàng đã được sử dụng!");
+        message.error("Tên nhà cung cấp đã được sử dụng!");
         setUsedFullName((prev) => [...prev, postPutData.fullName]);
       } else {
         console.error("Uncatch conflict error message", error);
@@ -124,92 +120,26 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
       }}
     >
       {!useForCreate && (
-        <Form.Item name="id" label="Mã cửa hàng">
+        <Form.Item name="id" label="Mã nhà cung cấp">
           <Input disabled />
         </Form.Item>
       )}
 
       <Form.Item
-        name="name"
-        label="Tên hiển thị"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập tên hiển thị!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedName, "Tên hiển thị"),
-          },
-        ]}
-      >
-        <Input
-          placeholder="Tên hiển thị của cửa hàng"
-          count={{
-            show: true,
-            max: 50,
-            exceedFormatter: (txt, { max }) => (txt).slice(0, max).join(''),
-          }}
-        />
-      </Form.Item>
-
-      <Form.Item
         name="fullName"
-        label="Tên cửa hàng"
+        label="Tên nhà cung cấp"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập tên cửa hàng!",
+            message: "Vui lòng nhập tên nhà cung cấp!",
           },
           {
             validator: (_, value) =>
-              uniqueValidator(value, usedFullName, "Tên cửa hàng"),
+              uniqueValidator(value, usedFullName, "Tên nhà cung cấp"),
           },
         ]}
       >
-        <Input placeholder="Tên của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="province"
-        label="Tỉnh/Thành phố"
-        rules={[
-          {
-            required: true,
-            message: "Vui chọn Tỉnh/Thành phố!",
-          },
-        ]}
-      >
-        <SelectProvince
-          setDistrictOptions={setDistrictOptions}
-          resetDistrict={() => form.resetFields(["district"])}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="district"
-        label="Quận/Huyện"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng chọn Quận/Huyện!",
-          },
-        ]}
-      >
-        <SelectDistrict options={districtOptions} />
-      </Form.Item>
-
-      <Form.Item
-        name="address"
-        label="Địa chỉ"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập địa chỉ của cửa hàng!",
-          },
-        ]}
-      >
-        <Input placeholder="Địa chỉ của cửa hàng" />
+        <Input placeholder="Tên của nhà cung cấp" />
       </Form.Item>
 
       <Form.Item
@@ -225,7 +155,7 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
           },
         ]}
       >
-        <Input placeholder="Email liên hệ của cửa hàng" />
+        <Input placeholder="Email liên hệ của nhà cung cấp" />
       </Form.Item>
 
       <Form.Item
@@ -238,12 +168,36 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
           },
         ]}
       >
-        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
+        <Input placeholder="Số điện thoại liên hệ của nhà cung cấp" />
+      </Form.Item>
+
+      <Form.Item
+        name="province"
+        label="Tỉnh/Thành phố"
+      >
+        <SelectProvince
+          setDistrictOptions={setDistrictOptions}
+          resetDistrict={() => form.resetFields(["district"])}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="district"
+        label="Quận/Huyện"
+      >
+        <SelectDistrict options={districtOptions} />
+      </Form.Item>
+
+      <Form.Item
+        name="address"
+        label="Địa chỉ"
+      >
+        <Input placeholder="Địa chỉ của nhà cung cấp" />
       </Form.Item>
 
       {!useForCreate && (
         <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
+          <RadioGroup values={["Đang hợp tác", "Dừng hợp tác"]} />
         </Form.Item>
       )}
 

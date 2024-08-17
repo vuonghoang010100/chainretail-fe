@@ -12,8 +12,8 @@ import {
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Customer";
+import { CustomerService } from "@/apis/CustomerService";
 
 // current page path
 const path = ROUTE.TENANT_APP.CUSTOMER.path;
@@ -49,7 +49,7 @@ const ViewCustomer = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await CustomerService.getCustomerById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,28 +72,33 @@ const ViewCustomer = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Tên khách hàng",
+      children: <Text strong>{currentRecord?.fullName}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
+      label: "Mã khách hàng",
       children: currentRecord?.id,
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Ngày sinh",
+      children: currentRecord?.dob,
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Giới tính",
+      children: currentRecord?.gender,
     },
     {
       key: useId(),
       label: "Email",
       children: currentRecord?.email,
+    },
+    {
+      key: useId(),
+      label: "Số điện thoại",
+      children: currentRecord?.phone,
     },
     {
       key: useId(),
@@ -112,8 +117,8 @@ const ViewCustomer = () => {
     },
     {
       key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
+      label: "Điểm thưởng",
+      children: currentRecord?.rewardPoint,
     },
     {
       key: useId(),

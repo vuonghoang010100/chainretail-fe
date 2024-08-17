@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import CustomerFilterModal from "./CustomerFilterModal";
+import { CustomerService } from "@/apis/CustomerService";
 
 const { Search } = Input;
 
@@ -43,7 +43,7 @@ export const deleteRecord = async (id) => {
       message.error("Không thể xóa khách hàng!");
     }
   }
-}
+};
 
 const Customer = () => {
   const navigate = useNavigate();
@@ -65,21 +65,26 @@ const Customer = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã khách hàng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Tên cửa hàng",
+      title: "Tên khách hàng",
       dataIndex: "fullName",
       key: "fullName",
+    },
+    {
+      title: "Ngày sinh",
+      dataIndex: "dob",
+      key: "dob",
+    },
+    {
+      title: "Giới tính",
+      dataIndex: "gender",
+      key: "gender",
     },
     {
       title: "Email",
@@ -90,6 +95,11 @@ const Customer = () => {
       title: "Sdt",
       dataIndex: "phone",
       key: "phone",
+    },
+    {
+      title: "Điểm thưởng",
+      dataIndex: "rewardPoint",
+      key: "rewardPoint",
     },
     {
       title: "Tỉnh/TP",
@@ -107,11 +117,6 @@ const Customer = () => {
       key: "address",
     },
     {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
@@ -124,8 +129,8 @@ const Customer = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
-        console.info("Get All Store", dataResponse);
+        const dataResponse = await CustomerService.getAll(query);
+        console.info("Get All Customer", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -175,31 +180,31 @@ const Customer = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-            placeholder="Tìm kiếm theo tên khách hàng"
-            allowClear
-            enterButton
-            onSearch={handleSubmitSearch}
-            style={{ width: "400px" }}
-            size="large"
-          />
+          placeholder="Tìm kiếm theo tên, sdt"
+          allowClear
+          enterButton
+          onSearch={handleSubmitSearch}
+          style={{ width: "400px" }}
+          size="large"
+        />
 
-          <Space>
-            <Button
-              type="primary"
-              icon={<FilterOutlined />}
-              onClick={() => setOpenFilter(true)}
-            >
-              Bộ lọc
-            </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setOpenFilter(true)}
+          >
+            Bộ lọc
+          </Button>
 
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={handleCreateNew}
-            >
-              Thêm mới
-            </Button>
-          </Space>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateNew}
+          >
+            Thêm mới
+          </Button>
+        </Space>
       </PageHeader>
 
       <ContentBox>
