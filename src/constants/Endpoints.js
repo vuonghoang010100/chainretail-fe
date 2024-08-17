@@ -8,6 +8,7 @@ const Endpoints = {
   CUSTOMER: "/customers",
   VENDOR: "/vendors",
   CONTRACT: "/contracts",
+  FILE: "/files"
 
 };
 

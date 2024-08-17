@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import ContractForm from "./ContractForm";
-import { StoreService } from "@/apis/StoreService";
+import { ContractService } from "@/apis/ContractService";
 
 // current page path
 const path = ROUTE.TENANT_APP.CONTRACT.path;
@@ -46,7 +46,7 @@ const EditContract = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await ContractService.getContractById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -57,6 +57,17 @@ const EditContract = () => {
 
           // convert data
           let recordFormatted = { ...record };
+
+          record.vendorId = null;
+          if (record.vendor) {
+            recordFormatted.vendor = {
+              label: `${record.vendor.fullName}`,
+              key: record.vendor.id,
+              value: record.vendor.id,
+            };
+            record.vendorId = record.vendor.id;
+            delete record.vendor;
+          }
 
           setCurrentRecord(record);
           setFormatRecord(recordFormatted);
@@ -90,17 +101,14 @@ const EditContract = () => {
     }
 
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await ContractService.putContract(id, updateData);
     navigate(path);
     return true;
   };
 
   return (
     <PageContent>
-      <PageHeader 
-        title="Cập nhật hợp đồng"
-        breadcrumbItems={breadcrumbItems} 
-      />
+      <PageHeader title="Cập nhật hợp đồng" breadcrumbItems={breadcrumbItems} />
       <ContentBox>
         <Title marginBot>Thông tin hợp đồng</Title>
         <ContractForm

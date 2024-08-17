@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import ContractForm from "./ContractForm";
-import { StoreService } from "@/apis/StoreService";
+import { ContractService } from "@/apis/ContractService";
 
 // current page path
 const path = ROUTE.TENANT_APP.CONTRACT.path;
@@ -35,17 +35,14 @@ const NewContract = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    await ContractService.postContract(data);
     navigate(path);
     return true;
   };
 
   return (
     <PageContent>
-      <PageHeader 
-        title="Thêm mới hợp đồng"
-        breadcrumbItems={breadcrumbItems} 
-      />
+      <PageHeader title="Thêm mới hợp đồng" breadcrumbItems={breadcrumbItems} />
       <ContentBox>
         <Title marginBot>Thông tin hợp đồng</Title>
         <ContractForm useForCreate onFinish={handleCreate} />
