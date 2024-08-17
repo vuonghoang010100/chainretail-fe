@@ -31,11 +31,17 @@ const NewOrder = lazy(() => import("@/pages/tenant/Sale/Order/NewOrder"));
 const EditOrder = lazy(() => import("@/pages/tenant/Sale/Order/EditOrder"));
 const ViewOrder = lazy(() => import("@/pages/tenant/Sale/Order/ViewOrder"));
 // Invoice
-import Invoice from "@/pages/tenant/Sale/Invoice";
+const Invoice = lazy(() => import("@/pages/tenant/Sale/Invoice/Invoice"));
+const NewInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/NewInvoice"));
+const EditInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/EditInvoice"));
+const ViewInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/ViewInvoice"));
 // Pos
 import Pos from "@/pages/tenant/Sale/Pos";
 // Purchase
-import Purchase from "@/pages/tenant/Purchase/Purchase";
+const Purchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/Purchase"));
+const NewPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/NewPurchase"));
+const EditPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/EditPurchase"));
+const ViewPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/ViewPurchase"));
 // Bill
 const Bill = lazy(() => import("@/pages/tenant/Purchase/Bill/Bill"));
 const NewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/NewBill"));
@@ -201,16 +207,22 @@ function App() {
           <Route path=":id/edit" element={<LazyLoadPage><EditOrder/></LazyLoadPage>} />
         </Route>
 
-        <Route path={ROUTE.TENANT_APP.INVOIVE.name} >
-          <Route index element={<Invoice/>} />
+        <Route path={ROUTE.TENANT_APP.INVOICE.name} >
+          <Route index element={<LazyLoadPage><Invoice/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewInvoice/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewInvoice/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditInvoice/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.POS.name} >
           <Route index element={<Pos/>} />
         </Route>
 
-        <Route path={ROUTE.TENANT_APP.PRUCHASE.name} >
-          <Route index element={<Purchase/>} />
+        <Route path={ROUTE.TENANT_APP.PURCHASE.name} >
+          <Route index element={<LazyLoadPage><Purchase/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewPurchase/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewPurchase/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditPurchase/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.BILL.name} >

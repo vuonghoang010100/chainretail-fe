@@ -1,15 +1,14 @@
 import React, { useState, useEffect, useId } from "react";
-import { Link, useParams } from "react-router-dom";
-import { message, Descriptions, Typography } from "antd";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { message, Descriptions, Typography, Space, Button, Popconfirm, Card } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import {
   PageContent,
   PageHeader,
-  ContentBox,
 } from "@/components/layout/PageContent";
-import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import { CategoryService } from "@/apis/CategoryService";
+import { deleteRecord } from "./Category";
 
 // current page path
 const path = ROUTE.TENANT_APP.CATEGORY.path;
@@ -33,8 +32,10 @@ const breadcrumbItems = [
 const { Text } = Typography;
 
 const ViewCategory = () => {
+  const navigate = useNavigate();
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
+  const [loading, setLoading] = useState(true);
   const [currentRecord, setCurrentRecord] = useState({}); // data
 
   // -------------------- Fetch data --------------------
@@ -47,7 +48,10 @@ const ViewCategory = () => {
         console.log(record);
 
         // on get cuccessfully
-        !isMounted && setCurrentRecord(record);
+        if (!isMounted) {
+          setCurrentRecord(record);
+          setLoading(false);
+        }
       } catch (error) {
         message.error("Không thể tải dữ liệu nhóm sản phẩm!");
       }
@@ -78,11 +82,40 @@ const ViewCategory = () => {
     },
   ];
 
+  const handleEdit = () => {
+    navigate(`${path}/${id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    await deleteRecord(id);
+    navigate(path);
+  };
+
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
-      <ContentBox>
-        <Title marginBot>Thông tin nhóm sản phẩm</Title>
+      <PageHeader
+        title="Xem thông tin nhóm sản phẩm"
+        breadcrumbItems={breadcrumbItems}
+      >
+        <Space>
+          <Button type="primary" onClick={handleEdit}>
+            Cập nhật
+          </Button>
+          <Popconfirm
+            title="Xóa nhóm sản phẩm?"
+            okText="Xóa"
+            cancelText="Đóng"
+            placement="bottomRight"
+            onConfirm={handleDelete}
+          >
+            <Button type="primary" danger>
+              Xóa
+            </Button>
+          </Popconfirm>
+          <Button onClick={() => navigate(path)}>Đóng</Button>
+        </Space>
+      </PageHeader>
+      <Card title="Thông tin nhóm sản phẩm" bordered={false} loading={loading}>
         <Descriptions
           bordered
           items={infoItems}
@@ -93,7 +126,7 @@ const ViewCategory = () => {
             minWidth: "max-content",
           }}
         />
-      </ContentBox>
+      </Card>
     </PageContent>
   );
 };

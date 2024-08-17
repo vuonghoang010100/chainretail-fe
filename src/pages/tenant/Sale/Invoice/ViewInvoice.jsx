@@ -13,10 +13,10 @@ import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
 import { StoreService } from "@/apis/StoreService";
-import { deleteRecord } from "./Store";
+import { deleteRecord } from "./Invoice";
 
 // current page path
-const path = ROUTE.TENANT_APP.STORE.path;
+const path = ROUTE.TENANT_APP.INVOICE.path;
 
 const breadcrumbItems = [
   {
@@ -27,7 +27,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Cửa hàng</Link>,
+    title: <Link to={`${path}`}>Hóa đơn</Link>,
   },
   {
     title: "Xem",
@@ -36,7 +36,7 @@ const breadcrumbItems = [
 
 const { Text } = Typography;
 
-const ViewStore = () => {
+const ViewInvoice = () => {
   const navigate = useNavigate();
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
@@ -58,7 +58,7 @@ const ViewStore = () => {
           setLoading(false);
         }
       } catch (error) {
-        message.error("Không thể tải dữ liệu cửa hàng!");
+        message.error("Không thể tải dữ liệu hóa đơn!");
       }
     };
 
@@ -134,7 +134,7 @@ const ViewStore = () => {
   return (
     <PageContent>
       <PageHeader
-        title="Xem thông tin cửa hàng"
+        title="Xem thông tin hóa đơn"
         breadcrumbItems={breadcrumbItems}
       >
         <Space>
@@ -142,7 +142,7 @@ const ViewStore = () => {
             Cập nhật
           </Button>
           <Popconfirm
-            title="Xóa cửa hàng?"
+            title="Xóa hóa đơn?"
             okText="Xóa"
             cancelText="Đóng"
             placement="bottomRight"
@@ -155,7 +155,7 @@ const ViewStore = () => {
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
-      <Card title="Thông tin cửa hàng" bordered={false} loading={loading}>
+      <Card title="Thông tin hóa đơn" bordered={false} loading={loading}>
         <Descriptions
           bordered
           items={infoItems}
@@ -171,4 +171,4 @@ const ViewStore = () => {
   );
 };
 
-export default ViewStore;
+export default ViewInvoice;

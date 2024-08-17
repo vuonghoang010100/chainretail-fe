@@ -8,7 +8,7 @@ import {
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
 
-const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
+const InvoiceForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   const navigate = useNavigate();
 
   // -------------------- Form attrs --------------------
@@ -68,8 +68,8 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
     }
     // Uncatch error
     useForCreate
-      ? message.error("Không thể thêm mới cửa hàng!")
-      : message.error("Không thể cập nhật cửa hàng!");
+      ? message.error("Không thể thêm mới hóa đơn!")
+      : message.error("Không thể cập nhật hóa đơn!");
   };
 
   // -------------------- Utils fucntion --------------------
@@ -95,10 +95,10 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
     try {
       const isFinish = await onFinish(data);
       if (useForCreate) {
-        message.success("Thêm mới cửa hàng thành công!");
+        message.success("Thêm mới hóa đơn thành công!");
       } else {
         isFinish
-          ? message.success("Cập nhật cửa hàng thành công!")
+          ? message.success("Cập nhật hóa đơn thành công!")
           : message.info("Không có dữ liệu thay đổi!");
       }
     } catch (error) {
@@ -110,7 +110,7 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
 
   return (
     <Form
-      name="storeForm"
+      name="invoiceForm"
       form={form}
       onFinish={handleSubmit}
       labelCol={{
@@ -274,4 +274,4 @@ const StoreForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   );
 };
 
-export default StoreForm;
+export default InvoiceForm;

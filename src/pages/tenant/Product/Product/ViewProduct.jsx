@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useId } from "react";
-import { Link, useParams } from "react-router-dom";
-import { message, Descriptions, Typography, Avatar, Flex } from "antd";
+import { Link, useParams, useNavigate } from "react-router-dom";
+import { message, Descriptions, Typography, Space, Button, Popconfirm, Card, Avatar, Flex } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import {
   PageContent,
   PageHeader,
-  ContentBox,
 } from "@/components/layout/PageContent";
-import { Title } from "@/components/common/Title";
+// import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import { ProductService } from "@/apis/ProductService";
+import { deleteRecord } from "./Product";
 
 const noImageurl =
   "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png";
@@ -36,8 +36,11 @@ const breadcrumbItems = [
 const { Text } = Typography;
 
 const ViewProduct = () => {
+  const navigate = useNavigate();
+
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
+  const [loading, setLoading] = useState(true);
   const [currentRecord, setCurrentRecord] = useState({}); // data
 
   // -------------------- Fetch data --------------------
@@ -50,7 +53,10 @@ const ViewProduct = () => {
         console.log(record);
 
         // on get cuccessfully
-        !isMounted && setCurrentRecord(record);
+        if (!isMounted) {
+          setCurrentRecord(record);
+          setLoading(false);
+        }
       } catch (error) {
         message.error("Không thể tải dữ liệu nhân viên!");
       }
@@ -125,12 +131,43 @@ const ViewProduct = () => {
     },
   ];
 
+  const handleEdit = () => {
+    navigate(`${path}/${id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    await deleteRecord(id);
+    navigate(path);
+  };
+
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
-      <ContentBox>
-        <Title marginBot>Thông tin sản phẩm</Title>
+      <PageHeader
+        title="Xem thông tin sản phẩm"
+        breadcrumbItems={breadcrumbItems}
+      >
+        <Space>
+          <Button type="primary" onClick={handleEdit}>
+            Cập nhật
+          </Button>
 
+          <Popconfirm
+            title="Xóa sản phẩm?"
+            okText="Xóa"
+            cancelText="Đóng"
+            placement="bottomRight"
+            onConfirm={handleDelete}
+          >
+            <Button type="primary" danger>
+              Xóa
+            </Button>
+          </Popconfirm>
+
+          <Button onClick={() => navigate(path)}>Đóng</Button>
+        </Space>
+      </PageHeader>
+
+      <Card title="Thông tin sản phẩm" bordered={false} loading={loading}>
         <Flex gap="large" wrap>
           <Avatar
             shape="square"
@@ -152,7 +189,7 @@ const ViewProduct = () => {
             }}
           />
         </Flex>
-      </ContentBox>
+      </Card>
     </PageContent>
   );
 };

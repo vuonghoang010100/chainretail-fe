@@ -5,16 +5,17 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
-import { HomeOutlined, PlusOutlined } from "@ant-design/icons";
+import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
 import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { CategoryService } from "@/apis/CategoryService";
+import { StoreService } from "@/apis/StoreService";
+import InvoiceFilterModal from "./InvoiceFilterModal";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.CATEGORY.path;
+const path = ROUTE.TENANT_APP.INVOICE.path;
 
 /**
  * Breadcrumd item for page
@@ -28,7 +29,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Nhóm sản phẩm",
+    title: "Hóa đơn",
   },
 ];
 
@@ -36,19 +37,22 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa nhóm sản phẩm thành công!");
+    message.success("Xóa hóa đơn thành công!");
   } catch (error) {
     if (error.response?.status === 404) {
-      message.error("Nhóm sản phẩm không còn tồn tại!");
+      message.error("Hóa đơn không còn tồn tại!");
     } else {
       // TODO: handle DATA_USED
-      message.error("Không thể xóa nhóm sản phẩm!");
+      message.error("Không thể xóa hóa đơn!");
     }
   }
 }
 
-const Category = () => {
+const Invoice = () => {
   const navigate = useNavigate();
+
+  // -------------------- Filter attr --------------------
+  const [openFilter, setOpenFilter] = useState(false); // control filter model open state
 
   // -------------------- Table attr --------------------
   const [reload, setReload] = useToggle(); // reload table
@@ -64,21 +68,56 @@ const Category = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã NSP",
+      title: "Mã cửa hàng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên nhóm sản phẩm",
+      title: "Tên hiển thị",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
-      key: "description",
+      title: "Tên cửa hàng",
+      dataIndex: "fullName",
+      key: "fullName",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Sdt",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Tỉnh/TP",
+      dataIndex: "province",
+      key: "province",
+    },
+    {
+      title: "Quận/Huyện",
+      dataIndex: "district",
+      key: "district",
+    },
+    {
+      title: "Địa chỉ",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Ghi chú",
+      dataIndex: "note",
+      key: "note",
     },
   ];
 
@@ -88,8 +127,8 @@ const Category = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await CategoryService.getAll(query);
-        console.info("Get All Category", dataResponse);
+        const dataResponse = await StoreService.getAll(query);
+        console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -117,8 +156,7 @@ const Category = () => {
     navigate(`${path}/${record.id}/edit`);
   };
 
-  // delete customer
-  // eslint-disable-next-line no-unused-vars
+  // delete
   const handleDelete = async (record) => {
     await deleteRecord(record.id);
     setReload();
@@ -141,7 +179,7 @@ const Category = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên nhóm sản phẩm"
+          placeholder="Tìm kiếm theo mã hóa đơn"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}
@@ -150,6 +188,14 @@ const Category = () => {
         />
 
         <Space>
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setOpenFilter(true)}
+          >
+            Bộ lọc
+          </Button>
+
           <Button
             type="primary"
             icon={<PlusOutlined />}
@@ -163,7 +209,7 @@ const Category = () => {
 
       <ContentBox>
         <BaseTable
-          label="Nhóm sản phẩm"
+          label="Hóa đơn"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -179,8 +225,15 @@ const Category = () => {
           }}
         />
       </ContentBox>
+
+      <InvoiceFilterModal
+        open={openFilter}
+        setOpen={setOpenFilter}
+        query={query}
+        setQuery={setQuery}
+      />
     </PageContent>
   );
 };
 
-export default Category;
+export default Invoice;

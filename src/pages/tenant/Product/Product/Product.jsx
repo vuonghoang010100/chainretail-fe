@@ -6,7 +6,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Flex, Avatar } from "antd";
+import { Input, Button, message, Space, Avatar } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
@@ -34,6 +34,21 @@ const breadcrumbItems = [
     title: "Sản phẩm",
   },
 ];
+
+// eslint-disable-next-line no-unused-vars
+export const deleteRecord = async (id) => {
+  try {
+    // await CustomerAPI.deleteCustomer(id);
+    message.success("Xóa sản phẩm thành công!");
+  } catch (error) {
+    if (error.response?.status === 404) {
+      message.error("Sản phẩm không còn tồn tại!");
+    } else {
+      // TODO: handle DATA_USED
+      message.error("Không thể xóa sản phẩm!");
+    }
+  }
+}
 
 const Product = () => {
   const navigate = useNavigate();
@@ -165,18 +180,8 @@ const Product = () => {
   // delete
   // eslint-disable-next-line no-unused-vars
   const handleDelete = async (record) => {
-    try {
-      // await CustomerAPI.deleteCustomer(record.id);
-      message.success("Xóa nhân viên thành công!");
-      setReload();
-    } catch (error) {
-      if (error.response?.status === 404) {
-        message.error("Nhân viên không còn tồn tại!");
-      } else {
-        // TODO: handle DATA_USED
-        message.error("Không thể xóa nhân viên!");
-      }
-    }
+    await deleteRecord(record.id);
+    setReload();
   };
 
   // search
@@ -194,19 +199,17 @@ const Product = () => {
 
   return (
     <PageContent>
-      <PageHeader breadcrumbItems={breadcrumbItems} />
-      <ContentBox>
-        <Flex justify="center" gap="middle">
-          <Search
-            placeholder="Tìm kiếm theo tên, mã vạch, thương hiệu"
-            allowClear
-            enterButton
-            onSearch={handleSubmitSearch}
-            style={{
-              width: "400px",
-            }}
-          />
+      <PageHeader breadcrumbItems={breadcrumbItems}>
+        <Search
+          placeholder="Tìm kiếm theo tên, mã vạch, thương hiệu,.."
+          allowClear
+          enterButton
+          onSearch={handleSubmitSearch}
+          style={{ width: "400px" }}
+          size="large"
+        />
 
+        <Space>
           <Button
             type="primary"
             icon={<FilterOutlined />}
@@ -214,12 +217,21 @@ const Product = () => {
           >
             Bộ lọc
           </Button>
-        </Flex>
-      </ContentBox>
+
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateNew}
+          >
+            Thêm mới
+          </Button>
+        </Space>
+
+      </PageHeader>
 
       <ContentBox>
         <BaseTable
-          label="Nhân viên"
+          label="Sản phẩm"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -233,15 +245,7 @@ const Product = () => {
           setReload={() => {
             setReload();
           }}
-        >
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateNew}
-          >
-            Thêm mới
-          </Button>
-        </BaseTable>
+        />
       </ContentBox>
 
       <ProductFilterModal
