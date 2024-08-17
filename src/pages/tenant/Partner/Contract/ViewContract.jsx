@@ -9,11 +9,11 @@ import {
   Button,
   Popconfirm,
 } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, PaperClipOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Contract";
+import { ContractService } from "@/apis/ContractService";
 
 // current page path
 const path = ROUTE.TENANT_APP.CONTRACT.path;
@@ -49,7 +49,7 @@ const ViewContract = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await ContractService.getContractById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,43 +72,56 @@ const ViewContract = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã hợp đồng",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Nhà cung cấp",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.VENDOR.path}/${currentRecord?.vendor?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.vendor?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Ngày bắt đầu",
+      children: currentRecord?.startDate,
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Ngày kết thúc",
+      children: currentRecord?.endDate,
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
+      label: "Chu kỳ",
+      children: currentRecord?.period + " Ngày",
     },
     {
       key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
+      label: "Ngày nhập sản phẩm gần nhất",
+      children: currentRecord?.latestPurchaseDate,
     },
     {
       key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
+      label: "Hạn nhập sản phẩm kế tiếp",
+      children: currentRecord?.nextPurchaseDate,
     },
     {
       key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
+      label: "Tệp tin hợp đồng",
+      children: currentRecord?.pdfUrl ? (
+        <Link to={`${currentRecord?.pdfUrl}`} target="_blank">
+          <PaperClipOutlined /> Hợp đồng.pdf
+        </Link>
+      ) : (
+        "Không có tài liệu đính kèm"
+      ),
     },
     {
       key: useId(),

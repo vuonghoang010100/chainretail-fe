@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import ContractFilterModal from "./ContractFilterModal";
+import { ContractService } from "@/apis/ContractService";
 
 const { Search } = Input;
 
@@ -43,7 +43,7 @@ export const deleteRecord = async (id) => {
       message.error("Không thể xóa hợp đồng!");
     }
   }
-}
+};
 
 const Contract = () => {
   const navigate = useNavigate();
@@ -65,47 +65,53 @@ const Contract = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã hợp đồng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Tên NCC",
+      key: "vendor",
+      render: (_, record) => {
+        return (
+          <Link
+            to={`${ROUTE.TENANT_APP.VENDOR.path}/${record?.vendor?.id}`}
+            target="_blank"
+          >
+            {record?.vendor?.fullName}
+          </Link>
+        );
+      },
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      key: "startDate",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Ngày kết thúc",
+      dataIndex: "endDate",
+      key: "endDate",
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Chu kỳ",
+      key: "period",
+      render: (_, record) => {
+        return record?.period + " Ngày";
+      },
     },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
+    // {
+    //   title: "Thời gian nhập hàng gần nhất",
+    //   dataIndex: "latestPurchaseDate",
+    //   key: "latestPurchaseDate",
+    // },
+    // {
+    //   title: "Thời gian nhập hàng kế tiếp",
+    //   dataIndex: "nextPurchaseDate",
+    //   key: "nextPurchaseDate",
+    // },
     {
       title: "Trạng thái",
       dataIndex: "status",
@@ -124,7 +130,7 @@ const Contract = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await ContractService.getAll(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -175,31 +181,31 @@ const Contract = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-            placeholder="Tìm kiếm theo tên, mã hợp đồng"
-            allowClear
-            enterButton
-            onSearch={handleSubmitSearch}
-            style={{ width: "400px" }}
-            size="large"
-          />
+          placeholder="Tìm kiếm theo mã hợp đồng, tên NCC"
+          allowClear
+          enterButton
+          onSearch={handleSubmitSearch}
+          style={{ width: "400px" }}
+          size="large"
+        />
 
-          <Space>
-            <Button
-              type="primary"
-              icon={<FilterOutlined />}
-              onClick={() => setOpenFilter(true)}
-            >
-              Bộ lọc
-            </Button>
+        <Space>
+          <Button
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => setOpenFilter(true)}
+          >
+            Bộ lọc
+          </Button>
 
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={handleCreateNew}
-            >
-              Thêm mới
-            </Button>
-          </Space>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateNew}
+          >
+            Thêm mới
+          </Button>
+        </Space>
       </PageHeader>
 
       <ContentBox>

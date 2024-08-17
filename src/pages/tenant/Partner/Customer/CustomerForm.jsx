@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Space, message } from "antd";
+import { Form, Input, Button, Space, message, InputNumber } from "antd";
 import { districts, uniqueValidator } from "@/utils";
 import {
   SelectDistrict,
   SelectProvince,
 } from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
+import { DatePicker } from "@/components/common/Input/DatePicker";
 
 const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
   const navigate = useNavigate();
@@ -38,7 +39,6 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
   // -------------------- Handle Unique fields --------------------
   const [usedEmail, setUsedEmail] = useState([]);
   const [usedPhone, setUsedPhone] = useState([]);
-  const [usedName, setUsedName] = useState([]);
   const [usedFullName, setUsedFullName] = useState([]);
 
   const handleError = (postPutData, error) => {
@@ -55,11 +55,8 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
       } else if (errorCode === -301) {
         message.error("Số điện thoại đã được sử dụng!");
         setUsedPhone((prev) => [...prev, postPutData.phone]);
-      } else if (errorCode === -302) {
-        message.error("Tên hiển thị đã được sử dụng!");
-        setUsedName((prev) => [...prev, postPutData.name]);
       } else if (errorCode === -303) {
-        message.error("Tên cửa hàng đã được sử dụng!");
+        message.error("Tên khách hàng đã được sử dụng!");
         setUsedFullName((prev) => [...prev, postPutData.fullName]);
       } else {
         console.error("Uncatch conflict error message", error);
@@ -124,92 +121,26 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
       }}
     >
       {!useForCreate && (
-        <Form.Item name="id" label="Mã cửa hàng">
+        <Form.Item name="id" label="Mã khách hàng">
           <Input disabled />
         </Form.Item>
       )}
 
       <Form.Item
-        name="name"
-        label="Tên hiển thị"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập tên hiển thị!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedName, "Tên hiển thị"),
-          },
-        ]}
-      >
-        <Input
-          placeholder="Tên hiển thị của cửa hàng"
-          count={{
-            show: true,
-            max: 50,
-            exceedFormatter: (txt, { max }) => (txt).slice(0, max).join(''),
-          }}
-        />
-      </Form.Item>
-
-      <Form.Item
         name="fullName"
-        label="Tên cửa hàng"
+        label="Tên khách hàng"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập tên cửa hàng!",
+            message: "Vui lòng nhập tên khách hàng!",
           },
           {
             validator: (_, value) =>
-              uniqueValidator(value, usedFullName, "Tên cửa hàng"),
+              uniqueValidator(value, usedFullName, "Tên khách hàng"),
           },
         ]}
       >
-        <Input placeholder="Tên của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="province"
-        label="Tỉnh/Thành phố"
-        rules={[
-          {
-            required: true,
-            message: "Vui chọn Tỉnh/Thành phố!",
-          },
-        ]}
-      >
-        <SelectProvince
-          setDistrictOptions={setDistrictOptions}
-          resetDistrict={() => form.resetFields(["district"])}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="district"
-        label="Quận/Huyện"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng chọn Quận/Huyện!",
-          },
-        ]}
-      >
-        <SelectDistrict options={districtOptions} />
-      </Form.Item>
-
-      <Form.Item
-        name="address"
-        label="Địa chỉ"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập địa chỉ của cửa hàng!",
-          },
-        ]}
-      >
-        <Input placeholder="Địa chỉ của cửa hàng" />
+        <Input placeholder="Tên của khách hàng" />
       </Form.Item>
 
       <Form.Item
@@ -225,7 +156,7 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
           },
         ]}
       >
-        <Input placeholder="Email liên hệ của cửa hàng" />
+        <Input placeholder="Email liên hệ của khách hàng" />
       </Form.Item>
 
       <Form.Item
@@ -233,19 +164,64 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
         label="Số điện thoại"
         rules={[
           {
+            required: true,
+            message: "Vui lòng nhập số điện thoại!",
+          },
+          {
             validator: (_, value) =>
               uniqueValidator(value, usedPhone, "Số điện thoại"),
           },
         ]}
       >
-        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
+        <Input placeholder="Số điện thoại liên hệ của khách hàng" />
       </Form.Item>
 
-      {!useForCreate && (
-        <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
-        </Form.Item>
-      )}
+      <Form.Item name="dob" label="Ngày sinh">
+        <DatePicker />
+      </Form.Item>
+
+      <Form.Item name="gender" label="Giới tính">
+        <RadioGroup values={["Nam", "Nữ"]} />
+      </Form.Item>
+
+      <Form.Item
+        name="province"
+        label="Tỉnh/Thành phố"
+      >
+        <SelectProvince
+          setDistrictOptions={setDistrictOptions}
+          resetDistrict={() => form.resetFields(["district"])}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="district"
+        label="Quận/Huyện"
+      >
+        <SelectDistrict options={districtOptions} />
+      </Form.Item>
+
+      <Form.Item
+        name="address"
+        label="Địa chỉ"
+      >
+        <Input placeholder="Địa chỉ của khách hàng" />
+      </Form.Item>
+
+      <Form.Item
+        name="rewardPoint"
+        label="Điểm thưởng"
+      >
+        <InputNumber
+          formatter={(value) =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
+          parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+          step="1000"
+          min="0"
+          addonAfter="Điểm"
+        />
+      </Form.Item>
 
       <Form.Item name="note" label="Ghi chú">
         <Input.TextArea placeholder="Ghi chú" showCount maxLength={256} />

@@ -9,6 +9,7 @@ import { FilterOutlined, ReloadOutlined } from "@ant-design/icons";
  * @property {function()} onOk handle click ok button
  * @property {function()} onClear handle click reset button
  * @property {function()} afterClose handle click reset button
+ * @property {boolean} singleCol is form use single col or two cols
  * @property {React.JSX.Element} children
  */
 
@@ -23,13 +24,18 @@ const BaseFilterModal = ({
   onOk,
   onClear,
   afterClose,
+  singleCol = false,
   children,
 }) => {
+  // max width, modal width auto resize 24 + 400 + 24 + 400 + 24 = 872
+  // min widtd  24 + 400 + 24 = 448
+  const width = singleCol ? 448 : 872;
+
   return (
     <Modal
       open={open}
       title="Bộ lọc"
-      width={872} // max width, modal width auto resize 24 + 400 + 24 + 400 + 24
+      width={width} // max width, modal width auto resize 24 + 400 + 24 + 400 + 24
       // style={{top: 60 }}
       centered
       okText={

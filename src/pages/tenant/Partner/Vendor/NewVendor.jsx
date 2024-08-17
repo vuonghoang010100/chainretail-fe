@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import VendorForm from "./VendorForm";
-import { StoreService } from "@/apis/StoreService";
+import { VendorService } from "@/apis/VendorService";
 
 // current page path
 const path = ROUTE.TENANT_APP.VENDOR.path;
@@ -35,7 +35,7 @@ const NewVendor = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    await VendorService.postVendor(data);
     navigate(path);
     return true;
   };

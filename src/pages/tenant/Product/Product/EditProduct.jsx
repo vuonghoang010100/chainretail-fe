@@ -64,7 +64,6 @@ const EditProduct = () => {
               label: `${record.category.name}`,
               key: record.category.id,
               value: record.category.id,
-              realShowRemoveIcon: false,
             };
             record.categoryId = record.category.id;
             delete record.category;

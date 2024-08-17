@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import CustomerForm from "./CustomerForm";
-import { StoreService } from "@/apis/StoreService";
+import { CustomerService } from "@/apis/CustomerService";
 
 // current page path
 const path = ROUTE.TENANT_APP.CUSTOMER.path;
@@ -35,7 +35,12 @@ const NewCustomer = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    // preprocess data
+    if (!data.rewardPoint) {
+      data.rewardPoint = 0
+    }
+
+    await CustomerService.postCustomer(data)
     navigate(path);
     return true;
   };
@@ -48,7 +53,7 @@ const NewCustomer = () => {
       />
       <ContentBox>
         <Title marginBot>Thông tin khách hàng</Title>
-        <CustomerForm useForCreate onFinish={handleCreate} />
+        <CustomerForm useForCreate onFinish={handleCreate} initRecord={{rewardPoint: 0}}/>
       </ContentBox>
     </PageContent>
   );

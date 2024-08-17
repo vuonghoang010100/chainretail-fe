@@ -8,12 +8,13 @@ import {
   Space,
   Button,
   Popconfirm,
+  Table,
 } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
+import { HomeOutlined, PaperClipOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Vendor";
+import { VendorService } from "@/apis/VendorService";
 
 // current page path
 const path = ROUTE.TENANT_APP.VENDOR.path;
@@ -36,6 +37,17 @@ const breadcrumbItems = [
 
 const { Text } = Typography;
 
+const tabList = [
+  {
+    key: 1,
+    tab: "Thông tin nhà cung cấp",
+  },
+  {
+    key: 2,
+    tab: "Danh sách hợp đồng",
+  },
+];
+
 const ViewVendor = () => {
   const navigate = useNavigate();
   // -------------------- Page attr --------------------
@@ -43,13 +55,19 @@ const ViewVendor = () => {
   const [loading, setLoading] = useState(true);
   const [currentRecord, setCurrentRecord] = useState({}); // data
 
+  const [activeTabKey, setActiveTabKey] = useState(1);
+
+  const onTabChange = (key) => {
+    setActiveTabKey(key);
+  };
+
   // -------------------- Fetch data --------------------
   useEffect(() => {
     let isMounted = false; // control mount data only one times
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await VendorService.getVendorById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,28 +90,23 @@ const ViewVendor = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Tên nhà cung cấp",
+      children: <Text strong>{currentRecord?.fullName}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
+      label: "Mã nhà cung cấp",
       children: currentRecord?.id,
-    },
-    {
-      key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
-    },
-    {
-      key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
     },
     {
       key: useId(),
       label: "Email",
       children: currentRecord?.email,
+    },
+    {
+      key: useId(),
+      label: "Số điện thoại",
+      children: currentRecord?.phone,
     },
     {
       key: useId(),
@@ -131,6 +144,90 @@ const ViewVendor = () => {
     navigate(path);
   };
 
+  const colums = [
+    {
+      title: "Mã hợp đồng",
+      key: "id",
+      render: (_, record) => {
+        return (
+          <Link
+            to={`${ROUTE.TENANT_APP.CONTRACT.path}/${record.id}`}
+            target="_blank"
+          >
+            {record.id}
+          </Link>
+        );
+      },
+    },
+    {
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      key: "startDate",
+    },
+    {
+      title: "Ngày kết thúc",
+      dataIndex: "endDate",
+      key: "endDate",
+    },
+    {
+      title: "Chu kỳ",
+      key: "period",
+      render: (_, record) => {
+        return record?.period + " Ngày";
+      },
+    },
+    {
+      title: "Nhập gần nhất",
+      dataIndex: "latestPurchaseDate",
+      key: "latestPurchaseDate",
+    },
+    {
+      title: "Hạn nhập hàng kế tiếp",
+      dataIndex: "nextPurchaseDate",
+      key: "nextPurchaseDate",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+    },
+    {
+      title: "Tệp tin",
+      key: "pdfUrl",
+      render: (_, record) => (
+        <Link to={`${record?.pdfUrl}`} target="_blank">
+          {record?.pdfUrl && (
+            <>
+              <PaperClipOutlined /> Hợp đồng
+            </>
+          )}
+        </Link>
+      ),
+    },
+  ];
+
+  const contentList = {
+    1: (
+      <Descriptions
+        bordered
+        items={infoItems}
+        size="small"
+        column={1}
+        labelStyle={{
+          width: "30%",
+          minWidth: "max-content",
+        }}
+      />
+    ),
+    2: (
+      <Table
+        dataSource={currentRecord.contracts}
+        columns={colums}
+        pagination={false}
+      />
+    ),
+  };
+
   return (
     <PageContent>
       <PageHeader
@@ -155,18 +252,17 @@ const ViewVendor = () => {
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
-      <Card title="Thông tin nhà cung cấp" bordered={false} loading={loading}>
-        <Descriptions
-          bordered
-          items={infoItems}
-          size="small"
-          column={1}
-          labelStyle={{
-            width: "30%",
-            minWidth: "max-content",
-          }}
-        />
+      <Card
+        // title="Thông tin nhà cung cấp"
+        tabList={tabList}
+        activeTabKey={activeTabKey}
+        onTabChange={onTabChange}
+        bordered={false}
+        loading={loading}
+      >
+        {contentList[activeTabKey]}
       </Card>
+      {/* TODO: contract list */}
     </PageContent>
   );
 };
