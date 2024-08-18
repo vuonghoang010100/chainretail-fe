@@ -128,6 +128,7 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
       <Form.Item
         name="fullName"
         label="Tên nhà cung cấp"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,
@@ -145,6 +146,7 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
       <Form.Item
         name="email"
         label="Email"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             type: "email",
@@ -161,6 +163,7 @@ const VendorForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => 
       <Form.Item
         name="phone"
         label="Số điện thoại"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             validator: (_, value) =>

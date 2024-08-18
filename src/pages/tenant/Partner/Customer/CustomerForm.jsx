@@ -129,6 +129,7 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
       <Form.Item
         name="fullName"
         label="Tên khách hàng"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -146,6 +147,7 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
       <Form.Item
         name="email"
         label="Email"
+        tooltip="Trường duy nhất!"
         rules={[
           {
             type: "email",
@@ -162,6 +164,7 @@ const CustomerForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =
       <Form.Item
         name="phone"
         label="Số điện thoại"
+        tooltip="Trường bắt buộc, duy nhất!"
         rules={[
           {
             required: true,

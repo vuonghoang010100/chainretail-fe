@@ -150,6 +150,7 @@ const ContractForm = ({
       <Form.Item
         name="vendor"
         label="Nhà cung cấp"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -175,6 +176,7 @@ const ContractForm = ({
       <Form.Item
         name="startDate"
         label="Ngày bắt đầu"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -188,6 +190,7 @@ const ContractForm = ({
       <Form.Item
         name="endDate"
         label="Ngày kết thúc"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
@@ -201,6 +204,7 @@ const ContractForm = ({
       <Form.Item
         label="Tệp tin hợp đồng"
         name="file"
+        tooltip="Trường bắt buộc! Chỉ nhận file pdf"
         rules={[
           {
             required: true,
@@ -236,6 +240,7 @@ const ContractForm = ({
       <Form.Item
         name="period"
         label="Chu kỳ"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,

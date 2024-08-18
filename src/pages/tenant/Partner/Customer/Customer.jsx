@@ -92,7 +92,7 @@ const Customer = () => {
       key: "email",
     },
     {
-      title: "Sdt",
+      title: "SĐT",
       dataIndex: "phone",
       key: "phone",
     },
@@ -180,7 +180,7 @@ const Customer = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên, sdt"
+          placeholder="Tìm kiếm theo tên, SĐT"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}

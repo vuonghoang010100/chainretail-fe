@@ -82,7 +82,7 @@ const Vendor = () => {
       key: "email",
     },
     {
-      title: "Sdt",
+      title: "SĐT",
       dataIndex: "phone",
       key: "phone",
     },
@@ -170,7 +170,7 @@ const Vendor = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-            placeholder="Tìm kiếm theo tên, email, sdt"
+            placeholder="Tìm kiếm theo tên, email, SĐT"
             allowClear
             enterButton
             onSearch={handleSubmitSearch}
