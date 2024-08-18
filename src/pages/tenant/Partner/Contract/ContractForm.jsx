@@ -204,7 +204,7 @@ const ContractForm = ({
       <Form.Item
         label="Tệp tin hợp đồng"
         name="file"
-        tooltip="Trường bắt buộc!"
+        tooltip="Trường bắt buộc! Chỉ nhận file pdf"
         rules={[
           {
             required: true,
