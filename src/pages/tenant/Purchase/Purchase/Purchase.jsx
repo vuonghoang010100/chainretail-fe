@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import PurchaseFilterModal from "./PurchaseFilterModal";
+import { PurchaseService } from "@/apis/PurchaseService";
 
 const { Search } = Input;
 
@@ -68,51 +68,61 @@ const Purchase = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã đơn nhập hàng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Cửa hàng",
+      key: "store",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.store.id}`} target="_blank" >{record.store.name}</Link>
+      }
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Nhà cung cấp",
+      key: "vendor",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.VENDOR.path}/${record.vendor.id}`} target="_blank" >{record.vendor.fullName}</Link>
+      }
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Hợp đồng",
+      key: "contract",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.CONTRACT.path}/${record.contract?.id}`} target="_blank" >{record.contract?.id}</Link>
+      }
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Nhân viên",
+      key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
     {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: "Tổng số tiền",
+      key: "total",
+      render: (_, record) => {
+        return <>{`${record.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
+      }
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+    },
+    {
+      title: "Trạng thái nhận hàng",
+      dataIndex: "receiveStatus",
+      key: "receiveStatus",
+    },
+    {
+      title: "Trạng thái thanh toán",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
     },
     {
       title: "Ghi chú",
@@ -127,8 +137,8 @@ const Purchase = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
-        console.info("Get All Store", dataResponse);
+        const dataResponse = await PurchaseService.getAll(query);
+        console.info("Get All Purchase", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {

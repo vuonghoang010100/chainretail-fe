@@ -8,8 +8,10 @@ const Endpoints = {
   CUSTOMER: "/customers",
   VENDOR: "/vendors",
   CONTRACT: "/contracts",
-  FILE: "/files"
-
+  FILE: "/files",
+  PURCHASE: "/purchases",
+  BILL: "/bills",
+  
 };
 
 export default Endpoints;

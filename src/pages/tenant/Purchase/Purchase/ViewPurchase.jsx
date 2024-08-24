@@ -12,8 +12,8 @@ import {
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Purchase";
+import { PurchaseService } from "@/apis/PurchaseService";
 
 // current page path
 const path = ROUTE.TENANT_APP.PURCHASE.path;
@@ -49,7 +49,7 @@ const ViewPurchase = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await PurchaseService.getPurchaseById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,48 +72,90 @@ const ViewPurchase = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã đơn nhập hàng",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Cửa hàng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.store?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.store?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Nhà cung cấp",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.VENDOR.path}/${currentRecord?.vendor?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.vendor?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Hợp đồng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.CONTRACT.path}/${currentRecord?.contract?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.contract?.id}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
+      label: "Nhân viên",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
+      label: "Tổng số tiền",
+      children:
+        `${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND",
     },
     {
       key: useId(),
       label: "Trạng thái",
       children: currentRecord?.status,
+    },
+    {
+      key: useId(),
+      label: "Trạng thái nhận hàng",
+      children: currentRecord?.receiveStatus,
+    },
+    {
+      key: useId(),
+      label: "Trạng thái thanh toán",
+      children: currentRecord?.paymentStatus,
+    },
+    {
+      key: useId(),
+      label: "Hóa đơn",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.CONTRACT.path}/${currentRecord?.bill?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.bill?.id}
+        </Link>
+      ),
     },
     {
       key: useId(),
