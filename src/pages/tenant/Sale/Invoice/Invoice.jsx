@@ -223,6 +223,7 @@ const Invoice = () => {
           setReload={() => {
             setReload();
           }}
+          delete_={false}
         />
       </ContentBox>
 

@@ -223,6 +223,8 @@ const Order = () => {
           setReload={() => {
             setReload();
           }}
+          edit_={false}
+          delete_={false}
         />
       </ContentBox>
 

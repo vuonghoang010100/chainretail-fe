@@ -275,7 +275,7 @@ const PurchaseForm = ({
                       allowClear
                       showSearch
                       fetchOptions={(value) =>
-                        ProductService.search(value, vendorId)
+                        ProductService.search(value)
                       }
                       formatResponeData={(data) =>
                         data.map((option) => ({

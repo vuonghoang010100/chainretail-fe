@@ -8,12 +8,16 @@ import {
   Space,
   Button,
   Popconfirm,
+  Table,
+  Avatar,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Inventory";
+import { InventoryService } from "@/apis/InventoryService";
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 // current page path
 const path = ROUTE.TENANT_APP.INVENTORY.path;
@@ -49,7 +53,7 @@ const ViewInventory = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await InventoryService.getInventoryById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,53 +76,42 @@ const ViewInventory = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã đơn nhập hàng",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Cửa hàng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.store?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.store?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Nhân viên",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Thời gian tạo",
+      children: currentRecord?.createTime,
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
-    {
-      key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
-    },
-    {
-      key: useId(),
-      label: "Ghi chú",
-      children: currentRecord?.note,
+      label: "Thời gian cập nhập",
+      children: currentRecord?.updateTime,
     },
   ];
 
@@ -130,6 +123,41 @@ const ViewInventory = () => {
     await deleteRecord(id);
     navigate(path);
   };
+
+  const columns = [
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.product.imageUrl ? record.product.imageUrl : noImageurl} />{" "}
+            <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record.product.id}`} target="_blank">{record.product.name}</Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Lô",
+      key: "batch",
+      render: (_, record) => record.batch?.id
+    },
+    {
+      title: "Số lượng hệ thống",
+      key: "dbQuantity",
+      dataIndex: "dbQuantity",
+    },
+    {
+      title: "Số lượng thực tế",
+      key: "realQuantity",
+      dataIndex: "realQuantity",
+    },
+    {
+      title: "Sai lệch",
+      key: "differenceQuantity",
+      dataIndex: "differenceQuantity",
+    },
+  ]
 
   return (
     <PageContent>
@@ -165,6 +193,25 @@ const ViewInventory = () => {
             width: "30%",
             minWidth: "max-content",
           }}
+        />
+      </Card>
+      <Card
+        title="Chi tiết phiếu kiểm kho"
+        bordered={false} loading={loading}
+      >
+        <Table
+          dataSource={currentRecord?.details}
+          columns={columns}
+          pagination={false}
+          // summary={() => (
+          //   <Table.Summary.Row>
+          //     <Table.Summary.Cell index={0}></Table.Summary.Cell>
+          //     <Table.Summary.Cell index={1}></Table.Summary.Cell>
+          //     <Table.Summary.Cell index={2}></Table.Summary.Cell>
+          //     <Table.Summary.Cell index={3}>Tổng số tiền</Table.Summary.Cell>
+          //     <Table.Summary.Cell index={4}>{`${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+          //   </Table.Summary.Row>
+          // )}
         />
       </Card>
     </PageContent>
