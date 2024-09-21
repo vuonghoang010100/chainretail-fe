@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import BillForm from "./BillForm";
-import { StoreService } from "@/apis/StoreService";
+import { BillService } from "@/apis/BillService";
 
 // current page path
 const path = ROUTE.TENANT_APP.BILL.path;
@@ -35,7 +35,7 @@ const NewBill = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    await BillService.postBill(data);
     navigate(path);
     return true;
   };

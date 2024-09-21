@@ -16,6 +16,10 @@ export const PurchaseService = {
       throw error;
     }
   },
+  search: async (search, vendorId) => {
+    return PurchaseService.getAll({ page: 1, size: 200, search, vendorId, paymentStatus: "Chưa thanh toán"
+     });
+  },
   getPurchaseById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));
