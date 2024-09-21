@@ -16,6 +16,9 @@ export const ProductService = {
       throw error;
     }
   },
+  search: async (search) => {
+    return ProductService.getAll({ page: 1, size: search ? 200 : 20, search });
+  },
   getProductById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));

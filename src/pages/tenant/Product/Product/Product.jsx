@@ -87,10 +87,10 @@ const Product = () => {
       key: "name",
       render: (_, record) => {
         return (
-          <>
+          <div>
             <Avatar shape="square" size={48} src={record.imageUrl ? record.imageUrl : noImageurl} />{" "}
             {record.name}
-          </>
+          </div>
         );
       },
     },

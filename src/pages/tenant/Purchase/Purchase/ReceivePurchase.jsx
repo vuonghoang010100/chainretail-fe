@@ -9,7 +9,7 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
-import PurchaseForm from "./PurchaseForm";
+import PurchaseForm2 from "./PurchaseForm2";
 import { PurchaseService } from "@/apis/PurchaseService";
 
 // current page path
@@ -27,15 +27,16 @@ const breadcrumbItems = [
     title: <Link to={`${path}`}>Đơn nhập hàng</Link>,
   },
   {
-    title: "Cập nhật",
+    title: "Nhận hàng",
   },
 ];
 
-const EditPurchase = () => {
+const ReceivePurchase = () => {
   const navigate = useNavigate();
 
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
+  // eslint-disable-next-line no-unused-vars
   const [currentRecord, setCurrentRecord] = useState({}); // data
   const [formatRecord, setFormatRecord] = useState({}); // formatted data
 
@@ -96,7 +97,7 @@ const EditPurchase = () => {
             delete record.store;
           }
 
-          recordFormatted.details = record.details.map(ele => ({
+          recordFormatted.details = record.details.map((ele) => ({
             id: ele.id,
             product: {
               label: `${ele.product.id} - ${ele.product.name}`,
@@ -106,7 +107,7 @@ const EditPurchase = () => {
             },
             purchaseAmount: ele.purchaseAmount,
             purchasePrice: ele.purchasePrice,
-          }))
+          }));
 
           setCurrentRecord(record);
           setFormatRecord(recordFormatted);
@@ -123,39 +124,21 @@ const EditPurchase = () => {
     };
   }, [id]);
 
-  // -------------------- Update Customer --------------------
-  const handleUpdate = async (updateData) => {
-    // get change value
-    let changedData = Object.fromEntries(
-      Object.entries(updateData).filter(
-        ([key, value]) => value !== currentRecord[key]
-      )
-    );
+  const handleReceive = async (data) => {
+    await PurchaseService.receivePurchase(id, data);
 
-    console.info("changed data", changedData);
-
-    // case no info change, update is no needed
-    if (!changedData || Object.keys(changedData)?.length === 0) {
-      return false;
-    }
-
-    // Call update API
-    await PurchaseService.putPurchase(id, updateData);
     navigate(path);
     return true;
-  };
+  }
 
   return (
     <PageContent>
-      <PageHeader 
-        title="Cập nhật đơn nhập hàng"
-        breadcrumbItems={breadcrumbItems} 
-      />
+      <PageHeader title="Nhận hàng" breadcrumbItems={breadcrumbItems} />
       <ContentBox>
         <Title marginBot>Thông tin đơn nhập hàng</Title>
-        <PurchaseForm
+        <PurchaseForm2
           useForCreate={false}
-          onFinish={handleUpdate}
+          onFinish={handleReceive}
           initRecord={formatRecord}
         />
       </ContentBox>
@@ -163,4 +146,4 @@ const EditPurchase = () => {
   );
 };
 
-export default EditPurchase;
+export default ReceivePurchase;

@@ -163,6 +163,12 @@ const Purchase = () => {
   };
 
   const handleEdit = (record) => {
+    console.log(record);
+    if (record.status === "Hoàn thành") {
+      message.info("Không thể cập nhật đơn hàng hoàn thành");
+      return;
+    }
+
     navigate(`${path}/${record.id}/edit`);
   };
 
@@ -189,7 +195,7 @@ const Purchase = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên, mã đơn nhập hàng"
+          placeholder="Tìm kiếm theo mã đơn nhập hàng"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}

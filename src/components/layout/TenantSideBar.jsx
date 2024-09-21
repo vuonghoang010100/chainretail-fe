@@ -57,7 +57,7 @@ const menuItems = [
   ]),
   getMenuItem("Cửa hàng", TENANT_GROUP.STORE_GROUP, <ShopOutlined />, [
     getMenuItem("Cửa hàng", TENANT_ROUTE.STORE.path),
-    getMenuItem("Vận chuyển", TENANT_ROUTE.TRANSFER.path),
+    // getMenuItem("Vận chuyển", TENANT_ROUTE.TRANSFER.path),
     getMenuItem("Kiểm kho", TENANT_ROUTE.INVENTORY.path),
   ]),
   getMenuItem("Nhân viên", TENANT_GROUP.STAFF_GROUP, <TeamOutlined />,[

@@ -42,6 +42,7 @@ const Purchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/Purchase"))
 const NewPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/NewPurchase"));
 const EditPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/EditPurchase"));
 const ViewPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/ViewPurchase"));
+const ReceivePurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/ReceivePurchase"));
 // Bill
 const Bill = lazy(() => import("@/pages/tenant/Purchase/Bill/Bill"));
 const NewBill = lazy(() => import("@/pages/tenant/Purchase/Bill/NewBill"));
@@ -223,6 +224,7 @@ function App() {
           <Route path="new" element={<LazyLoadPage><NewPurchase/></LazyLoadPage>} />
           <Route path=":id" element={<LazyLoadPage><ViewPurchase/></LazyLoadPage>} />
           <Route path=":id/edit" element={<LazyLoadPage><EditPurchase/></LazyLoadPage>} />
+          <Route path=":id/receive" element={<LazyLoadPage><ReceivePurchase/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.BILL.name} >

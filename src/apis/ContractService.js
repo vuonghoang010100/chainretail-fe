@@ -16,6 +16,9 @@ export const ContractService = {
       throw error;
     }
   },
+  search: async (search, vendorId) => {
+    return ContractService.getAll({ page: 1, size: 200, search, vendorId });
+  },
   getContractById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));

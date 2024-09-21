@@ -6,6 +6,7 @@ function DebounceSelect({
   fetchOptions,
   debounceTimeout = 500,
   formatResponeData,
+  onSelect,
   ...props
 }) {
   const [fetching, setFetching] = useState(false);
@@ -56,6 +57,7 @@ function DebounceSelect({
           e.stopPropagation();
         }
       }}
+      onSelect={onSelect}
     />
   );
 }

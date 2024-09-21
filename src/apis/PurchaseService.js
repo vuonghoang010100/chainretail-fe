@@ -49,4 +49,15 @@ export const PurchaseService = {
       throw error;
     }
   },
+  receivePurchase: async (id, data) => {
+    try {
+      const response = await api.post(ENDPOINT.concat("/" + id).concat("/receive"), data)
+      if (response.status === 200 && response.data?.code === 0)
+        return response.data.result;
+      throw new Error("Uncatch status receivePurchase");
+    } catch (error) {
+      console.error("receivePurchase error:", error);
+      throw error;
+    }
+  }
 }
