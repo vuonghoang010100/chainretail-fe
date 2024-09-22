@@ -6,14 +6,16 @@ import {
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
 import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Space } from "antd";
+import { Input, Button, message, Space, Avatar } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import PromoteFilterModal from "./PromoteFilterModal";
+import { PromoteService } from "@/apis/PromoteService";
 
 const { Search } = Input;
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 const path = ROUTE.TENANT_APP.PROMOTE.path;
 
@@ -68,46 +70,31 @@ const Promote = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã khuyến mãi",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
+      title: "Tên khuyến mãi",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Ngày bắt đầu",
+      dataIndex: "startDate",
+      key: "startDate",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Ngày kết thúc",
+      dataIndex: "endDate",
+      key: "endDate",
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: "Số lượng",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Trạng thái",
@@ -115,9 +102,52 @@ const Promote = () => {
       key: "status",
     },
     {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      title: "Loại khuyến mãi",
+      dataIndex: "type",
+      key: "type",
+    },
+    {
+      title: "% hóa đơn",
+      dataIndex: "percentage",
+      key: "percentage",
+    },
+    {
+      title: "Giá giảm tối đa",
+      dataIndex: "maxDiscount",
+      key: "maxDiscount",
+    },
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        if (record?.product !== null)
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.product?.imageUrl ? record?.product.imageUrl : noImageurl} />{" "}
+            <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record?.product?.id}`} target="_blank">{record?.product?.name}</Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Giảm giá sản phẩm",
+      dataIndex: "discountPrice",
+      key: "discountPrice",
+    },
+    {
+      title: "Giảm giá hóa đơn",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
+      title: "SL SP tối thiểu",
+      dataIndex: "minQuantityRequired",
+      key: "minQuantityRequired",
+    },
+    {
+      title: "Tổng số tiền tối thiểu",
+      dataIndex: "minAmountRequired",
+      key: "minAmountRequired",
     },
   ];
 
@@ -127,8 +157,8 @@ const Promote = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
-        console.info("Get All Store", dataResponse);
+        const dataResponse = await PromoteService.getAll(query);
+        console.info("Get All ", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {

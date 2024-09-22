@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import PromoteForm from "./PromoteForm";
-import { StoreService } from "@/apis/StoreService";
+import { PromoteService } from "@/apis/PromoteService";
 
 // current page path
 const path = ROUTE.TENANT_APP.PROMOTE.path;
@@ -40,13 +40,25 @@ const EditPromote = () => {
   const [formatRecord, setFormatRecord] = useState({}); // formatted data
 
   // -------------------- Fetch data --------------------
+  // Helper functions
+  const listToSelectItems = (arrays) => {
+    return arrays.map((ele) => ({
+      label: `${ele.name}`,
+      key: ele.id,
+      value: ele.id,
+    }));
+  };
+
+  const listToIdList = (arrays) => {
+    return arrays.map((ele) => ele.id);
+  };
   useEffect(() => {
     let isMounted = false; // control mount data only one times
 
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await PromoteService.getPromoteById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -57,6 +69,23 @@ const EditPromote = () => {
 
           // convert data
           let recordFormatted = { ...record };
+
+          record.productId = null;
+          if (record.product) {
+            recordFormatted.product = {
+              label: `${record.id} - ${record.name} - Giá bán: ${record.price}`,
+              key: record.product.id,
+              value: record.product.id,
+            };
+            record.productId = record.product.id;
+            delete record.product;
+          }
+
+          // convert list select
+          recordFormatted.stores = listToSelectItems(recordFormatted.stores);
+          // convert list id for compare
+          record.stores = listToIdList(record.stores);
+          
 
           setCurrentRecord(record);
           setFormatRecord(recordFormatted);
@@ -89,8 +118,11 @@ const EditPromote = () => {
       return false;
     }
 
+    if (Object.keys(changedData).length === 1 && updateData.allStore === currentRecord.allStore && currentRecord.allStore === true)
+      return false;
+
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await PromoteService.putPromote(id, updateData);
     navigate(path);
     return true;
   };

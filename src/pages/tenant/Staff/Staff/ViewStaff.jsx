@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useId } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { message, Descriptions, Typography, Space, Button, Card, Popconfirm  } from "antd";
+import { message, Descriptions, Typography, Space, Button, Card, Popconfirm } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import {
   PageContent,

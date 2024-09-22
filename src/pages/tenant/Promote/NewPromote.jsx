@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import PromoteForm from "./PromoteForm";
-import { StoreService } from "@/apis/StoreService";
+import { PromoteService } from "@/apis/PromoteService";
 
 // current page path
 const path = ROUTE.TENANT_APP.PROMOTE.path;
@@ -35,7 +35,7 @@ const NewPromote = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    await PromoteService.postPromote(data);
     navigate(path);
     return true;
   };
