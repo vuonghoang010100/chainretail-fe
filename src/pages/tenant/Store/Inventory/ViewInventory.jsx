@@ -195,6 +195,7 @@ const ViewInventory = () => {
           }}
         />
       </Card>
+      <br/>
       <Card
         title="Chi tiết phiếu kiểm kho"
         bordered={false} loading={loading}

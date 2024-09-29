@@ -29,9 +29,13 @@ const PromoteForm = ({
 
   // -------------------- Update fields --------------------
   useEffect(() => {
-    if (initRecord?.allStore !== null) setIsAllStore(initRecord?.allStore);
-
-    if (initRecord?.type) setType(initRecord?.type);
+    if (!useForCreate) {
+      if (initRecord?.allStore !== null) {
+        setIsAllStore(initRecord?.allStore);
+      } 
+  
+      if (initRecord?.type) setType(initRecord?.type);
+    }
 
     // set form values
     form.setFieldsValue(initRecord);
