@@ -34,62 +34,74 @@ const LoginDomain = () => {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
-        padding: "24px 48px",
-        borderRadius: "24px",
+        backgroundColor: "#fafafa",
+        height: "100%"
       }}
     >
-      <Flex justify="center">
-        <Title>Đăng nhập</Title>
-      </Flex>
-      <br />
-      <Form
-        name="login"
-        layout="vertical"
-        form={form}
-        onFinish={handleSubmit}
-        requiredMark={false}
+      <Flex
+        justify="center"
+        align="center"
         style={{
-          maxWidth: 600,
+          width: "100%",
+          height: "100%"
         }}
       >
-        <Form.Item
-          name="tenant"
-          label="Cửa hàng"
-          rules={[
-            {
-              required: true,
-              message: "Vui lòng nhập tên cửa hàng!",
-            },
-            {
-              pattern: VALIDATE_PATTERNS.TENANT_NAME,
-              message: "Tên cửa hàng không hợp lệ!"
-            }
-          ]}
+
+      
+      <div>
+        <Flex justify="center">
+          <Title>Đăng nhập</Title>
+        </Flex>
+        <br />
+        <Form
+          name="login"
+          layout="vertical"
+          form={form}
+          onFinish={handleSubmit}
+          requiredMark={false}
+          style={{
+            maxWidth: 600,
+          }}
         >
-          <Input
-            addonBefore={<GlobalOutlined />}
-            placeholder="Tên cửa hàng của bạn"
-            addonAfter=".chainretail.io.vn" // TODO: read
-            onInput={(e) => e.target.value = e.target.value.toLowerCase()}
-            size="large"
-          />
-        </Form.Item>
+          <Form.Item
+            name="tenant"
+            label="Cửa hàng"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên cửa hàng!",
+              },
+              {
+                pattern: VALIDATE_PATTERNS.TENANT_NAME,
+                message: "Tên cửa hàng không hợp lệ!"
+              }
+            ]}
+          >
+            <Input
+              addonBefore={<GlobalOutlined />}
+              placeholder="Tên cửa hàng của bạn"
+              addonAfter=".chainretail.io.vn" // TODO: read
+              onInput={(e) => e.target.value = e.target.value.toLowerCase()}
+              size="large"
+            />
+          </Form.Item>
 
-        <Form.Item>
-          <Button block type="primary" htmlType="submit" loading={loading} size="large">
-            Vào cửa hàng
-          </Button>
-        </Form.Item>
+          <Form.Item>
+            <Button block type="primary" htmlType="submit" loading={loading} size="large">
+              Vào cửa hàng
+            </Button>
+          </Form.Item>
 
-        <Form.Item>
-          <Flex justify="center">
-            Chưa có tài khoản?&nbsp;
-            <Link to="/signup">Tạo tài khoản mới</Link>
-          </Flex>
-        </Form.Item>
+          <Form.Item>
+            <Flex justify="center">
+              Chưa có tài khoản?&nbsp;
+              <Link to="/signup">Tạo tài khoản mới</Link>
+            </Flex>
+          </Form.Item>
 
-      </Form>
+        </Form>
+      </div>
+      </Flex>
     </div>
   );
 };

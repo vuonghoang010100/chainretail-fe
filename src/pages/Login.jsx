@@ -45,11 +45,22 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
-        padding: "24px 48px",
-        borderRadius: "24px",
+        backgroundColor: "#fafafa",
+        height: "100%"
       }}
     >
+      <Flex
+        justify="center"
+        align="center"
+        style={{
+          width: "100%",
+          height: "100%"
+        }}
+      >
+
+      <div>
+
+      
       <Flex justify="center">
         <Title>Đăng nhập</Title>
       </Flex>
@@ -108,6 +119,8 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
+      </div>
+      </Flex>
     </div>
   );
 };

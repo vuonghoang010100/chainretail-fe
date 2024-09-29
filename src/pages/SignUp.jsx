@@ -16,14 +16,14 @@ const SignUp = () => {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#fafafa",
         padding: "24px 48px",
         borderRadius: "24px",
       }}
     >
-      <Flex justify="center">
+      <Flex justify="center" vertical align="center">
         <Title>Đăng ký</Title>
-      </Flex>
+      
       <br/>
       <Form
         name="login"
@@ -32,7 +32,7 @@ const SignUp = () => {
         onFinish={()=>{}}
         requiredMark={false}
         style={{
-          maxWidth: 600,
+          maxWidth: 400,
         }}
       >
         <Form.Item
@@ -135,6 +135,7 @@ const SignUp = () => {
           </Flex>
         </Form.Item>
       </Form>
+      </Flex>
     </div>
   );
 };
