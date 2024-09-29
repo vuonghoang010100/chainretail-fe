@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Typography, Button, Checkbox, Flex } from "antd";
+import { Form, Input, Typography, Button, Flex } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationSerivce } from "@/apis/AuthenticationSerivce";
@@ -78,7 +78,7 @@ const Login = () => {
             },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="Email" />
+          <Input prefix={<UserOutlined />} placeholder="Email" size="large"/>
         </Form.Item>
         <Form.Item
           name="password"
@@ -90,17 +90,17 @@ const Login = () => {
             },
           ]}
         >
-          <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+          <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" size="large"/>
         </Form.Item>
 
-        <Form.Item>
+        {/* <Form.Item>
           <Flex justify="space-between" align="center">
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Ghi nhớ đăng nhập</Checkbox>
             </Form.Item>
             <a href="">Quên mật khẩu?</a>
           </Flex>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button block type="primary" htmlType="submit" loading={loading} size="large">

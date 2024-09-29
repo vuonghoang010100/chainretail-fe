@@ -72,6 +72,7 @@ const LoginDomain = () => {
             placeholder="Tên cửa hàng của bạn"
             addonAfter=".chainretail.io.vn" // TODO: read
             onInput={(e) => e.target.value = e.target.value.toLowerCase()}
+            size="large"
           />
         </Form.Item>
 
