@@ -61,6 +61,7 @@ const LoginDomain = () => {
           requiredMark={false}
           style={{
             maxWidth: 600,
+            minWidth: "500px"
           }}
         >
           <Form.Item

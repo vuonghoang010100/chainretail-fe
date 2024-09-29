@@ -72,7 +72,8 @@ const Login = () => {
         onFinish={handleSubmit}
         requiredMark={false}
         style={{
-          maxWidth: 600,
+          // maxWidth: 600,
+          minWidth: "400px"
         }}
       >
         <Form.Item
@@ -103,6 +104,8 @@ const Login = () => {
         >
           <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" size="large"/>
         </Form.Item>
+
+        <br/>
 
         {/* <Form.Item>
           <Flex justify="space-between" align="center">
