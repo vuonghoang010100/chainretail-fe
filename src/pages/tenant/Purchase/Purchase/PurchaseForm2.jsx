@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Space, message, InputNumber } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Space,
+  message,
+  InputNumber,
+  Row,
+  Col,
+} from "antd";
 import { Title } from "@/components/common/Title";
 import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
 import { DatePicker } from "@/components/common/Input/DatePicker";
@@ -16,6 +25,21 @@ const PurchaseForm2 = ({
   const navigate = useNavigate();
 
   const { auth } = useAuth();
+
+  // layout
+  const rowProps = {
+    gutter: 24,
+  };
+
+  const colProps = {
+    sm: 5,
+    xs: 24,
+  };
+
+  const colProps2 = {
+    sm: 4,
+    xs: 24,
+  };
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
@@ -54,17 +78,16 @@ const PurchaseForm2 = ({
 
     let result = {
       receiveStatus: "Đã nhận",
-    }
+    };
 
-    result.details = data.details.map(ele => {
-
+    result.details = data.details.map((ele) => {
       return {
         id: ele.id,
         receivedAmount: ele.receivedAmount,
         mfg: ele.mfg,
         exp: ele.exp,
-      }
-    })
+      };
+    });
 
     return result;
   };
@@ -117,41 +140,44 @@ const PurchaseForm2 = ({
 
       <Title marginBot>Chi tiết đơn nhập hàng</Title>
       {/* <Form.Item label="&nbsp;" colon={false}> */}
-        <Form.List
-          style={{
-            maxWidth: 1200,
-          }}
-          name="details"
-          rules={[
-            {
-              validator: async (_, details) => {
-                console.log(details);
 
-                if (details.length === 0) {
-                  message.error("Vui lòng thêm sản phẩm vào đơn nhập hàng!");
-                  return Promise.reject(new Error("Không có sản phẩm"));
-                }
+      <Form.List
+        style={{
+          maxWidth: 1200,
+        }}
+        name="details"
+        rules={[
+          {
+            validator: async (_, details) => {
+              console.log(details);
 
-                let ids = details.map((ele) => ele?.product?.value);
-                let idsSet = new Set(ids);
+              if (details.length === 0) {
+                message.error("Vui lòng thêm sản phẩm vào đơn nhập hàng!");
+                return Promise.reject(new Error("Không có sản phẩm"));
+              }
 
-                console.log(ids);
-                console.log(idsSet);
+              let ids = details.map((ele) => ele?.product?.value);
+              let idsSet = new Set(ids);
 
-                if (ids.length !== idsSet.size) {
-                  message.error("Sẩn phẩm không được trùng nhau!");
-                  return Promise.reject(
-                    new Error("Sẩn phẩm không được trùng nhau")
-                  );
-                }
-              },
+              console.log(ids);
+              console.log(idsSet);
+
+              if (ids.length !== idsSet.size) {
+                message.error("Sẩn phẩm không được trùng nhau!");
+                return Promise.reject(
+                  new Error("Sẩn phẩm không được trùng nhau")
+                );
+              }
             },
-          ]}
-        >
-          {(fields, { add, remove }) => (
-            <>
-              {fields.map(({ key, name, ...restField }) => (
-                <Space key={key}>
+          },
+        ]}
+      >
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              // <Space key={key}>
+              <Row {...rowProps} key={key}>
+                <Col {...colProps}>
                   <Form.Item
                     {...restField}
                     name={[name, "product"]}
@@ -179,68 +205,71 @@ const PurchaseForm2 = ({
                       placeholder="Tìm và sản phẩm"
                     />
                   </Form.Item>
+                </Col>
 
+                <Col {...colProps2}>
                   <Form.Item
-                      {...restField}
-                      label="SL đặt"
-                      name={[name, "purchaseAmount"]}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Thiếu số lượng",
-                        },
-                      ]}
-                    >
-                      <InputNumber
-                        disabled
-                        placeholder="Số lượng"
-                        formatter={(value) =>
-                          `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        }
-                        parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-                      />
-                    </Form.Item>
+                    {...restField}
+                    label="SL đặt"
+                    name={[name, "purchaseAmount"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Thiếu số lượng",
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      disabled
+                      placeholder="Số lượng"
+                      formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                      parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                    />
+                  </Form.Item>
+                </Col>
 
-                    <Form.Item
-                      {...restField}
-                      label="SL nhận"
-                      name={[name, "receivedAmount"]}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Thiếu số lượng",
-                        },
-                      ]}
-                    >
-                      <InputNumber
-                        placeholder="Số lượng nhận nhận"
-                        formatter={(value) =>
-                          `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                        }
-                        parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-                      />
-                    </Form.Item>
+                <Col {...colProps2}>
+                  <Form.Item
+                    {...restField}
+                    label="SL nhận"
+                    name={[name, "receivedAmount"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Thiếu số lượng",
+                      },
+                    ]}
+                  >
+                    <InputNumber
+                      placeholder="Số lượng nhận nhận"
+                      formatter={(value) =>
+                        `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                      }
+                      parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                    />
+                  </Form.Item>
+                </Col>
 
-                    <Form.Item
-                      {...restField}
-                      label="NSX"
-                      name={[name, "mfg"]}
-                    >
-                      <DatePicker />
-                    </Form.Item>
+                <Col {...colProps2}>
+                  <Form.Item {...restField} label="NSX" name={[name, "mfg"]}>
+                    <DatePicker />
+                  </Form.Item>
+                </Col>
+                <Col {...colProps2}>
+                  <Form.Item {...restField} label="HSD" name={[name, "exp"]}>
+                    <DatePicker />
+                  </Form.Item>
+                </Col>
 
-                    <Form.Item
-                      {...restField}
-                      label="HSD"
-                      name={[name, "exp"]}
-                    >
-                      <DatePicker />
-                    </Form.Item>
-                </Space>
-              ))}
-            </>
-          )}
-        </Form.List>
+                {/*  </Space> */}
+              </Row>
+            ))}
+          </>
+        )}
+      </Form.List>
+
       {/* </Form.Item> */}
 
       <Form.Item

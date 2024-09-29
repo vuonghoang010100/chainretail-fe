@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Space, message, InputNumber } from "antd";
+import { Form, Button, Space, message, InputNumber, Row, Col } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
 import { StoreService } from "@/apis/StoreService";
@@ -15,6 +15,21 @@ const InventoryForm = ({
 }) => {
   const navigate = useNavigate();
   const { auth } = useAuth();
+
+  // layout
+  const rowProps = {
+    gutter: 24,
+  };
+
+  const colProps = {
+    sm: 5,
+    xs: 24,
+  };
+
+  const colProps2 = {
+    sm: 1,
+    xs: 1,
+  };
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
@@ -59,10 +74,10 @@ const InventoryForm = ({
 
     data.employeeId = auth.userId;
 
-    data.details = data.details.map(ele => ({
+    data.details = data.details.map((ele) => ({
       batchId: ele.batch.value,
-      realQuantity: ele.realQuantity
-    }))
+      realQuantity: ele.realQuantity,
+    }));
 
     return data;
   };
@@ -168,14 +183,8 @@ const InventoryForm = ({
         {(fields, { add, remove }) => (
           <>
             {fields.map(({ key, name, ...restField }) => (
-              <Space
-                key={key}
-                style={{
-                  display: "flex",
-                  marginBottom: 8,
-                }}
-                align="baseline"
-              >
+              <Row {...rowProps} key={key}>
+                <Col {...colProps}>
                 <Form.Item
                   {...restField}
                   name={[name, "product"]}
@@ -203,12 +212,13 @@ const InventoryForm = ({
                         prev[key] = option.value;
                         return prev;
                       });
-                      form.resetFields([["details", name, "batch"]])
+                      form.resetFields([["details", name, "batch"]]);
                     }}
                     placeholder="Tìm và sản phẩm"
                   />
                 </Form.Item>
-
+                </Col>
+                <Col {...colProps}>
                 <Form.Item
                   {...restField}
                   name={[name, "batch"]}
@@ -239,7 +249,9 @@ const InventoryForm = ({
                     placeholder="Tìm và chọn lô"
                   />
                 </Form.Item>
+                </Col>
 
+                <Col {...colProps}>
                 <Form.Item
                   {...restField}
                   label="SL thực tế"
@@ -259,9 +271,12 @@ const InventoryForm = ({
                     parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
                   />
                 </Form.Item>
+                </Col>
 
+                <Col {...colProps2}>
                 <MinusCircleOutlined onClick={() => remove(name)} />
-              </Space>
+                </Col>
+              </Row>
             ))}
             <Form.Item>
               <Button
