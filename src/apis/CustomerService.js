@@ -16,6 +16,9 @@ export const CustomerService = {
       throw error;
     }
   },
+  search: async (search) => {
+    return CustomerService.getAll({ page: 1, size: search ? 200 : 20, search });
+  },
   getCustomerById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));

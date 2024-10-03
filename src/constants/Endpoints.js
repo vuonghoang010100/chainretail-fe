@@ -13,7 +13,8 @@ const Endpoints = {
   BILL: "/bills",
   INVENTORY: "/inventory_checks",
   PROMOTE: "/promotes",
-  BATCH: "/batches"
+  BATCH: "/batches",
+  SALE: "/sales"
 };
 
 export default Endpoints;

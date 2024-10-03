@@ -16,8 +16,8 @@ export const PromoteService = {
       throw error;
     }
   },
-  search: async (search) => {
-    return PromoteService.getAll({ page: 1, size: search ? 200 : 20, search });
+  search: async (search, storeId, status) => {
+    return PromoteService.getAll({ page: 1, size: search ? 200 : 20, search, storeId, status });
   },
   getPromoteById: async (id) => {
     try {

@@ -94,7 +94,7 @@ const EditProduct = () => {
     );
 
     if (changedData.imageBase64 === "") {
-      delete changedData.imageBase64;
+      delete updateData.imageBase64;
     }
 
     console.info("changed data", changedData);
