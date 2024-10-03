@@ -24,6 +24,8 @@ const breadcrumbItems = [
 
 const Pos = () => {
 
+  // --- search product
+
   // --------------------------------- Card tab ---------------------------------
   const [activeTabKey, setActiveTabKey] = useState('sell');
 
@@ -58,7 +60,7 @@ const Pos = () => {
         <Col span={12}>
           <Flex justify="center">
             <Search
-              placeholder="Tìm kiếm theo mã đơn đặt hàng"
+              placeholder="Tìm kiếm theo tên sản phẩm, mã vạch"
               allowClear
               enterButton
               // onSearch={handleSubmitSearch}

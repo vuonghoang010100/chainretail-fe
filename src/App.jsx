@@ -36,7 +36,7 @@ const NewInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/NewInvoice"));
 const EditInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/EditInvoice"));
 const ViewInvoice = lazy(() => import("@/pages/tenant/Sale/Invoice/ViewInvoice"));
 // Pos
-import Pos from "@/pages/tenant/Sale/Pos";
+const Pos = lazy(() => import("@/pages/tenant/Sale/Pos"));
 // Purchase
 const Purchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/Purchase"));
 const NewPurchase = lazy(() => import("@/pages/tenant/Purchase/Purchase/NewPurchase"));
@@ -216,7 +216,7 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.POS.name} >
-          <Route index element={<Pos/>} />
+          <Route index element={<LazyLoadPage><Pos/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.PURCHASE.name} >

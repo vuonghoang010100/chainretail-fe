@@ -11,7 +11,7 @@ import {
   ShopOutlined,
   TeamOutlined,
   LineChartOutlined,
-  SettingOutlined,
+  // SettingOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined, 
 } from "@ant-design/icons";
@@ -57,7 +57,7 @@ const menuItems = [
   ]),
   getMenuItem("Cửa hàng", TENANT_GROUP.STORE_GROUP, <ShopOutlined />, [
     getMenuItem("Cửa hàng", TENANT_ROUTE.STORE.path),
-    // getMenuItem("Vận chuyển", TENANT_ROUTE.TRANSFER.path),
+    getMenuItem("Vận chuyển", TENANT_ROUTE.TRANSFER.path),
     getMenuItem("Kiểm kho", TENANT_ROUTE.INVENTORY.path),
   ]),
   getMenuItem("Nhân viên", TENANT_GROUP.STAFF_GROUP, <TeamOutlined />,[
@@ -66,7 +66,7 @@ const menuItems = [
   ]),
   getMenuItem("Khuyến mãi", TENANT_ROUTE.PROMOTE.path, <StarOutlined />),
   getMenuItem("Báo cáo", TENANT_ROUTE.REPORT.path, <LineChartOutlined />),
-  getMenuItem("Cài đặt", TENANT_ROUTE.SETTING.path, <SettingOutlined />),
+  // getMenuItem("Cài đặt", TENANT_ROUTE.SETTING.path, <SettingOutlined />),
 ];
 
 // define submenu to track to collapse

@@ -1,6 +1,6 @@
 import axios from "axios";
-// import { notification } from "antd";
-
+import { notification } from "antd";
+import { useNavigate } from "react-router-dom";
 const baseURL = import.meta.env.VITE_API_URL;
 
 // Axios instance default
@@ -24,31 +24,34 @@ export const api_public = axios.create({
 // TODO: implement this
 // code below is example of error handler
 
-// const errorHandler = (error) => {
-//   const statusCode = error.response?.status
+const errorHandler = (error) => {
+  const statusCode = error.response?.status
 
-//   if (error.code === "ERR_CANCELED") {
-//       // TEST: notification error
-//       notification.error({
-//           placement: "bottomRight",
-//           description: "API canceled!",
-//       })
-//       return Promise.resolve()
-//   }
+  console.info("err", error)
 
-//   // logging only errors that are not 401
-//   if (statusCode && statusCode !== 401) {
-//       console.error(error)
-//   }
+  if (error.code === "ERR_CANCELED") {
+      // TEST: notification error
+      notification.error({
+          placement: "bottomRight",
+          description: "API canceled!",
+      })
+      return Promise.resolve()
+  }
 
-//   return Promise.reject(error)
-// }
+  // logging only errors that are not 401
+  if (statusCode && statusCode === 401) {
+    console.info(window.location.host)
+    window.location = window.location.protocol + "//" + window.location.host + "/logout"
+  }
 
-// // registering the custom error handler to the
-// // "api" axios instance
-// api.interceptors.response.use(undefined, (error) => {
-//   return errorHandler(error)
-// })
+  return Promise.reject(error)
+}
+
+// registering the custom error handler to the
+// "api" axios instance
+api.interceptors.response.use(undefined, (error) => {
+  return errorHandler(error)
+})
 
 
 

@@ -7,14 +7,12 @@ import {
   Card,
   Space,
   Button,
-  Popconfirm,
   Table,
   Avatar,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { deleteRecord } from "./Inventory";
 import { InventoryService } from "@/apis/InventoryService";
 
 const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
@@ -115,15 +113,6 @@ const ViewInventory = () => {
     },
   ];
 
-  const handleEdit = () => {
-    navigate(`${path}/${id}/edit`);
-  };
-
-  const handleDelete = async () => {
-    await deleteRecord(id);
-    navigate(path);
-  };
-
   const columns = [
     {
       title: "Sản phẩm",
@@ -166,20 +155,6 @@ const ViewInventory = () => {
         breadcrumbItems={breadcrumbItems}
       >
         <Space>
-          <Button type="primary" onClick={handleEdit}>
-            Cập nhật
-          </Button>
-          <Popconfirm
-            title="Xóa đơn kiểm kho?"
-            okText="Xóa"
-            cancelText="Đóng"
-            placement="bottomRight"
-            onConfirm={handleDelete}
-          >
-            <Button type="primary" danger>
-              Xóa
-            </Button>
-          </Popconfirm>
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
