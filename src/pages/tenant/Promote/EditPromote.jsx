@@ -73,7 +73,7 @@ const EditPromote = () => {
           record.productId = null;
           if (record.product) {
             recordFormatted.product = {
-              label: `${record.id} - ${record.name} - Giá bán: ${record.price}`,
+              label: `${record.product.id} - ${record.product.name} - Giá bán: ${record.product.price}`,
               key: record.product.id,
               value: record.product.id,
             };

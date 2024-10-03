@@ -39,6 +39,13 @@ const PromoteForm = ({
 
     // set form values
     form.setFieldsValue(initRecord);
+
+    if (useForCreate) {
+      setIsAllStore(true);
+      form.setFieldValue("allStore", true);
+      form.setFieldValue("status", "Còn hiệu lực");
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, initRecord]);
 
   // -------------------- Handle Unique fields --------------------
@@ -53,7 +60,7 @@ const PromoteForm = ({
 
       // handle unique
       if (errorCode === -302) {
-        message.error("Tên hiển thị đã được sử dụng!");
+        message.error("Mã khuyến mãi đã được sử dụng!");
         setUsedName((prev) => [...prev, postPutData.name]);
       } else {
         console.error("Uncatch conflict error message", error);
@@ -131,15 +138,9 @@ const PromoteForm = ({
         maxWidth: 600,
       }}
     >
-      {!useForCreate && (
-        <Form.Item name="id" label="Mã khuyến mãi">
-          <Input disabled />
-        </Form.Item>
-      )}
-
       <Form.Item
         name="name"
-        label="Tên khuyến mãi"
+        label="Mã khuyến mãi"
         rules={[
           {
             required: true,
@@ -152,13 +153,17 @@ const PromoteForm = ({
         ]}
       >
         <Input
-          placeholder="Tên khuyến mãi"
+          placeholder="Mã khuyến mãi"
           count={{
             show: true,
             max: 50,
             exceedFormatter: (txt, { max }) => txt.slice(0, max).join(""),
           }}
         />
+      </Form.Item>
+
+      <Form.Item name="description" label="Mô tả">
+        <Input.TextArea placeholder="Mô tả" showCount maxLength={256} />
       </Form.Item>
 
       <Form.Item

@@ -73,13 +73,13 @@ const Promote = () => {
       title: "Mã khuyến mãi",
       key: "id",
       render: (_, record) => {
-        return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
+        return <Link to={`${path}/${record.id}`}>{record.name}</Link>;
       },
     },
     {
       title: "Tên khuyến mãi",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "description",
+      key: "description",
     },
     {
       title: "Ngày bắt đầu",

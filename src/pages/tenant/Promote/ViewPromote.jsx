@@ -72,13 +72,13 @@ const ViewPromote = () => {
   let infoItems = [
     {
       key: useId(),
-      label: "Tên khuyến mãi",
+      label: "Mã khuyến mãi",
       children: <Text strong>{currentRecord?.name}</Text>,
     },
     {
       key: useId(),
-      label: "Mã khuyến mãi",
-      children: currentRecord?.id,
+      label: "Mô tả",
+      children: currentRecord?.description,
     },
     {
       key: useId(),

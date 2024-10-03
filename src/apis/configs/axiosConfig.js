@@ -1,6 +1,5 @@
 import axios from "axios";
 import { notification } from "antd";
-import { useNavigate } from "react-router-dom";
 const baseURL = import.meta.env.VITE_API_URL;
 
 // Axios instance default
@@ -39,7 +38,7 @@ const errorHandler = (error) => {
   }
 
   // logging only errors that are not 401
-  if (statusCode && statusCode === 401) {
+  if (statusCode === 401) {
     console.info(window.location.host)
     window.location = window.location.protocol + "//" + window.location.host + "/logout"
   }
