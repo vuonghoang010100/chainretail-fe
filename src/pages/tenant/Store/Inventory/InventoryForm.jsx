@@ -1,69 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Space, message } from "antd";
-import { districts, uniqueValidator } from "@/utils";
-import {
-  SelectDistrict,
-  SelectProvince,
-} from "@/components/common/Input/Select";
-import { RadioGroup } from "@/components/common/Input/Radio";
+import { Form, Button, Space, message, InputNumber, Row, Col } from "antd";
+import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
+import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
+import { StoreService } from "@/apis/StoreService";
+import useAuth from "@/hooks/useAuth";
+import { ProductService } from "@/apis/ProductService";
+import { BatchService } from "@/apis/BatchService";
 
-const InventoryForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
+const InventoryForm = ({
+  useForCreate,
+  onFinish,
+  initRecord: initRecord = {},
+}) => {
   const navigate = useNavigate();
+  const { auth } = useAuth();
+
+  // layout
+  const rowProps = {
+    gutter: 24,
+  };
+
+  const colProps = {
+    sm: 5,
+    xs: 24,
+  };
+
+  const colProps2 = {
+    sm: 1,
+    xs: 1,
+  };
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [districtOptions, setDistrictOptions] = useState([]);
+  const [pid, setPid] = useState({});
+  const [storeId, setStoreId] = useState(-1);
 
   // -------------------- Update fields --------------------
   useEffect(() => {
     // set form values
     form.setFieldsValue(initRecord);
-
-    // fix districtOptions
-    if (Object.prototype.hasOwnProperty.call(initRecord, "province")) {
-      const province = initRecord.province;
-      if (Object.prototype.hasOwnProperty.call(districts, province)) {
-        setDistrictOptions(
-          districts[province].map((district) => ({
-            label: district,
-            value: district,
-          }))
-        );
-      }
-    }
   }, [form, initRecord]);
 
   // -------------------- Handle Unique fields --------------------
-  const [usedEmail, setUsedEmail] = useState([]);
-  const [usedPhone, setUsedPhone] = useState([]);
-  const [usedName, setUsedName] = useState([]);
-  const [usedFullName, setUsedFullName] = useState([]);
 
   const handleError = (postPutData, error) => {
     // Error
     console.log(error);
 
     if (error?.response?.status === 400) {
-      const errorCode = error.response.data.code;
-
-      // handle unique
-      if (errorCode === -300) {
-        message.error("Email đã được sử dụng!");
-        setUsedEmail((prev) => [...prev, postPutData.email]);
-      } else if (errorCode === -301) {
-        message.error("Số điện thoại đã được sử dụng!");
-        setUsedPhone((prev) => [...prev, postPutData.phone]);
-      } else if (errorCode === -302) {
-        message.error("Tên hiển thị đã được sử dụng!");
-        setUsedName((prev) => [...prev, postPutData.name]);
-      } else if (errorCode === -303) {
-        message.error("Tên cửa hàng đã được sử dụng!");
-        setUsedFullName((prev) => [...prev, postPutData.fullName]);
-      } else {
-        console.error("Uncatch conflict error message", error);
-      }
       return;
     }
     // Uncatch error
@@ -79,6 +65,19 @@ const InventoryForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) 
         value === undefined || value === "" ? [key, null] : [key, value]
       )
     );
+
+    data.storeId = null;
+    if (data.store) {
+      data.storeId = data.store.value;
+    }
+    delete data.store;
+
+    data.employeeId = auth.userId;
+
+    data.details = data.details.map((ele) => ({
+      batchId: ele.batch.value,
+      realQuantity: ele.realQuantity,
+    }));
 
     return data;
   };
@@ -113,143 +112,187 @@ const InventoryForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) 
       name="storeForm"
       form={form}
       onFinish={handleSubmit}
-      labelCol={{
-        span: 8,
-      }}
-      wrapperCol={{
-        span: 16,
-      }}
-      style={{
-        maxWidth: 600,
-      }}
+      // labelCol={{
+      //   span: 4,
+      // }}
+      // wrapperCol={{
+      //   span: 20,
+      // }}
+      // style={{
+      //   maxWidth: 600,
+      // }}
     >
-      {!useForCreate && (
-        <Form.Item name="id" label="Mã cửa hàng">
-          <Input disabled />
-        </Form.Item>
-      )}
-
       <Form.Item
-        name="name"
-        label="Tên hiển thị"
+        name="store"
+        label="Cửa hàng"
+        tooltip="Trường bắt buộc!"
         rules={[
           {
             required: true,
-            message: "Vui lòng nhập tên hiển thị!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedName, "Tên hiển thị"),
+            message: "Vui chọn cửa hàng!",
           },
         ]}
       >
-        <Input
-          placeholder="Tên hiển thị của cửa hàng"
-          count={{
-            show: true,
-            max: 50,
-            exceedFormatter: (txt, { max }) => (txt).slice(0, max).join(''),
-          }}
+        <DebounceSelect
+          allowClear
+          showSearch
+          fetchOptions={StoreService.search}
+          formatResponeData={(data) =>
+            data.map((option) => ({
+              label: `${option.name}`,
+              key: option.id,
+              value: option.id,
+            }))
+          }
+          onSelect={(option) => setStoreId(option?.value)}
+          placeholder="Tìm và chọn cửa hàng"
         />
       </Form.Item>
 
-      <Form.Item
-        name="fullName"
-        label="Tên cửa hàng"
+      <Form.List
+        style={{
+          maxWidth: 1200,
+        }}
+        name="details"
         rules={[
           {
-            required: true,
-            message: "Vui lòng nhập tên cửa hàng!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedFullName, "Tên cửa hàng"),
+            validator: async (_, details) => {
+              console.log(details);
+
+              if (details.length === 0) {
+                message.error("Vui lòng thêm sản phẩm vào đơn nhập hàng!");
+                return Promise.reject(new Error("Không có sản phẩm"));
+              }
+
+              let ids = details.map((ele) => ele?.product?.value);
+              let idsSet = new Set(ids);
+
+              console.log(ids);
+              console.log(idsSet);
+
+              if (ids.length !== idsSet.size) {
+                message.error("Sẩn phẩm không được trùng nhau!");
+                return Promise.reject(
+                  new Error("Sẩn phẩm không được trùng nhau")
+                );
+              }
+            },
           },
         ]}
       >
-        <Input placeholder="Tên của cửa hàng" />
-      </Form.Item>
+        {(fields, { add, remove }) => (
+          <>
+            {fields.map(({ key, name, ...restField }) => (
+              <Row {...rowProps} key={key}>
+                <Col {...colProps}>
+                <Form.Item
+                  {...restField}
+                  name={[name, "product"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn sản phẩm!",
+                    },
+                  ]}
+                >
+                  <DebounceSelect
+                    disabled={!useForCreate}
+                    allowClear
+                    showSearch
+                    fetchOptions={(value) => ProductService.search(value)}
+                    formatResponeData={(data) =>
+                      data.map((option) => ({
+                        label: `${option.id} - ${option.name}`,
+                        key: option.id,
+                        value: option.id,
+                      }))
+                    }
+                    onSelect={(option) => {
+                      setPid((prev) => {
+                        prev[key] = option.value;
+                        return prev;
+                      });
+                      form.resetFields([["details", name, "batch"]]);
+                    }}
+                    placeholder="Tìm và sản phẩm"
+                  />
+                </Form.Item>
+                </Col>
+                <Col {...colProps}>
+                <Form.Item
+                  {...restField}
+                  name={[name, "batch"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn lô!",
+                    },
+                  ]}
+                >
+                  <DebounceSelect
+                    disabled={!useForCreate}
+                    allowClear
+                    showSearch
+                    fetchOptions={(value) => {
+                      let productId = pid[key];
+                      console.log(pid);
 
-      <Form.Item
-        name="province"
-        label="Tỉnh/Thành phố"
-        rules={[
-          {
-            required: true,
-            message: "Vui chọn Tỉnh/Thành phố!",
-          },
-        ]}
-      >
-        <SelectProvince
-          setDistrictOptions={setDistrictOptions}
-          resetDistrict={() => form.resetFields(["district"])}
-        />
-      </Form.Item>
+                      return BatchService.search(value, productId, storeId);
+                    }}
+                    formatResponeData={(data) =>
+                      data.map((option) => ({
+                        label: `Lô: ${option.id} - SL: ${option.quantity}`,
+                        key: option.id,
+                        value: option.id,
+                      }))
+                    }
+                    placeholder="Tìm và chọn lô"
+                  />
+                </Form.Item>
+                </Col>
 
-      <Form.Item
-        name="district"
-        label="Quận/Huyện"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng chọn Quận/Huyện!",
-          },
-        ]}
-      >
-        <SelectDistrict options={districtOptions} />
-      </Form.Item>
+                <Col {...colProps}>
+                <Form.Item
+                  {...restField}
+                  label="SL thực tế"
+                  name={[name, "realQuantity"]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "Thiếu số lượng",
+                    },
+                  ]}
+                >
+                  <InputNumber
+                    placeholder="SL thực tế"
+                    formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                  />
+                </Form.Item>
+                </Col>
 
-      <Form.Item
-        name="address"
-        label="Địa chỉ"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập địa chỉ của cửa hàng!",
-          },
-        ]}
-      >
-        <Input placeholder="Địa chỉ của cửa hàng" />
-      </Form.Item>
+                <Col {...colProps2}>
+                <MinusCircleOutlined onClick={() => remove(name)} />
+                </Col>
+              </Row>
+            ))}
+            <Form.Item>
+              <Button
+                label="_"
+                type="dashed"
+                onClick={() => add()}
+                block
+                icon={<PlusOutlined />}
+              >
+                Thêm sản phẩm
+              </Button>
+            </Form.Item>
+          </>
+        )}
+      </Form.List>
 
-      <Form.Item
-        name="email"
-        label="Email"
-        rules={[
-          {
-            type: "email",
-            message: "Email không hợp lệ!",
-          },
-          {
-            validator: (_, value) => uniqueValidator(value, usedEmail, "Email"),
-          },
-        ]}
-      >
-        <Input placeholder="Email liên hệ của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="phone"
-        label="Số điện thoại"
-        rules={[
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedPhone, "Số điện thoại"),
-          },
-        ]}
-      >
-        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
-      </Form.Item>
-
-      {!useForCreate && (
-        <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
-        </Form.Item>
-      )}
-
-      <Form.Item name="note" label="Ghi chú">
-        <Input.TextArea placeholder="Ghi chú" showCount maxLength={256} />
-      </Form.Item>
       <Form.Item
         wrapperCol={{
           offset: 8,

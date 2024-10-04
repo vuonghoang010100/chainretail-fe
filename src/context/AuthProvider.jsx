@@ -7,6 +7,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
   let user = null;
+  let userId = null;
   let tenant = null;
   const token = localStorageUtils.getToken();
   let authorize = [];
@@ -17,6 +18,7 @@ export const AuthProvider = ({children}) => {
       // TODO: export
       const payload = jwtDecode(token);
       user = payload.sub;
+      userId = payload.userId;
       tenant = payload.tenant;
       authorize = payload.scope;
       isAuthenticated = true;
@@ -28,6 +30,7 @@ export const AuthProvider = ({children}) => {
   
   const [auth, setAuths] = useState({
     user,
+    userId,
     tenant,
     token,
     authorize,

@@ -30,4 +30,26 @@ export const RoleSerivce = {
       throw error;
     }
   },
+  postRole: async (data) => {
+    try {
+      const response = await api.post(ENDPOINT, data);
+      if (response.status === 201 && response.data?.code === 0)
+        return response.data.result;
+      throw new Error("Uncatch status postRole");
+    } catch (error) {
+      console.error("postRole error:", error);
+      throw error;
+    }
+  },
+  putRole: async (id, data) => {
+    try {
+      const response = await api.put(ENDPOINT.concat("/" + id), data);
+      if (response.status === 200 && response.data?.code === 0)
+        return response.data.result;
+      throw new Error("Uncatch status putRole");
+    } catch (error) {
+      console.error("putRole error:", error);
+      throw error;
+    }
+  },
 };

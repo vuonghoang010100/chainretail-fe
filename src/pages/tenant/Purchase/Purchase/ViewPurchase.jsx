@@ -8,15 +8,19 @@ import {
   Space,
   Button,
   Popconfirm,
+  Avatar,
+  Table,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Purchase";
+import { PurchaseService } from "@/apis/PurchaseService";
 
 // current page path
 const path = ROUTE.TENANT_APP.PURCHASE.path;
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 const breadcrumbItems = [
   {
@@ -49,7 +53,7 @@ const ViewPurchase = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await PurchaseService.getPurchaseById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,48 +76,105 @@ const ViewPurchase = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã đơn nhập hàng",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Cửa hàng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.store?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.store?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Nhà cung cấp",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.VENDOR.path}/${currentRecord?.vendor?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.vendor?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Hợp đồng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.CONTRACT.path}/${currentRecord?.contract?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.contract?.id && "Hợp đồng"} {currentRecord?.contract?.id}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
+      label: "Nhân viên",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
+      label: "Tổng số tiền",
+      children:
+        `${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND",
     },
     {
       key: useId(),
       label: "Trạng thái",
       children: currentRecord?.status,
+    },
+    {
+      key: useId(),
+      label: "Trạng thái nhận hàng",
+      children: currentRecord?.receiveStatus,
+    },
+    {
+      key: useId(),
+      label: "Ngày nhận hàng",
+      children: currentRecord?.receivedDate,
+    },
+    {
+      key: useId(),
+      label: "Trạng thái thanh toán",
+      children: currentRecord?.paymentStatus,
+    },
+    {
+      key: useId(),
+      label: "Hóa đơn",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.BILL.path}/${currentRecord?.bill?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.bill?.id && "Hóa đơn"} {currentRecord?.bill?.id}
+        </Link>
+      ),
+    },
+    {
+      key: useId(),
+      label: "Thời gian tạo",
+      children: currentRecord?.createTime,
+    },
+    {
+      key: useId(),
+      label: "Thời gian cập nhập",
+      children: currentRecord?.updateTime,
     },
     {
       key: useId(),
@@ -126,10 +187,56 @@ const ViewPurchase = () => {
     navigate(`${path}/${id}/edit`);
   };
 
+  const handleReceive = () => {
+    navigate(`${path}/${id}/receive`);
+  }
+
   const handleDelete = async () => {
     await deleteRecord(id);
     navigate(path);
   };
+
+  // ------------- Table columns
+  const columns = [
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.product.imageUrl ? record.product.imageUrl : noImageurl} />{" "}
+            <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record.product.id}`} target="_blank">{record.product.name}</Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Số lượng đặt mua",
+      key: "purchaseAmount",
+      dataIndex: "purchaseAmount",
+    },
+    {
+      title: "Số lượng nhận",
+      key: "receivedAmount",
+      dataIndex: "receivedAmount",
+    },
+    {
+      title: "Giá mua",
+      key: "purchasePrice",
+      render: (_, record) => (
+        `${record?.purchasePrice}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND"
+      )
+    },
+    {
+      title: "Thành tiền",
+      key: "subTotal",
+      render: (_, record) => (
+        `${record?.subTotal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND"
+      )
+    },
+  ]
 
   return (
     <PageContent>
@@ -138,9 +245,18 @@ const ViewPurchase = () => {
         breadcrumbItems={breadcrumbItems}
       >
         <Space>
-          <Button type="primary" onClick={handleEdit}>
-            Cập nhật
-          </Button>
+          {currentRecord.status === "Chờ nhận hàng" && (
+            <Button type="primary" onClick={handleReceive} >
+              Nhận hàng
+            </Button>
+          )}
+
+          {currentRecord.status != "Hoàn thành" && (
+            <Button type="primary" onClick={handleEdit}>
+              Cập nhật
+            </Button>
+          )}
+
           <Popconfirm
             title="Xóa đơn nhập hàng?"
             okText="Xóa"
@@ -165,6 +281,26 @@ const ViewPurchase = () => {
             width: "30%",
             minWidth: "max-content",
           }}
+        />
+      </Card>
+      <br/>
+      <Card
+        title="Chi tiết đơn nhập hàng"
+        bordered={false} loading={loading}
+      >
+        <Table
+          dataSource={currentRecord?.details}
+          columns={columns}
+          pagination={false}
+          summary={() => (
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0}></Table.Summary.Cell>
+              <Table.Summary.Cell index={1}></Table.Summary.Cell>
+              <Table.Summary.Cell index={2}></Table.Summary.Cell>
+              <Table.Summary.Cell index={3}>Tổng số tiền</Table.Summary.Cell>
+              <Table.Summary.Cell index={4}>{`${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+            </Table.Summary.Row>
+          )}
         />
       </Card>
     </PageContent>

@@ -12,8 +12,8 @@ import {
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Promote";
+import { PromoteService } from "@/apis/PromoteService";
 
 // current page path
 const path = ROUTE.TENANT_APP.PROMOTE.path;
@@ -49,7 +49,7 @@ const ViewPromote = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await PromoteService.getPromoteById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -69,46 +69,31 @@ const ViewPromote = () => {
   }, [id]);
 
   // -------------------- Description items --------------------
-  const infoItems = [
+  let infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
+      label: "Mã khuyến mãi",
       children: <Text strong>{currentRecord?.name}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Mô tả",
+      children: currentRecord?.description,
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Ngày bắt đầu",
+      children: currentRecord?.startDate,
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Ngày kết thúc",
+      children: currentRecord?.endDate,
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
+      label: "Số lượng",
+      children: currentRecord?.quantity,
     },
     {
       key: useId(),
@@ -117,8 +102,81 @@ const ViewPromote = () => {
     },
     {
       key: useId(),
-      label: "Ghi chú",
-      children: currentRecord?.note,
+      label: "Loại khuyến mãi",
+      children: currentRecord?.type,
+    },
+    {
+      key: useId(),
+      label: "% hóa đơn",
+      children: (
+        <>{currentRecord?.percentage ? currentRecord?.percentage + "%" : ""}</>
+      ),
+    },
+    {
+      key: useId(),
+      label: "Giá giảm tối đa",
+      children: currentRecord?.maxDiscount,
+    },
+    {
+      key: useId(),
+      label: "Sản phẩm",
+      children: (
+        <Link
+          to={ROUTE.TENANT_APP.PRODUCT.path + "/" + currentRecord?.product?.id}
+          target="_blank"
+        >
+          {currentRecord?.product?.name}
+        </Link>
+      ),
+    },
+    {
+      key: useId(),
+      label: "Giảm giá sản phẩm",
+      children: currentRecord?.discountPrice,
+    },
+    {
+      key: useId(),
+      label: "Giảm giá hóa đơn",
+      children: currentRecord?.amount,
+    },
+    {
+      key: useId(),
+      label: "Số lượng sản phẩm tối thiểu",
+      children: currentRecord?.minQuantityRequired,
+    },
+    {
+      key: useId(),
+      label: "Tổng số tiền tối thiểu",
+      children: currentRecord?.minAmountRequired,
+    },
+    {
+      key: useId(),
+      label: "Nhân viên tạo",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
+    },
+    {
+      key: useId(),
+      label: "Áp dụng cho tất cả cửa hàng?",
+      children: currentRecord?.allStore === true ? "Có" : "Không",
+    },
+    {
+      key: useId(),
+      label: "Danh sách cửa hàng áp dụng",
+      children: currentRecord?.stores?.map((ele, index) => (
+        <div key={index}>
+          <Link to={ROUTE.TENANT_APP.STORE.path + "/" + ele.id} target="_blank">
+            {ele.name}
+          </Link>
+          <br />
+        </div>
+      )),
     },
   ];
 

@@ -8,12 +8,13 @@ import {
   Space,
   Button,
   Popconfirm,
+  Table,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Bill";
+import { BillService } from "@/apis/BillService";
 
 // current page path
 const path = ROUTE.TENANT_APP.BILL.path;
@@ -49,7 +50,7 @@ const ViewBill = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await BillService.getBillById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,48 +73,44 @@ const ViewBill = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã hóa đơn",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Nhà cung cấp",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.VENDOR.path}/${currentRecord?.vendor?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.vendor?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Đơn nhập hàng",
+      children: currentRecord?.purchases?.map((ele, index) => (
+        <div key={index}>
+          <Link to={ROUTE.TENANT_APP.PURCHASE.path + "/" + ele.id} target="_blank">
+            {`Đơn nhập hàng ${ele.id}`}
+          </Link>
+          <br />
+        </div>
+      )),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Tổng số tiền",
+      children:
+        `${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND",
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
-    {
-      key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
+      label: "Trạng thái thanh toán",
+      children: currentRecord?.paymentStatus,
     },
     {
       key: useId(),
@@ -123,6 +120,10 @@ const ViewBill = () => {
   ];
 
   const handleEdit = () => {
+    if (currentRecord.paymentStatus === "Đã thanh toán") {
+      message.info("Hóa đơn đã thanh toán!")
+      return;
+    }
     navigate(`${path}/${id}/edit`);
   };
 
@@ -130,6 +131,28 @@ const ViewBill = () => {
     await deleteRecord(id);
     navigate(path);
   };
+
+  const columns = [
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        return (
+          <Link to={ROUTE.TENANT_APP.PURCHASE.path + "/" + record.id} target="_blank">
+          {`Đơn nhập hàng ${record.id}`}
+        </Link>
+        );
+      },
+    },
+    {
+      title: "Số tiền",
+      key: "total",
+      render: (_, record) => (
+        `${record?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND"
+      )
+    },
+  ]
 
   return (
     <PageContent>
@@ -165,6 +188,23 @@ const ViewBill = () => {
             width: "30%",
             minWidth: "max-content",
           }}
+        />
+      </Card>
+      <br/>
+      <Card
+        title="Chi tiết Hóa đơn nhập hàng"
+        bordered={false} loading={loading}
+      >
+        <Table
+          dataSource={currentRecord?.purchases}
+          columns={columns}
+          pagination={false}
+          summary={() => (
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0}>Tổng số tiền</Table.Summary.Cell>
+              <Table.Summary.Cell index={1}>{`${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+            </Table.Summary.Row>
+          )}
         />
       </Card>
     </PageContent>

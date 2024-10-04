@@ -95,7 +95,7 @@ const ViewProduct = () => {
       label: "Nhóm sản phẩm",
       children: (
         <Link
-          to={ROUTE.TENANT_APP.STORE.path + "/" + currentRecord?.category?.id}
+          to={ROUTE.TENANT_APP.CATEGORY.path + "/" + currentRecord?.category?.id}
           target="_blank"
         >
           {currentRecord?.category?.name}

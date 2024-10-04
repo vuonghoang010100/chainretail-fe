@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Typography, Button, Checkbox, Flex } from "antd";
+import { Form, Input, Typography, Button, Flex } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AuthenticationSerivce } from "@/apis/AuthenticationSerivce";
@@ -45,11 +45,22 @@ const Login = () => {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
-        padding: "24px 48px",
-        borderRadius: "24px",
+        backgroundColor: "#fafafa",
+        height: "100%"
       }}
     >
+      <Flex
+        justify="center"
+        align="center"
+        style={{
+          width: "100%",
+          height: "100%"
+        }}
+      >
+
+      <div>
+
+      
       <Flex justify="center">
         <Title>Đăng nhập</Title>
       </Flex>
@@ -61,7 +72,8 @@ const Login = () => {
         onFinish={handleSubmit}
         requiredMark={false}
         style={{
-          maxWidth: 600,
+          // maxWidth: 600,
+          minWidth: "400px"
         }}
       >
         <Form.Item
@@ -78,7 +90,7 @@ const Login = () => {
             },
           ]}
         >
-          <Input prefix={<UserOutlined />} placeholder="Email" />
+          <Input prefix={<UserOutlined />} placeholder="Email" size="large"/>
         </Form.Item>
         <Form.Item
           name="password"
@@ -90,17 +102,19 @@ const Login = () => {
             },
           ]}
         >
-          <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" />
+          <Input.Password prefix={<LockOutlined />} placeholder="Mật khẩu" size="large"/>
         </Form.Item>
 
-        <Form.Item>
+        <br/>
+
+        {/* <Form.Item>
           <Flex justify="space-between" align="center">
             <Form.Item name="remember" valuePropName="checked" noStyle>
               <Checkbox>Ghi nhớ đăng nhập</Checkbox>
             </Form.Item>
             <a href="">Quên mật khẩu?</a>
           </Flex>
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button block type="primary" htmlType="submit" loading={loading} size="large">
@@ -108,6 +122,8 @@ const Login = () => {
           </Button>
         </Form.Item>
       </Form>
+      </div>
+      </Flex>
     </div>
   );
 };

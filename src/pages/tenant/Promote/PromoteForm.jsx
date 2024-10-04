@@ -1,45 +1,55 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Input, Button, Space, message } from "antd";
-import { districts, uniqueValidator } from "@/utils";
-import {
-  SelectDistrict,
-  SelectProvince,
-} from "@/components/common/Input/Select";
+import { Form, Input, Button, Space, message, Radio, InputNumber } from "antd";
 import { RadioGroup } from "@/components/common/Input/Radio";
+import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
+import { StoreService } from "@/apis/StoreService";
+import { ProductService } from "@/apis/ProductService";
+import { DatePicker } from "@/components/common/Input/DatePicker";
+import useAuth from "@/hooks/useAuth";
+import { uniqueValidator } from "@/utils";
 
-const PromoteForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
+const PromoteForm = ({
+  useForCreate,
+  onFinish,
+  initRecord: initRecord = {},
+}) => {
   const navigate = useNavigate();
+  const { auth } = useAuth();
 
   // -------------------- Form attrs --------------------
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [districtOptions, setDistrictOptions] = useState([]);
+
+  const [isAllStore, setIsAllStore] = useState(true);
+  const [stores, setStores] = useState([]);
+  const [type, setType] = useState(undefined);
+
+  console.log(type);
 
   // -------------------- Update fields --------------------
   useEffect(() => {
+    if (!useForCreate) {
+      if (initRecord?.allStore !== null) {
+        setIsAllStore(initRecord?.allStore);
+      } 
+  
+      if (initRecord?.type) setType(initRecord?.type);
+    }
+
     // set form values
     form.setFieldsValue(initRecord);
 
-    // fix districtOptions
-    if (Object.prototype.hasOwnProperty.call(initRecord, "province")) {
-      const province = initRecord.province;
-      if (Object.prototype.hasOwnProperty.call(districts, province)) {
-        setDistrictOptions(
-          districts[province].map((district) => ({
-            label: district,
-            value: district,
-          }))
-        );
-      }
+    if (useForCreate) {
+      setIsAllStore(true);
+      form.setFieldValue("allStore", true);
+      form.setFieldValue("status", "Còn hiệu lực");
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form, initRecord]);
 
   // -------------------- Handle Unique fields --------------------
-  const [usedEmail, setUsedEmail] = useState([]);
-  const [usedPhone, setUsedPhone] = useState([]);
   const [usedName, setUsedName] = useState([]);
-  const [usedFullName, setUsedFullName] = useState([]);
 
   const handleError = (postPutData, error) => {
     // Error
@@ -49,18 +59,9 @@ const PromoteForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =>
       const errorCode = error.response.data.code;
 
       // handle unique
-      if (errorCode === -300) {
-        message.error("Email đã được sử dụng!");
-        setUsedEmail((prev) => [...prev, postPutData.email]);
-      } else if (errorCode === -301) {
-        message.error("Số điện thoại đã được sử dụng!");
-        setUsedPhone((prev) => [...prev, postPutData.phone]);
-      } else if (errorCode === -302) {
-        message.error("Tên hiển thị đã được sử dụng!");
+      if (errorCode === -302) {
+        message.error("Mã khuyến mãi đã được sử dụng!");
         setUsedName((prev) => [...prev, postPutData.name]);
-      } else if (errorCode === -303) {
-        message.error("Tên cửa hàng đã được sử dụng!");
-        setUsedFullName((prev) => [...prev, postPutData.fullName]);
       } else {
         console.error("Uncatch conflict error message", error);
       }
@@ -79,6 +80,20 @@ const PromoteForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =>
         value === undefined || value === "" ? [key, null] : [key, value]
       )
     );
+
+    // convert data
+    data.productId = null;
+    if (data.product) {
+      data.productId = data.product.value;
+    }
+    delete data.product;
+
+    data.storeIds = data.stores
+      ? (data.stores = data.stores.map((ele) => ele.value))
+      : [];
+    delete data.stores;
+
+    if (useForCreate) data.employeeId = auth.userId;
 
     return data;
   };
@@ -123,15 +138,9 @@ const PromoteForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =>
         maxWidth: 600,
       }}
     >
-      {!useForCreate && (
-        <Form.Item name="id" label="Mã cửa hàng">
-          <Input disabled />
-        </Form.Item>
-      )}
-
       <Form.Item
         name="name"
-        label="Tên hiển thị"
+        label="Mã khuyến mãi"
         rules={[
           {
             required: true,
@@ -144,112 +153,256 @@ const PromoteForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) =>
         ]}
       >
         <Input
-          placeholder="Tên hiển thị của cửa hàng"
+          placeholder="Mã khuyến mãi"
           count={{
             show: true,
             max: 50,
-            exceedFormatter: (txt, { max }) => (txt).slice(0, max).join(''),
+            exceedFormatter: (txt, { max }) => txt.slice(0, max).join(""),
           }}
         />
       </Form.Item>
 
-      <Form.Item
-        name="fullName"
-        label="Tên cửa hàng"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập tên cửa hàng!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedFullName, "Tên cửa hàng"),
-          },
-        ]}
-      >
-        <Input placeholder="Tên của cửa hàng" />
+      <Form.Item name="description" label="Mô tả">
+        <Input.TextArea placeholder="Mô tả" showCount maxLength={256} />
       </Form.Item>
 
       <Form.Item
-        name="province"
-        label="Tỉnh/Thành phố"
+        name="type"
+        label="Loại khuyến mãi"
         rules={[
           {
             required: true,
-            message: "Vui chọn Tỉnh/Thành phố!",
+            message: "Vui lòng chọn loại khuyến mãi!",
           },
         ]}
       >
-        <SelectProvince
-          setDistrictOptions={setDistrictOptions}
-          resetDistrict={() => form.resetFields(["district"])}
+        <RadioGroup
+          values={["Phần trăm Hóa đơn", "Số tiền Hóa đơn", "Giảm giá sản phẩm"]}
+          onChange={(e) => setType(e.target.value)}
+          value={type}
         />
       </Form.Item>
 
-      <Form.Item
-        name="district"
-        label="Quận/Huyện"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng chọn Quận/Huyện!",
-          },
-        ]}
-      >
-        <SelectDistrict options={districtOptions} />
-      </Form.Item>
-
-      <Form.Item
-        name="address"
-        label="Địa chỉ"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập địa chỉ của cửa hàng!",
-          },
-        ]}
-      >
-        <Input placeholder="Địa chỉ của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="email"
-        label="Email"
-        rules={[
-          {
-            type: "email",
-            message: "Email không hợp lệ!",
-          },
-          {
-            validator: (_, value) => uniqueValidator(value, usedEmail, "Email"),
-          },
-        ]}
-      >
-        <Input placeholder="Email liên hệ của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="phone"
-        label="Số điện thoại"
-        rules={[
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedPhone, "Số điện thoại"),
-          },
-        ]}
-      >
-        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
-      </Form.Item>
-
-      {!useForCreate && (
-        <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
+      {type === "Phần trăm Hóa đơn" && (
+        <Form.Item
+          name="percentage"
+          label="% hóa đơn"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn loại khuyến mãi!",
+            },
+          ]}
+        >
+          <InputNumber placeholder="" step="100" min="1" addonAfter="%" />
         </Form.Item>
       )}
 
-      <Form.Item name="note" label="Ghi chú">
-        <Input.TextArea placeholder="Ghi chú" showCount maxLength={256} />
+      {type === "Phần trăm Hóa đơn" && (
+        <Form.Item name="maxDiscount" label="Giá giảm tối đa">
+          <InputNumber
+            placeholder=""
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            step="1000"
+            min="1"
+            addonAfter="VND"
+          />
+        </Form.Item>
+      )}
+
+      {type === "Số tiền Hóa đơn" && (
+        <Form.Item
+          name="amount"
+          label="Số tiền giảm giá hóa đơn"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn loại khuyến mãi!",
+            },
+          ]}
+        >
+          <InputNumber
+            placeholder=""
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            step="1000"
+            min="1"
+            addonAfter="VND"
+          />
+        </Form.Item>
+      )}
+
+      {type === "Giảm giá sản phẩm" && (
+        <Form.Item
+          name="product"
+          label="Sản phẩm"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn sản phẩm!",
+            },
+          ]}
+        >
+          <DebounceSelect
+            disabled={!useForCreate}
+            allowClear
+            showSearch
+            fetchOptions={(value) => ProductService.search(value)}
+            formatResponeData={(data) =>
+              data.map((option) => ({
+                label: `${option.id} - ${option.name} - Giá bán: ${option.price}`,
+                key: option.id,
+                value: option.id,
+              }))
+            }
+            placeholder="Tìm và sản phẩm"
+          />
+        </Form.Item>
+      )}
+
+      {type === "Giảm giá sản phẩm" && (
+        <Form.Item
+          name="discountPrice"
+          label="Giá Khuyến mãi sản phẩm"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn loại khuyến mãi!",
+            },
+          ]}
+        >
+          <InputNumber
+            placeholder=""
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            step="1000"
+            min="1"
+            addonAfter="VND"
+          />
+        </Form.Item>
+      )}
+
+      <Form.Item
+        name="startDate"
+        label="Ngày bắt đầu"
+        rules={[
+          {
+            required: true,
+            message: "Vui chọn ngày bắt đầu hợp đồng!",
+          },
+        ]}
+      >
+        <DatePicker />
       </Form.Item>
+
+      <Form.Item
+        name="endDate"
+        label="Ngày kết thúc"
+        rules={[
+          {
+            required: true,
+            message: "Vui chọn ngày kết thúc hợp đồng!",
+          },
+        ]}
+      >
+        <DatePicker />
+      </Form.Item>
+
+      <Form.Item
+        name="quantity"
+        label="Số lượng"
+        tooltip="Để trống nếu không giới hạn số lượng"
+      >
+        <InputNumber placeholder="" step="100" min="0" addonAfter="" />
+      </Form.Item>
+
+      <Form.Item name="status" label="Trạng thái">
+        <RadioGroup values={["Còn hiệu lực", "Hết hiệu lực"]} />
+      </Form.Item>
+
+      {type !== "Giảm giá sản phẩm" && (
+        <Form.Item
+          name="minQuantityRequired"
+          label="Số lượng sản phẩm >="
+          tooltip="Để trống nếu không thiết lập điều kiện"
+        >
+          <InputNumber placeholder="" step="100" min="1" addonAfter="" />
+        </Form.Item>
+      )}
+
+      {type !== "Giảm giá sản phẩm" && (
+        <Form.Item
+          name="minAmountRequired"
+          label="Tổng số tiền hóa đơn >="
+          tooltip="Để trống nếu không thiết lập điều kiện"
+        >
+          <InputNumber
+            placeholder=""
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            step="1000"
+            min="1"
+            addonAfter="VND"
+          />
+        </Form.Item>
+      )}
+
+      <Form.Item
+        name="allStore"
+        label="Cửa hàng"
+        rules={[
+          {
+            required: true,
+            message: "Vui lòng chọn cửa hàng cho nhân viên!",
+          },
+        ]}
+      >
+        <Radio.Group
+          value={isAllStore}
+          onChange={(e) => setIsAllStore(e.target.value)}
+        >
+          <Radio value={true}>Tất cả cửa hàng</Radio>
+          <Radio value={false}>Chọn cửa hàng</Radio>
+        </Radio.Group>
+      </Form.Item>
+
+      {!isAllStore && (
+        <Form.Item
+          name="stores"
+          label="Chọn cửa hàng"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng chọn cửa hàng!",
+            },
+          ]}
+        >
+          <DebounceSelect
+            mode="multiple"
+            fetchOptions={StoreService.search}
+            formatResponeData={(data) =>
+              data.map((option) => ({
+                label: `${option.name}`,
+                key: option.id,
+                value: option.id,
+              }))
+            }
+            values={stores}
+            onChange={setStores}
+            placeholder="Tìm và chọn cửa hàng"
+          />
+        </Form.Item>
+      )}
+
       <Form.Item
         wrapperCol={{
           offset: 8,

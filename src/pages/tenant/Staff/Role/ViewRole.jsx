@@ -1,19 +1,22 @@
 import React, { useState, useEffect, useId } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { message, Descriptions, Typography, Space, Button, Card, Popconfirm } from "antd";
-import { HomeOutlined } from "@ant-design/icons";
 import {
-  PageContent,
-  PageHeader,
-
-} from "@/components/layout/PageContent";
-import { StaffSerivce } from "@/apis/StaffService";
+  message,
+  Descriptions,
+  Typography,
+  Card,
+  Space,
+  Button,
+  Popconfirm,
+} from "antd";
+import { HomeOutlined } from "@ant-design/icons";
+import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { deleteRecord } from "./Staff";
-
+import { deleteRecord } from "./Role";
+import { RoleSerivce } from "@/apis/RoleService";
 
 // current page path
-const path = ROUTE.TENANT_APP.STAFF.path;
+const path = ROUTE.TENANT_APP.ROLE.path;
 
 const breadcrumbItems = [
   {
@@ -24,7 +27,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Nhân viên</Link>,
+    title: <Link to={`${path}`}>Phân quyền</Link>,
   },
   {
     title: "Xem",
@@ -33,7 +36,7 @@ const breadcrumbItems = [
 
 const { Text } = Typography;
 
-const ViewStaff = () => {
+const ViewRole = () => {
   const navigate = useNavigate();
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
@@ -46,7 +49,7 @@ const ViewStaff = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StaffSerivce.getStaffById(id);
+        const record = await RoleSerivce.getRoleById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -55,7 +58,7 @@ const ViewStaff = () => {
           setLoading(false);
         }
       } catch (error) {
-        message.error("Không thể tải dữ liệu nhân viên!");
+        message.error("Không thể tải dữ liệu!");
       }
     };
 
@@ -69,82 +72,30 @@ const ViewStaff = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên nhân viên",
-      children: <Text strong>{currentRecord?.fullName}</Text>,
+      label: "Tên phân quyền",
+      children: <Text strong>{currentRecord?.name}</Text>,
     },
     {
       key: useId(),
-      label: "Mã nhân viên",
+      label: "Mã phân quyền",
       children: currentRecord?.id,
     },
     {
       key: useId(),
-      label: "Giới tính",
-      children: currentRecord?.gender,
+      label: "Mô tả",
+      children: currentRecord?.description,
     },
     {
       key: useId(),
-      label: "Ngày sinh",
-      children: currentRecord?.dob,
-    },
-    {
-      key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
-    },
-    {
-      key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
-    {
-      key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
-    },
-    {
-      key: useId(),
-      label: "Ghi chú",
-      children: currentRecord?.note,
-    },
-    {
-      key: useId(),
-      label: "Phân quyền",
-      children: currentRecord?.roles?.map((ele, index) => (
+      label: "Quyền",
+      children: currentRecord?.permissions?.map((ele, index) => (
         <Text key={index} code>
-          {ele.name}
+          {ele.description ? ele.description : ele.name}
         </Text>
       )),
     },
-    {
-      key: useId(),
-      label: "Cửa hàng làm việc",
-      children: currentRecord?.stores?.map((ele, index) => (
-        <div key={index}>
-          <Link to={ROUTE.TENANT_APP.STORE.path + "/" + ele.id} target="_blank">
-            {ele.name}
-          </Link>
-          <br />
-        </div>
-      )),
-    },
   ];
-   
+
   const handleEdit = () => {
     navigate(`${path}/${id}/edit`);
   };
@@ -157,7 +108,7 @@ const ViewStaff = () => {
   return (
     <PageContent>
       <PageHeader
-        title="Xem thông tin nhân viên"
+        title="Xem thông tin Phân quyền"
         breadcrumbItems={breadcrumbItems}
       >
         <Space>
@@ -165,7 +116,7 @@ const ViewStaff = () => {
             Cập nhật
           </Button>
           <Popconfirm
-            title="Xóa nhân viên?"
+            title="Xóa Phân quyền?"
             okText="Xóa"
             cancelText="Đóng"
             placement="bottomRight"
@@ -178,7 +129,7 @@ const ViewStaff = () => {
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
-      <Card title="Thông tin nhân viên" bordered={false} loading={loading}>
+      <Card title="Thông tin Phân quyền" bordered={false} loading={loading}>
         <Descriptions
           bordered
           items={infoItems}
@@ -189,9 +140,9 @@ const ViewStaff = () => {
             minWidth: "max-content",
           }}
         />
-        </Card>
+      </Card>
     </PageContent>
   );
 };
 
-export default ViewStaff;
+export default ViewRole;

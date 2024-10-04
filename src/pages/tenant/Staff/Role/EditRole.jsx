@@ -9,11 +9,11 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
-import OrderForm from "./OrderForm";
-import { SaleService } from "@/apis/SaleService";
+import RoleForm from "./RoleForm";
+import { RoleSerivce } from "@/apis/RoleService";
 
 // current page path
-const path = ROUTE.TENANT_APP.ORDER.path;
+const path = ROUTE.TENANT_APP.ROLE.path;
 
 const breadcrumbItems = [
   {
@@ -24,19 +24,18 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Đơn đặt hàng</Link>,
+    title: <Link to={`${path}`}>Phân quyền</Link>,
   },
   {
     title: "Cập nhật",
   },
 ];
 
-const EditOrder = () => {
+const EditRole = () => {
   const navigate = useNavigate();
 
   // -------------------- Page attr --------------------
   const { id } = useParams(); // id
-  const [currentRecord, setCurrentRecord] = useState({}); // data
   const [formatRecord, setFormatRecord] = useState({}); // formatted data
 
   // -------------------- Fetch data --------------------
@@ -46,7 +45,7 @@ const EditOrder = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await SaleService.getOrderById(id);
+        const record = await RoleSerivce.getRoleById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -55,21 +54,20 @@ const EditOrder = () => {
           record?.createTime && delete record.createTime;
           record?.updateTime && delete record.updateTime;
 
-          const x = {
-            id: record.id,
-            status: record?.status,
-            paymentStatus: record?.invoice?.paymentStatus
-          }
+          const flat = record.permissions.map(per => per.name)
+          delete record.permissions;
+          console.log(flat);
+          flat.forEach(ele => {
+            record[ele] = true
+          })
 
           // convert data
-          let recordFormatted = { ...x };
-
-          setCurrentRecord(x);
+          let recordFormatted = { ...record };
           setFormatRecord(recordFormatted);
         }
       } catch (error) {
         console.error("Error:", error);
-        message.error("Không thể tải dữ liệu đơn đặt hàng!");
+        message.error("Không thể tải dữ liệu!");
       }
     };
 
@@ -81,22 +79,9 @@ const EditOrder = () => {
 
   // -------------------- Update Customer --------------------
   const handleUpdate = async (updateData) => {
-    // get change value
-    let changedData = Object.fromEntries(
-      Object.entries(updateData).filter(
-        ([key, value]) => value !== currentRecord[key]
-      )
-    );
-
-    console.info("changed data", changedData);
-
-    // case no info change, update is no needed
-    if (!changedData || Object.keys(changedData)?.length === 0) {
-      return false;
-    }
 
     // Call update API
-    await SaleService.putOrder(id, updateData);
+    await RoleSerivce.putRole(id, updateData);
     navigate(path);
     return true;
   };
@@ -104,12 +89,12 @@ const EditOrder = () => {
   return (
     <PageContent>
       <PageHeader 
-        title="Cập nhật đơn đặt hàng"
+        title="Cập nhật Phân quyền"
         breadcrumbItems={breadcrumbItems} 
       />
       <ContentBox>
-        <Title marginBot>Thông tin đơn đặt hàng</Title>
-        <OrderForm
+        <Title marginBot>Thông tin phân quyền</Title>
+        <RoleForm
           useForCreate={false}
           onFinish={handleUpdate}
           initRecord={formatRecord}
@@ -119,4 +104,4 @@ const EditOrder = () => {
   );
 };
 
-export default EditOrder;
+export default EditRole;

@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import InventoryFilterModal from "./InventoryFilterModal";
+import { InventoryService } from "@/apis/InventoryService";
 
 const { Search } = Input;
 
@@ -68,56 +68,25 @@ const Inventory = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã kiểm kho",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Cửa hàng",
+      key: "store",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.store.id}`} target="_blank" >{record.store.name}</Link>
+      }
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
-    {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      title: "Nhân viên",
+      key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
   ];
 
@@ -127,7 +96,7 @@ const Inventory = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await InventoryService.getAll(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -209,7 +178,7 @@ const Inventory = () => {
 
       <ContentBox>
         <BaseTable
-          label="Đơn kiểm kho"
+          label="Phiếu kiểm kho"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -223,6 +192,8 @@ const Inventory = () => {
           setReload={() => {
             setReload();
           }}
+          delete_={false}
+          edit_={false}
         />
       </ContentBox>
 

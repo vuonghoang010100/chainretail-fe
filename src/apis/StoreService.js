@@ -10,14 +10,26 @@ export const StoreService = {
       if (response.status === 200 && response.data?.code === 0) {
         return response.data.result;
       }
-      throw new Error("Uncatch status getAll Staff");
+      throw new Error("Uncatch status getAll Store");
     } catch (error) {
-      console.error("getAll Staff error:", error);
+      console.error("getAll Store error:", error);
       throw error;
     }
   },
   search: async (search) => {
     return StoreService.getAll({ page: 1, size: search ? 200 : 20, search });
+  },
+  getWorkStore: async() => {
+    try {
+      const response = await api.get(ENDPOINT.concat("/work"))
+      if (response.status === 200 && response.data?.code === 0) {
+        return response.data.result;
+      }
+      throw new Error("Uncatch status getWorkStore");
+    } catch (error) {
+      console.error("getWorkStore error:", error);
+      throw error;
+    }
   },
   getStoreById: async (id) => {
     try {

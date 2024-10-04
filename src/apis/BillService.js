@@ -1,55 +1,52 @@
 import { api } from "@/apis/configs/axiosConfig";
 import Endpoints from "@/constants/Endpoints";
 
-const ENDPOINT = Endpoints.CONTRACT;
+const ENDPOINT = Endpoints.BILL;
 
-export const ContractService = {
+export const BillService = {
   getAll: async (query) => {
     try {
-      const response = await api.get(ENDPOINT, { params: query })
+      const response = await api.get(ENDPOINT, { params: query });
       if (response.status === 200 && response.data?.code === 0) {
         return response.data.result;
       }
-      throw new Error("Uncatch status getAll Contract");
+      throw new Error("Uncatch status getAllBill");
     } catch (error) {
-      console.error("getAll Contract error:", error);
+      console.error("getAllBill error:", error);
       throw error;
     }
   },
-  search: async (search, vendorId) => {
-    return ContractService.getAll({ page: 1, size: 200, search, vendorId });
-  },
-  getContractById: async (id) => {
+  getBillById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));
       if (response.status === 200 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status getContractById");
+      throw new Error("Uncatch status getBillById");
     } catch (error) {
-      console.error("getContractById error:", error);
+      console.error("getBillById error:", error);
       throw error;
     }
   },
-  postContract: async (data) => {
+  postBill: async (data) => {
     try {
       const response = await api.post(ENDPOINT, data);
       if (response.status === 201 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status postContract");
+      throw new Error("Uncatch status postBill");
     } catch (error) {
-      console.error("postVendor error:", error);
+      console.error("postBill error:", error);
       throw error;
     }
   },
-  putContract: async (id, data) => {
+  putBill: async (id, data) => {
     try {
       const response = await api.put(ENDPOINT.concat("/" + id), data);
       if (response.status === 200 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status putContract");
+      throw new Error("Uncatch status putBill");
     } catch (error) {
-      console.error("putVendor error:", error);
+      console.error("putSputBilltore error:", error);
       throw error;
     }
   },
-}
+};

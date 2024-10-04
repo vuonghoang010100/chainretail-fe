@@ -5,19 +5,17 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
-import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
-import { Input, Button, message, Space, Avatar } from "antd";
+import { HomeOutlined, PlusOutlined } from "@ant-design/icons";
+import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { ProductService } from "@/apis/ProductService";
-import ProductFilterModal from "./ProductFilterModal";
+import RoleFilterModal from "./RoleFilerModal";
+import { RoleSerivce } from "@/apis/RoleService";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.PRODUCT.path;
-
-const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
+const path = ROUTE.TENANT_APP.ROLE.path;
 
 /**
  * Breadcrumd item for page
@@ -31,7 +29,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Sản phẩm",
+    title: "Phân quyền",
   },
 ];
 
@@ -39,18 +37,19 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa sản phẩm thành công!");
+    // message.success("Xóa Phân quyền thành công!");
+    message.error("Không thể xóa Phân quyền!");
   } catch (error) {
     if (error.response?.status === 404) {
-      message.error("Sản phẩm không còn tồn tại!");
+      message.error("Phân quyền không còn tồn tại!");
     } else {
       // TODO: handle DATA_USED
-      message.error("Không thể xóa sản phẩm!");
+      message.error("Không thể xóa Phân quyền!");
     }
   }
 }
 
-const Product = () => {
+const Role = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -70,75 +69,21 @@ const Product = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã sản phẩm",
+      title: "Mã phân quyền",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
-      width: 120,
     },
     {
-      title: "Mã vạch",
-      dataIndex: "sku",
-      key: "sku",
-    },
-    {
-      title: "Sản phẩm",
+      title: "Tên phân quyền",
+      dataIndex: "name",
       key: "name",
-      render: (_, record) => {
-        return (
-          <div>
-            <Avatar shape="square" size={48} src={record.imageUrl ? record.imageUrl : noImageurl} />{" "}
-            {record.name}
-          </div>
-        );
-      },
     },
     {
-      title: "Thương hiệu",
-      dataIndex: "brand",
-      key: "brand",
-    },
-    {
-      title: "Nhóm sản phẩm",
-      key: "category",
-      render: (_, record) => {
-        return (
-          <Link 
-          to={`${ROUTE.TENANT_APP.CATEGORY.path}/${record.category?.id}`}
-          target="_blank"
-          >
-            {record.category?.name}
-          </Link>
-        );
-      },
-    },
-    {
-      title: "Đơn vị",
-      dataIndex: "unit",
-      key: "unit",
-    },
-    {
-      title: "Giá bán",
-      key: "price",
-      render: (_, record) => {
-        return <>{`${record.price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
-      }
-    },
-    {
-      title: "Tồn kho",
-      dataIndex: "stock",
-      key: "stock",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
   ];
 
@@ -148,8 +93,8 @@ const Product = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await ProductService.getAll(query);
-        console.info("Get All Product", dataResponse);
+        const dataResponse = await RoleSerivce.getAll(query);
+        console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
       } catch (error) {
@@ -178,7 +123,6 @@ const Product = () => {
   };
 
   // delete
-  // eslint-disable-next-line no-unused-vars
   const handleDelete = async (record) => {
     await deleteRecord(record.id);
     setReload();
@@ -201,7 +145,7 @@ const Product = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo tên, mã vạch, thương hiệu,.."
+          placeholder="Tìm kiếm theo tên Phân quyền"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}
@@ -210,13 +154,13 @@ const Product = () => {
         />
 
         <Space>
-          <Button
+          {/* <Button
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setOpenFilter(true)}
           >
             Bộ lọc
-          </Button>
+          </Button> */}
 
           <Button
             type="primary"
@@ -231,7 +175,7 @@ const Product = () => {
 
       <ContentBox>
         <BaseTable
-          label="Sản phẩm"
+          label="Phân quyền"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -248,14 +192,14 @@ const Product = () => {
         />
       </ContentBox>
 
-      <ProductFilterModal
+      <RoleFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
+        query={query}
         setQuery={setQuery}
       />
-
     </PageContent>
   );
 };
 
-export default Product;
+export default Role;

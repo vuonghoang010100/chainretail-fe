@@ -12,6 +12,7 @@ const useAuth = () => {
   function setAuth(token) {
     let tenant = null;
     let user = null;
+    let userId = null;
     let authorize = [];
     let isAuthenticated = false;
     if (token) {
@@ -19,6 +20,7 @@ const useAuth = () => {
       const payload = jwtDecode(token);
       tenant = payload.tenant;
       user = payload.sub;
+      userId = payload.userId;
       authorize = payload.scope;
       isAuthenticated = true;
       localStorageUtils.saveToken(token);
@@ -28,7 +30,7 @@ const useAuth = () => {
       token = null;
     }
 
-    setAuths({token, tenant, user, authorize, isAuthenticated})
+    setAuths({token, tenant, user, userId, authorize, isAuthenticated})
   }
 
   function hasAuthorize(author) {
@@ -54,6 +56,7 @@ const useAuth = () => {
       token: null,
       tenant: null,
       user: null,
+      userId: null,
       authorize: [],
       isAuthenticated: false,
     })

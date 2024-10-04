@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import BillFilterModal from "./BillFilterModal";
+import { BillService } from "@/apis/BillService";
 
 const { Search } = Input;
 
@@ -68,51 +68,37 @@ const Bill = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã hóa đơn",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Trạng thái thanh toán",
+      dataIndex: "paymentStatus",
+      key: "paymentStatus",
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Tổng số tiền",
+      key: "total",
+      render: (_, record) => {
+        return <>{`${record.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
+      }
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Nhà cung cấp",
+      key: "vendor",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.VENDOR.path}/${record.vendor.id}`} target="_blank" >{record.vendor.fullName}</Link>
+      }
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
+      title: "Nhân viên",
+      key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
     {
       title: "Ghi chú",
@@ -127,7 +113,7 @@ const Bill = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await BillService.getAll(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -153,6 +139,11 @@ const Bill = () => {
   };
 
   const handleEdit = (record) => {
+    if (record.paymentStatus === "Đã thanh toán") {
+      message.info("Hóa đơn đã thanh toán!")
+      return;
+    }
+
     navigate(`${path}/${record.id}/edit`);
   };
 

@@ -8,11 +8,11 @@ import {
 } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
-import PromoteForm from "./PromoteForm";
-import { PromoteService } from "@/apis/PromoteService";
+import RoleForm from "./RoleForm";
+import { RoleSerivce } from "@/apis/RoleService";
 
 // current page path
-const path = ROUTE.TENANT_APP.PROMOTE.path;
+const path = ROUTE.TENANT_APP.ROLE.path;
 
 const breadcrumbItems = [
   {
@@ -23,19 +23,19 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: <Link to={`${path}`}>Khuyến mãi</Link>,
+    title: <Link to={`${path}`}>Phân quyền</Link>,
   },
   {
     title: "Thêm mới",
   },
 ];
 
-const NewPromote = () => {
+const NewRole = () => {
   const navigate = useNavigate();
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await PromoteService.postPromote(data);
+    await RoleSerivce.postRole(data);
     navigate(path);
     return true;
   };
@@ -43,15 +43,15 @@ const NewPromote = () => {
   return (
     <PageContent>
       <PageHeader 
-        title="Thêm mới khuyến mãi"
+        title="Thêm mới"
         breadcrumbItems={breadcrumbItems} 
       />
       <ContentBox>
-        <Title marginBot>Thông tin khuyến mãi</Title>
-        <PromoteForm useForCreate onFinish={handleCreate} />
+        <Title marginBot>Thông tin Phân quyền</Title>
+        <RoleForm useForCreate onFinish={handleCreate} />
       </ContentBox>
     </PageContent>
   );
 };
 
-export default NewPromote;
+export default NewRole;

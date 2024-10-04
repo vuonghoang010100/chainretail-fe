@@ -5,13 +5,13 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
-import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
+import { HomeOutlined, FilterOutlined } from "@ant-design/icons";
 import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import InvoiceFilterModal from "./InvoiceFilterModal";
+import { SaleService } from "@/apis/SaleService";
 
 const { Search } = Input;
 
@@ -68,56 +68,46 @@ const Invoice = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã hóa đơn",
       key: "id",
       render: (_, record) => {
-        return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
+        return <Link to={`/order/${record.id}`}>{record?.invoice?.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Cửa hàng",
+      key: "store",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.store.id}`} target="_blank" >{record.store.name}</Link>
+      }
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Nhân viên",
+      key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Khách hàng",
+      key: "customer",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.CUSTOMER.path}/${record?.customer?.id}`} target="_blank" >{record?.customer?.fullName}</Link>
+      }
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Tổng số tiền",
+      key: "total",
+      render: (_, record) => {
+        return <>{`${record.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
+      }
     },
     {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
+      title: "Trạng thái thanh toán",
       key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      render: (_, record) => {
+        return (<>{record?.invoice?.paymentStatus}</>)
+      }
     },
   ];
 
@@ -127,7 +117,7 @@ const Invoice = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await SaleService.getAllOrders(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -149,7 +139,8 @@ const Invoice = () => {
   };
 
   const handleView = (record) => {
-    navigate(`${path}/${record.id}`);
+    // navigate(`${path}/${record.id}`);
+    navigate(`/order/${record.id}`);
   };
 
   const handleEdit = (record) => {
@@ -188,21 +179,22 @@ const Invoice = () => {
         />
 
         <Space>
-          <Button
+          &nbsp;
+          {/* <Button
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setOpenFilter(true)}
           >
             Bộ lọc
-          </Button>
+          </Button> */}
 
-          <Button
+          {/* <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={handleCreateNew}
           >
             Thêm mới
-          </Button>
+          </Button> */}
         </Space>
 
       </PageHeader>
@@ -223,6 +215,8 @@ const Invoice = () => {
           setReload={() => {
             setReload();
           }}
+          edit_={false}
+          delete_={false}
         />
       </ContentBox>
 

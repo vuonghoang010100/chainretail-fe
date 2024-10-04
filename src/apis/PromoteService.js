@@ -1,54 +1,54 @@
 import { api } from "@/apis/configs/axiosConfig";
 import Endpoints from "@/constants/Endpoints";
 
-const ENDPOINT = Endpoints.CONTRACT;
+const ENDPOINT = Endpoints.PROMOTE;
 
-export const ContractService = {
+export const PromoteService = {
   getAll: async (query) => {
     try {
       const response = await api.get(ENDPOINT, { params: query })
       if (response.status === 200 && response.data?.code === 0) {
         return response.data.result;
       }
-      throw new Error("Uncatch status getAll Contract");
+      throw new Error("Uncatch status getAll Promote");
     } catch (error) {
-      console.error("getAll Contract error:", error);
+      console.error("getAll Promote error:", error);
       throw error;
     }
   },
-  search: async (search, vendorId) => {
-    return ContractService.getAll({ page: 1, size: 200, search, vendorId });
+  search: async (search, storeId, status) => {
+    return PromoteService.getAll({ page: 1, size: search ? 200 : 20, search, storeId, status });
   },
-  getContractById: async (id) => {
+  getPromoteById: async (id) => {
     try {
       const response = await api.get(ENDPOINT.concat("/" + id));
       if (response.status === 200 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status getContractById");
+      throw new Error("Uncatch status getPromoteById");
     } catch (error) {
-      console.error("getContractById error:", error);
+      console.error("getPromoteById error:", error);
       throw error;
     }
   },
-  postContract: async (data) => {
+  postPromote: async (data) => {
     try {
       const response = await api.post(ENDPOINT, data);
       if (response.status === 201 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status postContract");
+      throw new Error("Uncatch status postPromote");
     } catch (error) {
-      console.error("postVendor error:", error);
+      console.error("postPromote error:", error);
       throw error;
     }
   },
-  putContract: async (id, data) => {
+  putPromote: async (id, data) => {
     try {
       const response = await api.put(ENDPOINT.concat("/" + id), data);
       if (response.status === 200 && response.data?.code === 0)
         return response.data.result;
-      throw new Error("Uncatch status putContract");
+      throw new Error("Uncatch status putPromote");
     } catch (error) {
-      console.error("putVendor error:", error);
+      console.error("putPromote error:", error);
       throw error;
     }
   },

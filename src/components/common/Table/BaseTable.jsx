@@ -57,6 +57,9 @@ const BaseTable = ({
   onEdit,
   onDelete,
   setReload,
+  view_=true,
+  edit_=true,
+  delete_=true,
   children,
 }) => {
   // -------------------- Add more columns --------------------
@@ -125,30 +128,36 @@ const BaseTable = ({
     fixed: "right",
     render: (_, record) => (
       <Space size="small">
-        <Button
-          type="primary"
-          ghost
-          icon={<EyeOutlined />}
-          onClick={() => {
-            onView(record);
-          }}
-        />
-        <Button
-          type="primary"
-          ghost
-          icon={<EditOutlined />}
-          onClick={() => {
-            onEdit(record);
-          }}
-        />
-        <Popconfirm
-          title={`Xóa ${label.toLowerCase()}?`}
-          okText="Xóa"
-          cancelText="Đóng"
-          onConfirm={() => onDelete(record)}
-        >
-          <Button danger ghost icon={<DeleteOutlined />} />
-        </Popconfirm>
+        {view_ && (
+          <Button
+            type="primary"
+            ghost
+            icon={<EyeOutlined />}
+            onClick={() => {
+              onView(record);
+            }}
+          />
+        )}
+        {edit_ && (
+          <Button
+            type="primary"
+            ghost
+            icon={<EditOutlined />}
+            onClick={() => {
+              onEdit(record);
+            }}
+          />
+        )}
+        {delete_ && (
+          <Popconfirm
+            title={`Xóa ${label.toLowerCase()}?`}
+            okText="Xóa"
+            cancelText="Đóng"
+            onConfirm={() => onDelete(record)}
+          >
+            <Button danger ghost icon={<DeleteOutlined />} />
+          </Popconfirm>
+        )}
       </Space>
     ),
   };

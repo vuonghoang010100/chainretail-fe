@@ -60,7 +60,7 @@ const Transfer = () => {
   const [dataSource, setDataSource] = useState([]); // control table data
   const [totalRecord, setTotalRecord] = useState(0); // control number of page in table
   const [query, setQuery] = useState({
-    page: 1,
+    page: -1,
     size: 10,
     // sort: "-createTime",
   });
@@ -68,46 +68,31 @@ const Transfer = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã đơn vận chuyển",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Tên cửa hàng",
+      title: "Tên đơn vận chuyển",
       dataIndex: "fullName",
       key: "fullName",
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Từ cửa hàng",
+      dataIndex: "fromStore",
+      key: "fromStore",
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
+      title: "Đến cửa hàng",
+      dataIndex: "fromStore",
+      key: "fromStore",
     },
     {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: "Nhân viên",
+      dataIndex: "employee",
+      key: "employee",
     },
     {
       title: "Trạng thái",
