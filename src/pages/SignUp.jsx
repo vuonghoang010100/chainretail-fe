@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Form, Input, Typography, Button, Flex, Checkbox } from "antd";
+import { Form, Input, Typography, Button, Flex, Checkbox, message } from "antd";
 import { LockOutlined, UserOutlined, GlobalOutlined } from '@ant-design/icons';
-import { Link } from "react-router-dom";
-import { VALIDATE_PATTERNS } from "@/utils";
+import { Link, useNavigate } from "react-router-dom";
+import { uniqueValidator, VALIDATE_PATTERNS } from "@/utils";
+import { AuthenticationSerivce } from "@/apis/AuthenticationSerivce";
 
 const Title = Typography.Title;
 
@@ -12,6 +13,51 @@ const SignUp = () => {
   const [form] = Form.useForm();
   // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const [usedEmail, setUsedEmail] = useState([]);
+  const [usedName, setUsedName] = useState([]);
+
+  const handleError = (postPutData, error) => {
+    // Error
+    console.log(error);
+
+    if (error?.response?.status === 400) {
+      const errorCode = error.response.data.code;
+
+      // handle unique
+      if (errorCode === -300) {
+        message.error("Email đã được sử dụng!");
+        setUsedEmail((prev) => [...prev, postPutData.email]);
+      } else if (errorCode === -302) {
+        message.error("Tên miền đã được đăng ký!");
+        setUsedName((prev) => [...prev, postPutData.name]);
+      } else {
+        console.error("Uncatch conflict error message", error);
+      }
+      return;
+    }
+  };
+
+  const handleSignup = async (data) => {
+    console.log(data);
+    
+    if (!data.remember) {
+      message.warning("Bạn cần đồng ý với điều khoản sử dụng!");
+      return;
+    }
+
+    delete data.remember;
+    delete data.passwordagain;
+
+    try {
+      await AuthenticationSerivce.signup(data);
+      navigate("/login");
+    } catch (error) {
+      handleError(data, error);
+    }
+
+  }
 
   return (
     <div
@@ -29,14 +75,14 @@ const SignUp = () => {
         name="login"
         layout="vertical"
         form={form}
-        onFinish={()=>{}}
+        onFinish={handleSignup}
         requiredMark={false}
         style={{
           maxWidth: 400,
         }}
       >
         <Form.Item
-          name="fullname"
+          name="fullName"
           label="Họ và tên"
           rules={[
             {
@@ -59,7 +105,11 @@ const SignUp = () => {
             {
               pattern: VALIDATE_PATTERNS.TENANT_NAME_REGIS,
               message: "Tên cửa hàng không hợp lệ!"
-            }
+            },
+            {
+              validator: (_, value) =>
+                uniqueValidator(value, usedName, "Tên hiển thị"),
+            },
           ]}
         >
           <Input
@@ -81,7 +131,10 @@ const SignUp = () => {
             {
               type: "email",
               message: "Email không hợp lệ!"
-            }
+            },
+            {
+              validator: (_, value) => uniqueValidator(value, usedEmail, "Email"),
+            },
           ]}
         >
           <Input prefix={<UserOutlined />} placeholder="email" />
@@ -106,7 +159,15 @@ const SignUp = () => {
           rules={[
             {
               required: true,
-              message: 'Vui lòng nhập lại mật khẩu!',
+              message: "Vui lòng nhập lại mật khẩu!",
+            },
+            {
+              validator: (_, value) =>
+                value === form.getFieldValue("password") || !value
+                  ? Promise.resolve()
+                  : Promise.reject(
+                      "Mật khẩu phải trùng khớp với mật khẩu bên trên!"
+                    ),
             },
           ]}
         >

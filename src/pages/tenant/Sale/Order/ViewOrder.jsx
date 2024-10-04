@@ -13,7 +13,6 @@ import {
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Order";
 import { SaleService } from "@/apis/SaleService";
 

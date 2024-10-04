@@ -14,7 +14,8 @@ const Endpoints = {
   INVENTORY: "/inventory_checks",
   PROMOTE: "/promotes",
   BATCH: "/batches",
-  SALE: "/sales"
+  SALE: "/sales",
+  TENANT: "tenants",
 };
 
 export default Endpoints;

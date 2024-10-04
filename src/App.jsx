@@ -85,7 +85,12 @@ const NewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/NewStaff"))
 const ViewStaff = lazy(() => import("@/pages/tenant/Staff/Staff/ViewStaff"))
 const EditStaff = lazy(() => import("@/pages/tenant/Staff/Staff/EditStaff"))
 // Role
-import Role from "@/pages/tenant/Staff/Role";
+// import Role from "@/pages/tenant/Staff/Role";
+const Role = lazy(() => import("@/pages/tenant/Staff/Role/Role"))
+const ViewRole = lazy(() => import("@/pages/tenant/Staff/Role/ViewRole"))
+const NewRole = lazy(() => import("@/pages/tenant/Staff/Role/NewRole"))
+const EditRole = lazy(() => import("@/pages/tenant/Staff/Role/EditRole"))
+
 // Promote
 const Promote = lazy(() => import("@/pages/tenant/Promote/Promote"));
 const NewPromote = lazy(() => import("@/pages/tenant/Promote/NewPromote"));
@@ -100,6 +105,7 @@ import Setting from "@/pages/tenant/Setting";
 // ------------ Admins ------------
 const AdminHome = lazy(() => import("@/pages/admin/AdminHome"))
 const Tenant = lazy(() => import("@/pages/admin/Tenant"))
+const ViewTenant = lazy(() => import("@/pages/admin/Tenant/ViewTenant"));
 
 // -------------------------------------------------------------------
 
@@ -161,6 +167,7 @@ function App() {
 
           <Route path={ROUTE.ADMIN_APP.TENANT.name} >
             <Route index element={<LazyLoadPage><Tenant /></LazyLoadPage>} />
+            <Route path=":id" element={<LazyLoadPage><ViewTenant/></LazyLoadPage>} />
           </Route>
 
         </Route>
@@ -285,7 +292,10 @@ function App() {
         </Route>
 
         <Route path={ROUTE.TENANT_APP.ROLE.name} >
-          <Route index element={<Role/>} />
+          <Route index element={<LazyLoadPage><Role/></LazyLoadPage>} />
+          <Route path="new" element={<LazyLoadPage><NewRole/></LazyLoadPage>} />
+          <Route path=":id" element={<LazyLoadPage><ViewRole/></LazyLoadPage>} />
+          <Route path=":id/edit" element={<LazyLoadPage><EditRole/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.PROMOTE.name} >

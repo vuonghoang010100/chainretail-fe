@@ -3,7 +3,7 @@ import { HomeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { ContentBox, PageContent, PageHeader } from "@/components/layout/PageContent";
 import { Title } from "@/components/common/Title";
-import { ROUTE } from "@/constants/AppConstant";
+// import { ROUTE } from "@/constants/AppConstant";
 
 
 const breadcrumbItems = [
@@ -19,7 +19,7 @@ const breadcrumbItems = [
   },
 ];
 
-const APPROUTE = ROUTE.TENANT_APP;
+// const APPROUTE = ROUTE.TENANT_APP;
 
 const Home = () => {
   return (
@@ -30,8 +30,17 @@ const Home = () => {
         <Title>Chào mừng đến với hệ thống quản lý bán hàng</Title>
         <br/>
         <br/>
+        <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/> <br/>
+        <br/>
 
-        <Link to={APPROUTE.DASHBOARD.path}>Dashboard</Link>
+        {/* <Link to={APPROUTE.DASHBOARD.path}>Dashboard</Link>
         <br/>
         <br/>
         <Link to={APPROUTE.PRODUCT.path}>Quản lý sản phẩm</Link>
@@ -50,7 +59,7 @@ const Home = () => {
         <br/>
         <Link to={APPROUTE.VENDOR.path}>Quản lý nhà cung cấp</Link>
         <br/>
-        <Link to={APPROUTE.DASHBOARD.path}>Quản lý hợp đồng</Link>
+        <Link to={APPROUTE.DASHBOARD.path}>Quản lý hợp đồng</Link> */}
 
       </ContentBox>
     </PageContent>

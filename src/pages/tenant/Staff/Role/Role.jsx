@@ -5,17 +5,17 @@ import {
   ContentBox,
 } from "@/components/layout/PageContent";
 import { Link, useNavigate } from "react-router-dom";
-import { HomeOutlined, PlusOutlined, FilterOutlined } from "@ant-design/icons";
+import { HomeOutlined, PlusOutlined } from "@ant-design/icons";
 import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
-import TransferFilterModal from "./TransferFilterModal";
+import RoleFilterModal from "./RoleFilerModal";
+import { RoleSerivce } from "@/apis/RoleService";
 
 const { Search } = Input;
 
-const path = ROUTE.TENANT_APP.TRANSFER.path;
+const path = ROUTE.TENANT_APP.ROLE.path;
 
 /**
  * Breadcrumd item for page
@@ -29,7 +29,7 @@ const breadcrumbItems = [
     ),
   },
   {
-    title: "Đơn vận chuyển",
+    title: "Phân quyền",
   },
 ];
 
@@ -37,18 +37,19 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa Đơn vận chuyển thành công!");
+    // message.success("Xóa Phân quyền thành công!");
+    message.error("Không thể xóa Phân quyền!");
   } catch (error) {
     if (error.response?.status === 404) {
-      message.error("Đơn vận chuyển không còn tồn tại!");
+      message.error("Phân quyền không còn tồn tại!");
     } else {
       // TODO: handle DATA_USED
-      message.error("Không thể xóa Đơn vận chuyển!");
+      message.error("Không thể xóa Phân quyền!");
     }
   }
 }
 
-const Transfer = () => {
+const Role = () => {
   const navigate = useNavigate();
 
   // -------------------- Filter attr --------------------
@@ -60,7 +61,7 @@ const Transfer = () => {
   const [dataSource, setDataSource] = useState([]); // control table data
   const [totalRecord, setTotalRecord] = useState(0); // control number of page in table
   const [query, setQuery] = useState({
-    page: -1,
+    page: 1,
     size: 10,
     // sort: "-createTime",
   });
@@ -68,41 +69,21 @@ const Transfer = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã đơn vận chuyển",
+      title: "Mã phân quyền",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên đơn vận chuyển",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Tên phân quyền",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: "Từ cửa hàng",
-      dataIndex: "fromStore",
-      key: "fromStore",
-    },
-    {
-      title: "Đến cửa hàng",
-      dataIndex: "fromStore",
-      key: "fromStore",
-    },
-    {
-      title: "Nhân viên",
-      dataIndex: "employee",
-      key: "employee",
-    },
-    {
-      title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
+      title: "Mô tả",
+      dataIndex: "description",
+      key: "description",
     },
   ];
 
@@ -112,7 +93,7 @@ const Transfer = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await RoleSerivce.getAll(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -164,7 +145,7 @@ const Transfer = () => {
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Search
-          placeholder="Tìm kiếm theo mã đơn vận chuyển"
+          placeholder="Tìm kiếm theo tên Phân quyền"
           allowClear
           enterButton
           onSearch={handleSubmitSearch}
@@ -173,13 +154,13 @@ const Transfer = () => {
         />
 
         <Space>
-          <Button
+          {/* <Button
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setOpenFilter(true)}
           >
             Bộ lọc
-          </Button>
+          </Button> */}
 
           <Button
             type="primary"
@@ -194,7 +175,7 @@ const Transfer = () => {
 
       <ContentBox>
         <BaseTable
-          label="Đơn vận chuyển"
+          label="Phân quyền"
           columns={columns}
           rowKey="id"
           dataSource={dataSource}
@@ -211,7 +192,7 @@ const Transfer = () => {
         />
       </ContentBox>
 
-      <TransferFilterModal
+      <RoleFilterModal
         open={openFilter}
         setOpen={setOpenFilter}
         query={query}
@@ -221,4 +202,4 @@ const Transfer = () => {
   );
 };
 
-export default Transfer;
+export default Role;
