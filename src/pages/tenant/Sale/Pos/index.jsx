@@ -26,6 +26,7 @@ import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect"
 import { CustomerService } from "@/apis/CustomerService";
 import { PromoteService } from "@/apis/PromoteService";
 import { SaleService } from "@/apis/SaleService";
+import useToggle from "@/hooks/useToggle";
 
 const { Search } = Input;
 
@@ -49,6 +50,9 @@ const breadcrumbItems = [
 
 const Pos = () => {
   const { auth } = useAuth();
+  const [reload, setReload] = useToggle(true);
+
+
   // --- Info
   const [storeId, setStoreId] = useState(-1);
   const employeeId = auth.userId;
@@ -79,7 +83,8 @@ const Pos = () => {
     setQuan(_quantity)
 
     let _discount = 0;
-
+    
+    let removePromotes = []
     promotes.forEach(ele => {
       const promoteId = ele.value;
       const promote = promoteLK[promoteId];
@@ -87,9 +92,14 @@ const Pos = () => {
       
 
       let subdis = 0;
+      
       if (promote.type === "Giảm giá sản phẩm") {
         let products = details.filter(detail => detail.product.id === promote.product.id)
         console.log(products);
+        if (products.length === 0) {
+          message.error("Giỏ hàng không chứa sản phẩm áp dụng khuyến mãi!")
+          removePromotes.push(promote.id);
+        }
         products.forEach(p => {
           subdis += p._quantity * (p.product.price - promote.discountPrice)
         })
@@ -98,7 +108,9 @@ const Pos = () => {
           message.error(`Không đủ điều kiện áp dụng khuyến mãi: ${promote.name}`)
         }
         else if (promote.minAmountRequired && promote.minAmountRequired > _subtotal) {
-          message.error(`Không đủ điều kiện áp dụng khuyến mãi: ${promote.name}`)
+          message.error(`Không đủ điều kiện áp dụng khuyến mãi: ${promote.name}`);
+          // remove this
+          removePromotes.push(promote.id)
         } else {
           if (promote.type === "Số tiền Hóa đơn") {
             subdis = promote.amount;
@@ -125,6 +137,10 @@ const Pos = () => {
 
     
     setTotal(_preTax + _tax)
+
+    if (removePromotes.length > 0) {
+      setPromotes(prev => prev.filter(ele => !removePromotes.includes(ele.value)))
+    }
 
   }, [details, taxPercentage, promotes])
   
@@ -175,7 +191,7 @@ const Pos = () => {
     }
 
     fetchPromote();
-  }, [query, storeId]);
+  }, [query, storeId, reload]);
 
   // Store filter -----
 
@@ -307,6 +323,7 @@ const Pos = () => {
     // reset
     setDetails([]);
     setPromotes([])
+    setReload();
 
   }
 

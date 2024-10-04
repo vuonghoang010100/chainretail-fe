@@ -59,7 +59,7 @@ const OrderForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
         message.error("Tên hiển thị đã được sử dụng!");
         setUsedName((prev) => [...prev, postPutData.name]);
       } else if (errorCode === -303) {
-        message.error("Tên cửa hàng đã được sử dụng!");
+        message.error("Tên đơn nhập hàng đã được sử dụng!");
         setUsedFullName((prev) => [...prev, postPutData.fullName]);
       } else {
         console.error("Uncatch conflict error message", error);
@@ -124,132 +124,22 @@ const OrderForm = ({ useForCreate, onFinish, initRecord: initRecord = {} }) => {
       }}
     >
       {!useForCreate && (
-        <Form.Item name="id" label="Mã cửa hàng">
+        <Form.Item name="id" label="Mã đơn nhập hàng">
           <Input disabled />
         </Form.Item>
       )}
 
-      <Form.Item
-        name="name"
-        label="Tên hiển thị"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập tên hiển thị!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedName, "Tên hiển thị"),
-          },
-        ]}
-      >
-        <Input
-          placeholder="Tên hiển thị của cửa hàng"
-          count={{
-            show: true,
-            max: 50,
-            exceedFormatter: (txt, { max }) => (txt).slice(0, max).join(''),
-          }}
-        />
+
+      
+      <Form.Item name="status" label="Trạng thái">
+        <RadioGroup values={["Chờ xác nhận", "Đang giao hàng", "Hoàn thành"]} />
       </Form.Item>
 
-      <Form.Item
-        name="fullName"
-        label="Tên cửa hàng"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập tên cửa hàng!",
-          },
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedFullName, "Tên cửa hàng"),
-          },
-        ]}
-      >
-        <Input placeholder="Tên của cửa hàng" />
+      <Form.Item name="paymentStatus" label="Trạng thái thanh toán">
+        <RadioGroup values={["Đã thanh toán", "Chưa thanh toán"]} />
       </Form.Item>
 
-      <Form.Item
-        name="province"
-        label="Tỉnh/Thành phố"
-        rules={[
-          {
-            required: true,
-            message: "Vui chọn Tỉnh/Thành phố!",
-          },
-        ]}
-      >
-        <SelectProvince
-          setDistrictOptions={setDistrictOptions}
-          resetDistrict={() => form.resetFields(["district"])}
-        />
-      </Form.Item>
-
-      <Form.Item
-        name="district"
-        label="Quận/Huyện"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng chọn Quận/Huyện!",
-          },
-        ]}
-      >
-        <SelectDistrict options={districtOptions} />
-      </Form.Item>
-
-      <Form.Item
-        name="address"
-        label="Địa chỉ"
-        rules={[
-          {
-            required: true,
-            message: "Vui lòng nhập địa chỉ của cửa hàng!",
-          },
-        ]}
-      >
-        <Input placeholder="Địa chỉ của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="email"
-        label="Email"
-        rules={[
-          {
-            type: "email",
-            message: "Email không hợp lệ!",
-          },
-          {
-            validator: (_, value) => uniqueValidator(value, usedEmail, "Email"),
-          },
-        ]}
-      >
-        <Input placeholder="Email liên hệ của cửa hàng" />
-      </Form.Item>
-
-      <Form.Item
-        name="phone"
-        label="Số điện thoại"
-        rules={[
-          {
-            validator: (_, value) =>
-              uniqueValidator(value, usedPhone, "Số điện thoại"),
-          },
-        ]}
-      >
-        <Input placeholder="Số điện thoại liên hệ của cửa hàng" />
-      </Form.Item>
-
-      {!useForCreate && (
-        <Form.Item name="status" label="Trạng thái">
-          <RadioGroup values={["Hoạt động", "Dừng hoạt động"]} />
-        </Form.Item>
-      )}
-
-      <Form.Item name="note" label="Ghi chú">
-        <Input.TextArea placeholder="Ghi chú" showCount maxLength={256} />
-      </Form.Item>
+      
       <Form.Item
         wrapperCol={{
           offset: 8,

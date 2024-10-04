@@ -7,16 +7,20 @@ import {
   Card,
   Space,
   Button,
-  Popconfirm,
+  Table,
+  Avatar,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
 import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Order";
+import { SaleService } from "@/apis/SaleService";
 
 // current page path
 const path = ROUTE.TENANT_APP.ORDER.path;
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 const breadcrumbItems = [
   {
@@ -49,7 +53,7 @@ const ViewOrder = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await SaleService.getOrderById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,44 +76,70 @@ const ViewOrder = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã đơn đặt hàng",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Mã hóa đơn",
+      children: currentRecord?.invoice?.id,
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Cửa hàng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.store?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.store?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
+      label: "Nhân viên",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
+      label: "Khách hàng",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.CUSTOMER.path}/${currentRecord?.customer?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.customer?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
+      label: "Tổng số tiền",
+      children:
+        `${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND",
     },
     {
       key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
+      label: "Khuyến mãi",
+      children: currentRecord?.usePromotes?.map((ele, index) => (
+        <div key={index}>
+          <Link to={ROUTE.TENANT_APP.PROMOTE.path + "/" + ele?.promote.id} target="_blank">
+            {ele?.promote.name}
+          </Link>
+          <br />
+        </div>
+      )),
     },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
+
     {
       key: useId(),
       label: "Trạng thái",
@@ -117,9 +147,10 @@ const ViewOrder = () => {
     },
     {
       key: useId(),
-      label: "Ghi chú",
-      children: currentRecord?.note,
+      label: "Trạng thái thanh toans",
+      children: currentRecord?.invoice?.paymentStatus,
     },
+
   ];
 
   const handleEdit = () => {
@@ -131,6 +162,43 @@ const ViewOrder = () => {
     navigate(path);
   };
 
+  // ------------- Table columns
+  const columns = [
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.product.imageUrl ? record.product.imageUrl : noImageurl} />{" "}
+            <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record.product.id}`} target="_blank">{record.product.name}</Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Số lượng mua",
+      key: "quantity",
+      dataIndex: "quantity",
+    },
+    {
+      title: "Giá mua",
+      key: "purchasePrice",
+      render: (_, record) => (
+        `${record?.price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND"
+      )
+    },
+    {
+      title: "Thành tiền",
+      key: "subTotal",
+      render: (_, record) => (
+        `${record?.subTotal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+        " VND"
+      )
+    },
+  ]
+
   return (
     <PageContent>
       <PageHeader
@@ -141,17 +209,7 @@ const ViewOrder = () => {
           <Button type="primary" onClick={handleEdit}>
             Cập nhật
           </Button>
-          <Popconfirm
-            title="Xóa đơn đặt hàng?"
-            okText="Xóa"
-            cancelText="Đóng"
-            placement="bottomRight"
-            onConfirm={handleDelete}
-          >
-            <Button type="primary" danger>
-              Xóa
-            </Button>
-          </Popconfirm>
+          
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
@@ -165,6 +223,48 @@ const ViewOrder = () => {
             width: "30%",
             minWidth: "max-content",
           }}
+        />
+      </Card>
+      <br/>
+      <Card
+        title="Chi tiết đơn đặt hàng"
+        bordered={false} loading={loading}
+      >
+        <Table
+          dataSource={currentRecord?.details}
+          columns={columns}
+          pagination={false}
+          summary={() => (
+            <>
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>Tạm tính</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>{`${currentRecord?.subTotal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+              </Table.Summary.Row>
+
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>Khuyến mãi</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>{currentRecord?.discount ? `${currentRecord?.discount}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND" : "0 VND"}</Table.Summary.Cell>
+              </Table.Summary.Row>
+
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>Thuế</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>{`${currentRecord?.tax}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+              </Table.Summary.Row>
+
+              <Table.Summary.Row>
+                <Table.Summary.Cell index={0}></Table.Summary.Cell>
+                <Table.Summary.Cell index={1}></Table.Summary.Cell>
+                <Table.Summary.Cell index={2}>Tổng số tiền</Table.Summary.Cell>
+                <Table.Summary.Cell index={3}>{`${currentRecord?.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + " VND"}</Table.Summary.Cell>
+              </Table.Summary.Row>
+            </>
+          )}
         />
       </Card>
     </PageContent>

@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import OrderFilterModal from "./OrderFilterModal";
+import { SaleService } from "@/apis/SaleService";
 
 const { Search } = Input;
 
@@ -68,56 +68,44 @@ const Order = () => {
   // -------------------- Table columns --------------------
   const columns = [
     {
-      title: "Mã cửa hàng",
+      title: "Mã đơn đặt hàng",
       key: "id",
       render: (_, record) => {
         return <Link to={`${path}/${record.id}`}>{record.id}</Link>;
       },
     },
     {
-      title: "Tên hiển thị",
-      dataIndex: "name",
-      key: "name",
+      title: "Cửa hàng",
+      key: "store",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.store.id}`} target="_blank" >{record.store.name}</Link>
+      }
     },
     {
-      title: "Tên cửa hàng",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Nhân viên",
+      key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
     {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
+      title: "Khách hàng",
+      key: "customer",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.CUSTOMER.path}/${record?.customer?.id}`} target="_blank" >{record?.customer?.fullName}</Link>
+      }
     },
     {
-      title: "Sdt",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Tỉnh/TP",
-      dataIndex: "province",
-      key: "province",
-    },
-    {
-      title: "Quận/Huyện",
-      dataIndex: "district",
-      key: "district",
-    },
-    {
-      title: "Địa chỉ",
-      dataIndex: "address",
-      key: "address",
+      title: "Tổng số tiền",
+      key: "total",
+      render: (_, record) => {
+        return <>{`${record.total}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',') + " VND"}</>
+      }
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-    },
-    {
-      title: "Ghi chú",
-      dataIndex: "note",
-      key: "note",
     },
   ];
 
@@ -127,7 +115,7 @@ const Order = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await SaleService.getAllOrders(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -145,7 +133,7 @@ const Order = () => {
   // -------------------- Page function --------------------
   // eslint-disable-next-line no-unused-vars
   const handleCreateNew = (e) => {
-    navigate(`${path}/new`);
+    navigate(`/pos`);
   };
 
   const handleView = (record) => {
@@ -188,13 +176,13 @@ const Order = () => {
         />
 
         <Space>
-          <Button
+          {/* <Button
             type="primary"
             icon={<FilterOutlined />}
             onClick={() => setOpenFilter(true)}
           >
             Bộ lọc
-          </Button>
+          </Button> */}
 
           <Button
             type="primary"
@@ -223,7 +211,6 @@ const Order = () => {
           setReload={() => {
             setReload();
           }}
-          edit_={false}
           delete_={false}
         />
       </ContentBox>

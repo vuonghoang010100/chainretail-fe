@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import OrderForm from "./OrderForm";
-import { StoreService } from "@/apis/StoreService";
+import { SaleService } from "@/apis/SaleService";
 
 // current page path
 const path = ROUTE.TENANT_APP.ORDER.path;
@@ -46,7 +46,7 @@ const EditOrder = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await SaleService.getOrderById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -55,10 +55,16 @@ const EditOrder = () => {
           record?.createTime && delete record.createTime;
           record?.updateTime && delete record.updateTime;
 
-          // convert data
-          let recordFormatted = { ...record };
+          const x = {
+            id: record.id,
+            status: record?.status,
+            paymentStatus: record?.invoice?.paymentStatus
+          }
 
-          setCurrentRecord(record);
+          // convert data
+          let recordFormatted = { ...x };
+
+          setCurrentRecord(x);
           setFormatRecord(recordFormatted);
         }
       } catch (error) {
@@ -90,7 +96,7 @@ const EditOrder = () => {
     }
 
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await SaleService.putOrder(id, updateData);
     navigate(path);
     return true;
   };
