@@ -90,7 +90,7 @@ const Dashboard = () => {
           bordered={false}
           style={cardStyle2}
         >
-          <Statistic title="Khách hàng mới" value={saleStatic.khachhangmoi} />
+          
         </Card>
 
         <Card
@@ -98,7 +98,7 @@ const Dashboard = () => {
           bordered={false}
           style={cardStyle2}
         >
-          <Statistic title="Khách hàng mới" value={saleStatic.khachhangmoi} />
+          
         </Card>
 
 
@@ -107,7 +107,7 @@ const Dashboard = () => {
           bordered={false}
           style={cardStyle2}
         >
-          <Statistic title="Khách hàng mới" value={saleStatic.khachhangmoi} />
+          
         </Card>
 
 

@@ -98,6 +98,19 @@ const ViewPromote = lazy(() => import("@/pages/tenant/Promote/ViewPromote"));
 const EditPromote = lazy(() => import("@/pages/tenant/Promote/EditPromote"));
 // Report
 import Report from "@/pages/tenant/Report";
+const Report1 = lazy(() => import("@/pages/tenant/Report/pages/1SalePerTime"))
+const Report2 = lazy(() => import("@/pages/tenant/Report/pages/2SalePerProduct"))
+const Report3 = lazy(() => import("@/pages/tenant/Report/pages/3SalePerCategory"))
+const Report4 = lazy(() => import("@/pages/tenant/Report/pages/4SalePerEm"))
+const Report5 = lazy(() => import("@/pages/tenant/Report/pages/5SalePerStore"))
+const Report6 = lazy(() => import("@/pages/tenant/Report/pages/6SalePerCustomer"))
+const Report7 = lazy(() => import("@/pages/tenant/Report/pages/7PurchasePerTime"))
+const Report8 = lazy(() => import("@/pages/tenant/Report/pages/8PurchasePerStore"))
+const Report9 = lazy(() => import("@/pages/tenant/Report/pages/9PurchasePerVendor"))
+const Report10 = lazy(() => import("@/pages/tenant/Report/pages/3SalePerCategory"))
+const Report11 = lazy(() => import("@/pages/tenant/Report/pages/11ABC"))
+const Report12 = lazy(() => import("@/pages/tenant/Report/pages/12FSN"))
+
 // Setting
 import Setting from "@/pages/tenant/Setting";
 
@@ -307,6 +320,18 @@ function App() {
 
         <Route path={ROUTE.TENANT_APP.REPORT.name} >
           <Route index element={<Report/>} />
+          <Route path="1" element={<LazyLoadPage><Report1/></LazyLoadPage>} />
+          <Route path="2" element={<LazyLoadPage><Report2/></LazyLoadPage>} />
+          <Route path="3" element={<LazyLoadPage><Report3/></LazyLoadPage>} />
+          <Route path="4" element={<LazyLoadPage><Report4/></LazyLoadPage>} />
+          <Route path="5" element={<LazyLoadPage><Report5/></LazyLoadPage>} />
+          <Route path="6" element={<LazyLoadPage><Report6/></LazyLoadPage>} />
+          <Route path="7" element={<LazyLoadPage><Report7/></LazyLoadPage>} />
+          <Route path="8" element={<LazyLoadPage><Report8/></LazyLoadPage>} />
+          <Route path="9" element={<LazyLoadPage><Report9/></LazyLoadPage>} />
+          <Route path="10" element={<LazyLoadPage><Report10/></LazyLoadPage>} />
+          <Route path="11" element={<LazyLoadPage><Report11/></LazyLoadPage>} />
+          <Route path="12" element={<LazyLoadPage><Report12/></LazyLoadPage>} />
         </Route>
 
         <Route path={ROUTE.TENANT_APP.SETTING.name} >
