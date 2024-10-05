@@ -49,7 +49,7 @@ const Report = () => {
       key: 'TenSanPham',
     },
     {
-      title: 'Tổng số lượng bán',
+      title: 'Tổng số đơn bán',
       dataIndex: 'TongSoLuongBan',
       key: 'TongSoLuongBan',
     },

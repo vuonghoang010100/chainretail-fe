@@ -35,7 +35,7 @@ const Report = () => {
     value: -7,
   }]
 
-  const [storeId, setStoreId] = useState(-1);
+  const [storeId, setStoreId] = useState(null);
   const [stores, setStores] = useState(initStore);
 
   const handleChangeStore = (id) => {

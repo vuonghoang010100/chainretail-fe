@@ -79,7 +79,7 @@ const Report = () => {
       const query = {from, to}
       console.log(query);
       
-      const responseData = await ReportSerivce.getReport(5, query)
+      const responseData = await ReportSerivce.getReport(8, query)
       handleLabel(responseData);
       
     } catch (error) {
