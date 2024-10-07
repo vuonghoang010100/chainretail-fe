@@ -103,7 +103,7 @@ const Dashboard = () => {
       key: "sp",
       render: (_, record) => {
         return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.id}`} target="_blank" >
-          <Avatar shape="square" size={48} src={record.url ? record.url : noImageurl} />
+          <Avatar shape="square" alt="" size={48} src={record.url ? record.url : noImageurl} />
           {record.name}
         </Link>
       }

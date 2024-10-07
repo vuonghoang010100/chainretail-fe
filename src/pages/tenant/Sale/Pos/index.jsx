@@ -533,7 +533,7 @@ const Pos = () => {
               <Spin size="large" />
             </Flex>
           )}
-          <Flex gap="middle">
+          <Flex gap="middle" wrap>
             {batches.map((batch) => (
               <Card
                 key={batch.id}

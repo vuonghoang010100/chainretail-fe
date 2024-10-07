@@ -88,7 +88,7 @@ const Product = () => {
       render: (_, record) => {
         return (
           <div>
-            <Avatar shape="square" size={48} src={record.imageUrl ? record.imageUrl : noImageurl} />{" "}
+            <Avatar shape="square" alt="" size={48} src={record.imageUrl ? record.imageUrl : noImageurl} />{" "}
             {record.name}
           </div>
         );

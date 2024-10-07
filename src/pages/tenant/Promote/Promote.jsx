@@ -123,7 +123,7 @@ const Promote = () => {
         if (record?.product !== null)
         return (
           <>
-            <Avatar shape="square" size={48} src={record.product?.imageUrl ? record?.product.imageUrl : noImageurl} />{" "}
+            <Avatar shape="square" alt="" size={48} src={record.product?.imageUrl ? record?.product.imageUrl : noImageurl} />{" "}
             <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record?.product?.id}`} target="_blank">{record?.product?.name}</Link>
           </>
         );
