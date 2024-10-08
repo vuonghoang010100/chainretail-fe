@@ -9,7 +9,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import TransferForm from "./TransferForm";
-import { StoreService } from "@/apis/StoreService";
+import { TransferService } from "@/apis/TransferService";
 
 // current page path
 const path = ROUTE.TENANT_APP.TRANSFER.path;
@@ -35,7 +35,7 @@ const NewTransfer = () => {
 
   // -------------------- Create New Store --------------------
   const handleCreate = async (data) => {
-    await StoreService.postStore(data);
+    await TransferService.postTransfer(data);
     navigate(path);
     return true;
   };

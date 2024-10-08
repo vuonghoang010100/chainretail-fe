@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/common/Title";
 import { ROUTE } from "@/constants/AppConstant";
 import TransferForm from "./TransferForm";
-import { StoreService } from "@/apis/StoreService";
+import { TransferService } from "@/apis/TransferService";
 
 // current page path
 const path = ROUTE.TENANT_APP.TRANSFER.path;
@@ -46,7 +46,7 @@ const EditTransfer = () => {
     const fetchData = async () => {
       try {
         // fetch data
-        const record = await StoreService.getStoreById(id);
+        const record = await TransferService.getTransferById(id);
         console.info("Get record data:", record);
 
         // on get cuccessfully
@@ -57,6 +57,45 @@ const EditTransfer = () => {
 
           // convert data
           let recordFormatted = { ...record };
+
+          record.fromStoreId = null;
+          if (record.fromStore) {
+            recordFormatted.fromStore = {
+              label: `${record.fromStore.name}`,
+              key: record.fromStore.id,
+              value: record.fromStore.id,
+            };
+            record.fromStoreId = record.fromStore.id;
+            delete record.fromStore;
+          }
+
+          record.storeId = null;
+          if (record.toStore) {
+            recordFormatted.toStore = {
+              label: `${record.toStore.name}`,
+              key: record.toStore.id,
+              value: record.toStore.id,
+            };
+            record.storeId = record.toStore.id;
+            delete record.toStore;
+          }
+
+          recordFormatted.details = record.details.map((ele) => ({
+            id: ele.id,
+            product: {
+              label: `${ele.product.id} - ${ele.product.name}`,
+              key: ele.product.id,
+              value: ele.product.id,
+              disabled: true,
+            },
+            batch: {
+              label: `Lô ${ele.fromBatch.id}`,
+              key: ele.fromBatch.id,
+              value: ele.fromBatch.id,
+              disabled: true,
+            },
+            quantity: ele.quantity,
+          }));
 
           setCurrentRecord(record);
           setFormatRecord(recordFormatted);
@@ -75,9 +114,14 @@ const EditTransfer = () => {
 
   // -------------------- Update Customer --------------------
   const handleUpdate = async (updateData) => {
+    const data = {
+      note: updateData.note,
+      status: updateData.status,
+    }
+
     // get change value
     let changedData = Object.fromEntries(
-      Object.entries(updateData).filter(
+      Object.entries(data).filter(
         ([key, value]) => value !== currentRecord[key]
       )
     );
@@ -90,7 +134,7 @@ const EditTransfer = () => {
     }
 
     // Call update API
-    await StoreService.putStore(id, updateData);
+    await TransferService.putTransfer(id, data);
     navigate(path);
     return true;
   };

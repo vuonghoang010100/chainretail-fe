@@ -1,21 +1,16 @@
-import React, { useState } from "react";
-import { Form, Input, Row, Col } from "antd";
+import React from "react";
+import { Form, Input, Row, Col, InputNumber } from "antd";
 import {
   BaseFilterModal,
   rowProps,
-  colProps,
+  singleColProps,
 } from "@/components/common/FilterModal";
-import {
-  SelectDistrict,
-  SelectProvince,
-} from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
 import { VALUE_ALL } from "@/components/common/FilterModal/BaseFilterModal";
 
 const BillFilterModal = ({ open, setOpen, setQuery }) => {
   // -------------------- Filter attr --------------------
   const [form] = Form.useForm();
-  const [districtOptions, setDistrictOptions] = useState([]);
 
   // -------------------- Filter function --------------------
   const handleFilter = () => {
@@ -51,6 +46,7 @@ const BillFilterModal = ({ open, setOpen, setQuery }) => {
 
   return (
     <BaseFilterModal
+      singleCol
       open={open}
       setOpen={setOpen}
       onOk={handleFilter}
@@ -59,66 +55,57 @@ const BillFilterModal = ({ open, setOpen, setQuery }) => {
       <Form name="filterStore" layout="vertical" form={form}>
         {/* form item here */}
         <Row {...rowProps}>
-          <Col {...colProps}>
-            <Form.Item name="id" label="Mã cửa hàng">
-              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="id" label="Mã đơn vận chuyển">
+              <Input placeholder="Tìm theo mã đơn vận chuyển" allowClear />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="name" label="Tên hiển thị">
-              <Input placeholder="Tìm theo tên hiển thị" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="fullName" label="Tên cửa hàng">
-              <Input placeholder="Tìm theo tên cửa hàng" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="address" label="Địa chỉ">
-              <Input placeholder="Tìm theo địa chỉ" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="province" label="Tỉnh/Thành phố">
-              <SelectProvince
-                setDistrictOptions={setDistrictOptions}
-                resetDistrict={() => form.resetFields(["district"])}
+          <Col {...singleColProps}>
+            <Form.Item name="status" label="Trạng thái">
+              <RadioGroup
+                values={[VALUE_ALL, "Đã thanh toán", "Chưa thanh toán"]}
               />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="district" label="Quận/Huyện">
-              <SelectDistrict options={districtOptions} />
+          <Col {...singleColProps}>
+            <Form.Item name="vendorId" label="Nhà cung cấp">
+              <Input placeholder="Tìm theo mã nhà cung cấp" allowClear />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="email" label="Email">
-              <Input placeholder="Tìm theo email" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="employeeId" label="Nhân viên">
+              <Input placeholder="Tìm theo mã nhân viên" allowClear />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="Tìm theo số điện thoại" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="gteTotal" label="Tổng số tiền từ">
+              <InputNumber
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                step="1000"
+                min="0"
+                addonAfter="VND"
+              />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="status" label="Trạng thái">
-              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="note" label="Ghi chú">
-              <Input placeholder="Tìm theo ghi chú" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="lteTotal" label="Tổng số tiền đến">
+              <InputNumber
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                step="1000"
+                min="0"
+                addonAfter="VND"
+              />
             </Form.Item>
           </Col>
         </Row>

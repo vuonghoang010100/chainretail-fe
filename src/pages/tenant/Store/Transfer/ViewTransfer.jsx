@@ -8,12 +8,16 @@ import {
   Space,
   Button,
   Popconfirm,
+  Table,
+  Avatar,
 } from "antd";
 import { HomeOutlined } from "@ant-design/icons";
 import { PageContent, PageHeader } from "@/components/layout/PageContent";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import { deleteRecord } from "./Transfer";
+import { TransferService } from "@/apis/TransferService";
+
+const noImageurl = "https://retail-chain-sale-ms.s3.ap-southeast-2.amazonaws.com/no_image_450.png"
 
 // current page path
 const path = ROUTE.TENANT_APP.TRANSFER.path;
@@ -49,7 +53,7 @@ const ViewTransfer = () => {
 
     const fetchData = async () => {
       try {
-        const record = await StoreService.getStoreById(id);
+        const record = await TransferService.getTransferById(id);
         console.log(record);
 
         // on get cuccessfully
@@ -72,58 +76,71 @@ const ViewTransfer = () => {
   const infoItems = [
     {
       key: useId(),
-      label: "Tên hiển thị",
-      children: <Text strong>{currentRecord?.name}</Text>,
+      label: "Mã vận chuyển",
+      children: <Text strong>{currentRecord?.id}</Text>,
     },
     {
       key: useId(),
-      label: "Mã cửa hàng",
-      children: currentRecord?.id,
+      label: "Cửa hàng gửi",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.fromStore?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.fromStore?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Tên cửa hàng",
-      children: currentRecord?.fullName,
+      label: "Cửa hàng nhận",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STORE.path}/${currentRecord?.toStore?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.toStore?.name}
+        </Link>
+      ),
     },
     {
       key: useId(),
-      label: "Số điện thoại",
-      children: currentRecord?.phone,
-    },
-    {
-      key: useId(),
-      label: "Email",
-      children: currentRecord?.email,
-    },
-    {
-      key: useId(),
-      label: "Tỉnh/Thành phố",
-      children: currentRecord?.province,
-    },
-    {
-      key: useId(),
-      label: "Quận/Huyện",
-      children: currentRecord?.district,
-    },
-    {
-      key: useId(),
-      label: "Địa chỉ",
-      children: currentRecord?.address,
-    },
-    {
-      key: useId(),
-      label: "Trạng thái",
-      children: currentRecord?.status,
+      label: "Nhân viên",
+      children: (
+        <Link
+          to={`${ROUTE.TENANT_APP.STAFF.path}/${currentRecord?.employee?.id}`}
+          target="_blank"
+        >
+          {currentRecord?.employee?.fullName}
+        </Link>
+      ),
     },
     {
       key: useId(),
       label: "Ghi chú",
       children: currentRecord?.note,
     },
+    {
+      key: useId(),
+      label: "Thời gian tạo",
+      children: currentRecord?.createTime,
+    },
+    {
+      key: useId(),
+      label: "Thời gian cập nhập",
+      children: currentRecord?.updateTime,
+    },
   ];
 
   const handleEdit = () => {
-    navigate(`${path}/${id}/edit`);
+    if (currentRecord.status === "Đang vận chuyển") {
+      navigate(`${path}/${id}/edit`);
+      return;
+    }
+    if (currentRecord.status === "Hoàn thành")
+      message.warning("Đơn vận chuyển đã Hoàn thành, không thể cập nhật!")
+    else
+      message.warning("Đơn vận chuyển đã Hủy, không thể cập nhật!")
   };
 
   const handleDelete = async () => {
@@ -131,10 +148,40 @@ const ViewTransfer = () => {
     navigate(path);
   };
 
+  const columns = [
+    {
+      title: "Sản phẩm",
+      key: "product",
+      render: (_, record) => {
+        return (
+          <>
+            <Avatar shape="square" size={48} src={record.product.imageUrl ? record.product.imageUrl : noImageurl} />{" "}
+            <Link to={`${ROUTE.TENANT_APP.PRODUCT.path}/${record.product.id}`} target="_blank">{record.product.name}</Link>
+          </>
+        );
+      },
+    },
+    {
+      title: "Vận chuyển từ lô",
+      key: "batch",
+      render: (_, record) => record.fromBatch?.id
+    },
+    {
+      title: "Vận chuyển đến lô",
+      key: "batch",
+      render: (_, record) => record.toBatch?.id
+    },
+    {
+      title: "Số lượng sản phẩm",
+      key: "realQuantity",
+      dataIndex: "quantity",
+    },
+  ]
+
   return (
     <PageContent>
       <PageHeader
-        title="Xem thông tin Đơn vận chuyển"
+        title="Xem thông tin đơn vận chuyển"
         breadcrumbItems={breadcrumbItems}
       >
         <Space>
@@ -155,7 +202,7 @@ const ViewTransfer = () => {
           <Button onClick={() => navigate(path)}>Đóng</Button>
         </Space>
       </PageHeader>
-      <Card title="Thông tin Đơn vận chuyển giữa các cửa hàng" bordered={false} loading={loading}>
+      <Card title="Thông tin đơn vận chuyển giữa các cửa hàng" bordered={false} loading={loading}>
         <Descriptions
           bordered
           items={infoItems}
@@ -165,6 +212,17 @@ const ViewTransfer = () => {
             width: "30%",
             minWidth: "max-content",
           }}
+        />
+      </Card>
+      <br/>
+      <Card
+        title="Chi tiết phiếu kiểm kho"
+        bordered={false} loading={loading}
+      >
+        <Table
+          dataSource={currentRecord?.details}
+          columns={columns}
+          pagination={false}
         />
       </Card>
     </PageContent>

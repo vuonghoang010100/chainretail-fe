@@ -1,21 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import { Form, Input, Row, Col } from "antd";
 import {
   BaseFilterModal,
   rowProps,
   colProps,
+  singleColProps,
 } from "@/components/common/FilterModal";
-import {
-  SelectDistrict,
-  SelectProvince,
-} from "@/components/common/Input/Select";
 import { RadioGroup } from "@/components/common/Input/Radio";
 import { VALUE_ALL } from "@/components/common/FilterModal/BaseFilterModal";
 
 const PromoteFilterModal = ({ open, setOpen, setQuery }) => {
   // -------------------- Filter attr --------------------
   const [form] = Form.useForm();
-  const [districtOptions, setDistrictOptions] = useState([]);
 
   // -------------------- Filter function --------------------
   const handleFilter = () => {
@@ -59,66 +55,39 @@ const PromoteFilterModal = ({ open, setOpen, setQuery }) => {
       <Form name="filterStore" layout="vertical" form={form}>
         {/* form item here */}
         <Row {...rowProps}>
-          <Col {...colProps}>
-            <Form.Item name="id" label="Mã cửa hàng">
-              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="name" label="Mã đơn khuyến mãi">
+              <Input placeholder="Tìm theo mã đơn khuyến mãi" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...singleColProps}>
+            <Form.Item name="description" label="Mô tả">
+              <Input placeholder="Tìm theo mô tả" allowClear />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
-            <Form.Item name="name" label="Tên hiển thị">
-              <Input placeholder="Tìm theo tên hiển thị" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="fullName" label="Tên cửa hàng">
-              <Input placeholder="Tìm theo tên cửa hàng" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="address" label="Địa chỉ">
-              <Input placeholder="Tìm theo địa chỉ" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="province" label="Tỉnh/Thành phố">
-              <SelectProvince
-                setDistrictOptions={setDistrictOptions}
-                resetDistrict={() => form.resetFields(["district"])}
-              />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="district" label="Quận/Huyện">
-              <SelectDistrict options={districtOptions} />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="email" label="Email">
-              <Input placeholder="Tìm theo email" allowClear />
-            </Form.Item>
-          </Col>
-
-          <Col {...colProps}>
-            <Form.Item name="phone" label="Số điện thoại">
-              <Input placeholder="Tìm theo số điện thoại" allowClear />
+            <Form.Item name="type" label="Loại khuyến mãi">
+              <RadioGroup values={[VALUE_ALL, "Phần trăm Hóa đơn", "Số tiền Hóa đơn", "Giảm giá sản phẩm"]} />
             </Form.Item>
           </Col>
 
           <Col {...colProps}>
             <Form.Item name="status" label="Trạng thái">
-              <RadioGroup values={[VALUE_ALL, "Hoạt động", "Dừng hoạt động"]} />
+              <RadioGroup values={[VALUE_ALL, "Còn hiệu lực", "Hết hiệu lực"]} />
             </Form.Item>
           </Col>
 
-          <Col {...colProps}>
-            <Form.Item name="note" label="Ghi chú">
-              <Input placeholder="Tìm theo ghi chú" allowClear />
+          <Col {...singleColProps}>
+            <Form.Item name="storeId" label="Cửa hàng">
+              <Input placeholder="Tìm theo mã cửa hàng" allowClear />
+            </Form.Item>
+          </Col>
+
+          <Col {...singleColProps}>
+            <Form.Item name="employeeId" label="Nhân viên">
+              <Input placeholder="Tìm theo mã nhân viên" allowClear />
             </Form.Item>
           </Col>
         </Row>

@@ -27,99 +27,107 @@ const breadcrumbItems = [
 ];
 
 const Report = () => {
-
   // --------- date -----------
-  const [dates, setDates] = useState(['2024-10-01', '2024-10-05']);
+  const currentDate = new Date().toLocaleDateString("en-CA").slice(0, 10);
+  const [dates, setDates] = useState([
+    currentDate.slice(0, 8) + "01",
+    currentDate,
+  ]);
   const handleChange = (value) => {
-    setDates(value)
-  }
+    setDates(value);
+  };
 
   // --------- REPORT -----------
-  const [dataSource , setDataSource] = useState([]);
+  const [dataSource, setDataSource] = useState([]);
 
   const columns = [
     {
-      title: 'Mã sản phẩm',
-      dataIndex: 'id',
-      key: 'id',
+      title: "Mã sản phẩm",
+      dataIndex: "id",
+      key: "id",
     },
     {
-      title: 'Tên sản phẩm',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Tên sản phẩm",
+      dataIndex: "name",
+      key: "name",
     },
     {
-      title: 'Tổng doanh thu',
-      dataIndex: 'TongDoanhThu',
-      key: 'TongDoanhThu',
+      title: "Số lượng tiêu thụ",
+      dataIndex: "TongDoanhThu",
+      key: "TongDoanhThu",
     },
     {
-      title: 'Tỉ lệ doanh thu',
-      key: 'tile',
+      title: "Tỉ lệ tiêu thụ",
+      key: "tile",
       render: (_, record) => {
-        return <>{Math.round(record?.tile * 100) + " %"}</>
-      }
+        return <>{Math.round(record?.tile) + " %"}</>;
+      },
     },
     {
-      title: 'Tích lũy',
-      key: 'tichluy',
+      title: "Tích lũy",
+      key: "tichluy",
       render: (_, record) => {
-        return <>{Math.round(record?.tichluy * 100) + " %"}</>
-      }
+        return <>{Math.round(record?.tichluy) + " %"}</>;
+      },
     },
     {
-      title: 'Phân loại',
-      dataIndex: 'class',
-      key: 'class',
+      title: "Phân loại",
+      dataIndex: "class",
+      key: "class",
     },
   ];
 
   const handleLabel = (data) => {
-    const source = data.map(ele => ({
+    const source = data.map((ele) => ({
       id: ele[0],
       name: ele[1],
       TongDoanhThu: ele[2],
       tile: ele[3],
       tichluy: ele[4],
       class: ele[5],
-    }))
+    }));
 
-    if (source.length > 0 && source[0].tile > 0.75)
+    if (source.length > 0 && source[0].tile > 75)
       source[0].class = "Fast-moving";
 
     setDataSource(source);
-  }
+  };
 
   const handleRunReport = async () => {
-
     const [from, to] = dates;
 
     try {
-      const query = {from, to}
+      const query = { from, to };
       console.log(query);
-      
-      const responseData = await ReportSerivce.getReport(12, query)
+
+      const responseData = await ReportSerivce.getReport(12, query);
       handleLabel(responseData);
-      
     } catch (error) {
       message.info("Không thể tạo báo cáo!");
       console.log(error);
-      
     }
-  }
+  };
 
   return (
     <PageContent>
       <PageHeader breadcrumbItems={breadcrumbItems}>
         <Space>
-          <RangePickerx onChange={handleChange} value={dates}/>
-          
-          <Button type="primary" onClick={handleRunReport}>Tạo báo cáo</Button>
+          <RangePickerx onChange={handleChange} value={dates} />
+
+          <Button type="primary" onClick={handleRunReport}>
+            Tạo báo cáo
+          </Button>
         </Space>
       </PageHeader>
 
       <ContentBox>
-        <Table dataSource={dataSource} columns={columns} />
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{
+            pageSize: 50,
+          }}
+        />
       </ContentBox>
     </PageContent>
   );

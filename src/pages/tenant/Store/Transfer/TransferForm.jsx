@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Form, Button, Space, message, InputNumber, Row, Col } from "antd";
+import { Form, Button, Space, message, InputNumber, Row, Col, Input } from "antd";
 import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import { DebounceSelect } from "@/components/common/Input/Select/DebounceSelect";
 import { StoreService } from "@/apis/StoreService";
 import useAuth from "@/hooks/useAuth";
 import { ProductService } from "@/apis/ProductService";
 import { BatchService } from "@/apis/BatchService";
+import { RadioGroup } from "@/components/common/Input/Radio";
 
 const TransferForm = ({
   useForCreate,
@@ -22,7 +23,7 @@ const TransferForm = ({
   };
 
   const colProps = {
-    sm: 5,
+    sm: 7,
     xs: 24,
   };
 
@@ -35,7 +36,9 @@ const TransferForm = ({
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [pid, setPid] = useState({});
-  const [storeId, setStoreId] = useState(-1);
+
+  const [fromStoreId, setFromStoreId] = useState(-1);
+  const [toStoreId, setToStoreId] = useState(-2);
 
   // -------------------- Update fields --------------------
   useEffect(() => {
@@ -66,17 +69,19 @@ const TransferForm = ({
       )
     );
 
-    data.storeId = null;
-    if (data.store) {
-      data.storeId = data.store.value;
-    }
-    delete data.store;
+    // from
+    data.fromStoreId = fromStoreId;
+    delete data.fromStore;
+
+    // to
+    data.toStoreId = toStoreId;
+    delete data.toStore;
 
     data.employeeId = auth.userId;
 
     data.details = data.details.map((ele) => ({
       batchId: ele.batch.value,
-      realQuantity: ele.realQuantity,
+      quantity: ele.quantity,
     }));
 
     return data;
@@ -122,8 +127,15 @@ const TransferForm = ({
       //   maxWidth: 600,
       // }}
     >
+      {!useForCreate && (
+        <Form.Item name="id" label="Mã vận chuyển" style={{marginLeft:20}}>
+          <Input disabled />
+        </Form.Item>
+      )}
+
+
       <Form.Item
-        name="store"
+        name="fromStore"
         label="Từ cửa hàng"
         tooltip="Trường bắt buộc!"
         rules={[
@@ -131,11 +143,19 @@ const TransferForm = ({
             required: true,
             message: "Vui chọn cửa hàng!",
           },
+          {
+            validator: async () => {
+              if (fromStoreId === toStoreId)
+                return Promise.reject(new Error("Không được trùng cửa hàng!"));
+            }
+          }
         ]}
+        style={{marginLeft:10}}
       >
         <DebounceSelect
           allowClear
           showSearch
+          disabled={!useForCreate}
           fetchOptions={StoreService.search}
           formatResponeData={(data) =>
             data.map((option) => ({
@@ -144,7 +164,10 @@ const TransferForm = ({
               value: option.id,
             }))
           }
-          onSelect={(option) => setStoreId(option?.value)}
+          onSelect={(option) => {
+            setFromStoreId(option?.value);
+            form.resetFields(["details"]);
+          }}
           placeholder="Tìm và chọn cửa hàng"
         />
       </Form.Item>
@@ -158,11 +181,18 @@ const TransferForm = ({
             required: true,
             message: "Vui chọn cửa hàng!",
           },
+          {
+            validator: async () => {
+              if (fromStoreId === toStoreId)
+                return Promise.reject(new Error("Không được trùng cửa hàng!"));
+            }
+          }
         ]}
       >
         <DebounceSelect
           allowClear
           showSearch
+          disabled={!useForCreate}
           fetchOptions={StoreService.search}
           formatResponeData={(data) =>
             data.map((option) => ({
@@ -171,9 +201,19 @@ const TransferForm = ({
               value: option.id,
             }))
           }
-          onSelect={(option) => setStoreId(option?.value)}
+          onSelect={(option) => setToStoreId(option?.value)}
           placeholder="Tìm và chọn cửa hàng"
         />
+      </Form.Item>
+
+      {!useForCreate && (
+        <Form.Item name="status" label="Trạng thái" style={{marginLeft:52}} >
+          <RadioGroup values={["Đang vận chuyển", "Hoàn thành", "Đã hủy"]} />
+        </Form.Item>
+      )}
+
+      <Form.Item name="note" label="Ghi chú" style={{marginLeft:69}}>
+        <Input.TextArea placeholder="Ghi chú" showCount maxLength={256} />
       </Form.Item>
 
       <Form.List
@@ -187,7 +227,7 @@ const TransferForm = ({
               console.log(details);
 
               if (details.length === 0) {
-                message.error("Vui lòng thêm sản phẩm vào đơn nhập hàng!");
+                message.error("Vui lòng thêm sản phẩm vào đơn vận chuyển!");
                 return Promise.reject(new Error("Không có sản phẩm"));
               }
 
@@ -263,8 +303,7 @@ const TransferForm = ({
                     fetchOptions={(value) => {
                       let productId = pid[key];
                       console.log(pid);
-
-                      return BatchService.search(value, productId, storeId);
+                      return BatchService.search(value, productId, fromStoreId);
                     }}
                     formatResponeData={(data) =>
                       data.map((option) => ({
@@ -291,6 +330,7 @@ const TransferForm = ({
                   ]}
                 >
                   <InputNumber
+                    disabled={!useForCreate}
                     placeholder="Số lượng"
                     formatter={(value) =>
                       `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
@@ -301,21 +341,25 @@ const TransferForm = ({
                 </Col>
 
                 <Col {...colProps2}>
-                <MinusCircleOutlined onClick={() => remove(name)} />
+                  {useForCreate && (
+                    <MinusCircleOutlined onClick={() => remove(name)} />
+                  )}
                 </Col>
               </Row>
             ))}
-            <Form.Item>
-              <Button
-                label="_"
-                type="dashed"
-                onClick={() => add()}
-                block
-                icon={<PlusOutlined />}
-              >
-                Thêm sản phẩm
-              </Button>
-            </Form.Item>
+            {useForCreate && (
+              <Form.Item>
+                <Button
+                  label="_"
+                  type="dashed"
+                  onClick={() => add()}
+                  block
+                  icon={<PlusOutlined />}
+                >
+                  Thêm sản phẩm
+                </Button>
+              </Form.Item>
+            )}
           </>
         )}
       </Form.List>

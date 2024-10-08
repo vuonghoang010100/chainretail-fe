@@ -12,6 +12,7 @@ const Endpoints = {
   PURCHASE: "/purchases",
   BILL: "/bills",
   INVENTORY: "/inventory_checks",
+  TRANSFER: "/transfers",
   PROMOTE: "/promotes",
   BATCH: "/batches",
   SALE: "/sales",

@@ -123,7 +123,8 @@ const Dashboard = () => {
   ]
 
   // --------- fetch -----------
-  const [dates, setDates] = useState(['2024-10-01', '2024-10-05']);
+  const currentDate = new Date().toLocaleDateString('en-CA').slice(0, 10);
+  const [dates, setDates] = useState([currentDate.slice(0,8) + "01", currentDate]);
   const handleChange = (value) => {
     setDates(value)
   }

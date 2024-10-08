@@ -10,8 +10,8 @@ import { Input, Button, message, Space } from "antd";
 import { BaseTable } from "@/components/common/Table";
 import useToggle from "@/hooks/useToggle";
 import { ROUTE } from "@/constants/AppConstant";
-import { StoreService } from "@/apis/StoreService";
 import TransferFilterModal from "./TransferFilterModal";
+import { TransferService } from "@/apis/TransferService";
 
 const { Search } = Input;
 
@@ -37,7 +37,8 @@ const breadcrumbItems = [
 export const deleteRecord = async (id) => {
   try {
     // await CustomerAPI.deleteCustomer(id);
-    message.success("Xóa Đơn vận chuyển thành công!");
+    message.error("Không thể xóa Đơn vận chuyển!");
+    // message.success("Xóa Đơn vận chuyển thành công!");
   } catch (error) {
     if (error.response?.status === 404) {
       message.error("Đơn vận chuyển không còn tồn tại!");
@@ -60,7 +61,7 @@ const Transfer = () => {
   const [dataSource, setDataSource] = useState([]); // control table data
   const [totalRecord, setTotalRecord] = useState(0); // control number of page in table
   const [query, setQuery] = useState({
-    page: -1,
+    page: 1,
     size: 10,
     // sort: "-createTime",
   });
@@ -75,24 +76,25 @@ const Transfer = () => {
       },
     },
     {
-      title: "Tên đơn vận chuyển",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: "Cửa hàng gửi",
+      key: "fromStore",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.fromStore.id}`} target="_blank" >{record.fromStore.name}</Link>
+      }
     },
     {
-      title: "Từ cửa hàng",
-      dataIndex: "fromStore",
-      key: "fromStore",
-    },
-    {
-      title: "Đến cửa hàng",
-      dataIndex: "fromStore",
-      key: "fromStore",
+      title: "Cửa hàng nhận",
+      key: "toStore",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STORE.path}/${record.toStore.id}`} target="_blank" >{record.toStore.name}</Link>
+      }
     },
     {
       title: "Nhân viên",
-      dataIndex: "employee",
       key: "employee",
+      render: (_, record) => {
+        return <Link to={`${ROUTE.TENANT_APP.STAFF.path}/${record.employee?.id}`} target="_blank" >{record.employee?.fullName}</Link>
+      }
     },
     {
       title: "Trạng thái",
@@ -112,7 +114,7 @@ const Transfer = () => {
     const fetchData = async () => {
       try {
         console.info("Query:", query);
-        const dataResponse = await StoreService.getAll(query);
+        const dataResponse = await TransferService.getAll(query);
         console.info("Get All Store", dataResponse);
         setDataSource(dataResponse.data);
         setTotalRecord(dataResponse.total);
@@ -138,7 +140,14 @@ const Transfer = () => {
   };
 
   const handleEdit = (record) => {
-    navigate(`${path}/${record.id}/edit`);
+    if (record.status === "Đang vận chuyển") {
+      navigate(`${path}/${record.id}/edit`);
+      return;
+    }
+    if (record.status === "Hoàn thành")
+      message.warning("Đơn vận chuyển đã Hoàn thành, không thể cập nhật!")
+    else
+      message.warning("Đơn vận chuyển đã Hủy, không thể cập nhật!")
   };
 
   // delete
